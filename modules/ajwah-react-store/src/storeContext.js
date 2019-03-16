@@ -48,6 +48,7 @@ export function setStoreContext({ states = [], effects = [], devTools = undefine
     const ctx = new StoreContext(states);
     ctx.addEffects(...effects);
     __store = ctx;
+
     if (devTools && devTools.run) {
         ctx.devTools = devTools;
         devTools.run(ctx);

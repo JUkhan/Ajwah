@@ -6,7 +6,8 @@ export function devTools({
     maxAge = 10,
     name = 'Ajwah DevTools'
 }) {
-    return window.__REDUX_DEVTOOLS_EXTENSION__ ? new _DevTools({ name, maxAge }) : null
+    const withDevtools = typeof window === 'object' && typeof window['__REDUX_DEVTOOLS_EXTENSION__'] !== 'undefined';
+    return withDevtools ? new _DevTools({ name, maxAge }) : null
 }
 
 class _DevTools {
@@ -32,7 +33,6 @@ class _DevTools {
         window.devToolsExtension.disconnect();
     }
     sendStatusToDevTools(action, state) {
-        console.log(action)
         this.devTools.send(action, state);
     }
     setValue(state) {
@@ -40,7 +40,7 @@ class _DevTools {
         return state;
     }
     dispatchMonotorAction(message) {
-        console.log(message);
+
         if (message.type === 'DISPATCH') {
             switch (message.payload.type) {
                 case 'xRESET':
@@ -77,7 +77,7 @@ class _DevTools {
     toggleAction(id, strState) {
 
         const liftedState = parse(strState);
-        console.log(liftedState);
+
         const idx = liftedState.skippedActionIds.indexOf(id);
         const skipped = idx !== -1;
         const start = liftedState.stagedActionIds.indexOf(id);
