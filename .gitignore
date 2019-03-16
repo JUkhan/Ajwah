@@ -59,3 +59,6 @@ typings/
 
 # next.js build output
 .next
+modules/ajwah-react-store/lib/
+modules/ajwah-react-store/node_modules/
+examples/react-app/node_modules/

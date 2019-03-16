@@ -1,0 +1,23 @@
+{
+  "name": "ajwah-react-store",
+  "version": "1.0.0",
+  "description": "Rx based store lib(get rid of tons of boilerplate code) for react, angular, and vue",
+  "main": "index.js",
+  "module": "lib/esm/index.js",
+  "typings": "index.d.ts",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build:esm": "gulp build:esm"
+  },
+  "devDependencies": {
+    "babel-core": "^6.26.0",
+    "babel-plugin-transform-object-rest-spread": "^6.8.0",
+    "babel-preset-env": "^1.6.1",
+    "babel-register": "^6.11.6",
+    "gulp": "^3.9.1",
+    "gulp-babel": "^6.1.2",
+    "rxjs": "^6.4.0"
+  },
+  "author": "jasim khan",
+  "license": "ISC"
+}
