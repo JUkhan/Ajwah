@@ -1,7 +1,7 @@
 {
-  "name": "ajwah-react-store",
+  "name": "ajwah-react-devtools",
   "version": "0.1.0",
-  "description": "Rx based store lib for react, angular, and vue",
+  "description": "ajwah react devtools",
   "main": "lib/cjs/index.js",
   "module": "lib/esm/index.js",
   "typings": "index.d.ts",
@@ -21,10 +21,14 @@
     "gulp": "^3.9.1",
     "gulp-babel": "^6.1.2",
     "rimraf": "^2.5.4",
-    "rxjs": "^6.4.0"
+    "rxjs": "^6.4.0",
+    "jsan": "^3.1.13"
   },
+  "author": "jasim khan",
+  "license": "MIT",
   "peerDependencies": {
-    "rxjs": ">=6.0.0-beta.0 <7"
+    "rxjs": ">=6.0.0-beta.0 <7",
+    "jsan": "^3.1.13"
   },
   "repository": {
     "type": "git",
@@ -42,8 +46,6 @@
     "reactive",
     "redux"
   ],
-  "author": "Jasim Uddin Khan",
-  "license": "MIT",
   "bugs": {
     "url": "https://github.com/JUkhan/Ajwah/issues"
   },

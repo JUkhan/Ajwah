@@ -8,13 +8,13 @@ import { setStoreContext } from 'ajwah-react-store'
 import CounterEffect from "./states/counterEffects";
 import TutorialState from "./states/tutoroalState";
 import CounterSate from "./states/counterState";
-//import { devTools } from './devTools/devTools';
+import { devTools } from 'ajwah-react-devtools';
 
 
 setStoreContext({
     states: [CounterSate, TutorialState],
     effects: [CounterEffect],
-    //devTools: devTools({ maxAge: 10 })
+    devTools: devTools({ maxAge: 10 })
 });
 
 ReactDOM.render(<App />, document.getElementById('root'));
