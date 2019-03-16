@@ -5,8 +5,8 @@ import { STATE_METADATA_KEY } from './decorators/state';
 
 export class Store extends BehaviorSubject {
 
-    constructor(initialState, initStates, dispatcher) {
-        super(initialState);
+    constructor(initStates, dispatcher) {
+        super({});
         this.states = {};
 
         for (let state of initStates) {
@@ -14,10 +14,9 @@ export class Store extends BehaviorSubject {
         }
         this.dispatcher = dispatcher;
         this.dispatcher.pipe(
-            scan((state, action) => combineStates(state, action, this.states), initialState)
-        ).subscribe(newState => { console.log(newState); super.next(newState); });
-        //this.next({ type: 'INIT' })
-        console.log('value:', this.getValue());
+            scan((state, action) => combineStates(state, action, this.states), {})
+        ).subscribe(newState => { super.next(newState); });
+
     }
     dispatch(action) {
         this.dispatcher.next(action);

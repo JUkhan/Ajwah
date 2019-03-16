@@ -7,11 +7,11 @@ import { Actions } from './actions';
 
 
 class StoreContext {
-    constructor(initialState, states) {
+    constructor(states) {
 
         this.dispatcher = new Dispatcher();
         this.actions = new Actions(this.dispatcher);
-        this.store = new Store(initialState, states, this.dispatcher);
+        this.store = new Store(states, this.dispatcher);
         this.effSubs = new EffectSubscription(this.store);
     }
     dispatch(action) {
@@ -40,14 +40,12 @@ class StoreContext {
         this.store.dispose();
         this.effSubs.dispose();
         this.devTools.dispose();
-        localStorage.setItem('dispose', 'done-successfully');
-        console.log('store-disposed-successfully');
     }
 }
 var __store = undefined;
 
-export function setStoreContext({ initialState = {}, states = [], effects = [], devTools = undefined }) {
-    const ctx = new StoreContext(initialState, states);
+export function setStoreContext({ states = [], effects = [], devTools = undefined }) {
+    const ctx = new StoreContext(states);
     ctx.addEffects(...effects);
     __store = ctx;
     if (devTools && devTools.run) {
