@@ -3,13 +3,10 @@ import { INCREMENT, DECREMENT, ASYNC_INCREMENT } from "../states/actions";
 
 import { Connect } from 'ajwah-react-store';
 
-@Connect({
-    counter: state => state.counter,
-})
+@Connect()
 class Counter extends PureComponent {
 
     increment = () => {
-
         this.store.dispatch({ type: INCREMENT });
     }
     decrement = () => {
@@ -18,14 +15,14 @@ class Counter extends PureComponent {
     asyncIncrement = () => {
         this.store.dispatch({ type: ASYNC_INCREMENT });
     }
-    render(props) {
-        const { counter } = this.state;
+    render() {
+        const { counter } = this.props;
         console.log('counter-component');
-        return <div>
+        return <span>
             <button onClick={this.increment}>+</button>
             <button onClick={this.decrement}>-</button>
             <button onClick={this.asyncIncrement}>Asunc (+)</button> <b>count {counter.msg || counter.count}</b>
-        </div>
+        </span>
     }
 }
 export default Counter;

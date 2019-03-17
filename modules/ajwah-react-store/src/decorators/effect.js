@@ -1,9 +1,9 @@
 
 import { ignoreElements } from 'rxjs/operators';
 import { merge } from 'rxjs';
-//import { Reflect } from 'reflect-metadata/Reflect';
 
-const METADATA_KEY = 'redux/effects';
+
+const METADATA_KEY = 'ajwah/effects';
 
 export function Effect({ dispatch } = { dispatch: true }) {
     return function (target, propertyName) {

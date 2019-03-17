@@ -1,6 +1,6 @@
 import { getStore } from '../storeContext';
 
-const META_KEY = '__smc___'
+const META_KEY = 'ajwah/connect'
 
 function mount() {
     const meta = this[META_KEY];

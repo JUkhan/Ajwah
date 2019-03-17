@@ -179,4 +179,59 @@ export default App;
 
 ### hope your app up-and-running
 
-[Here is the life example](https://stackblitz.com/edit/ajwah-react1?file=index.tsx)
+[Here is the Demo App](https://stackblitz.com/edit/ajwah-react1?file=index.tsx)
+
+## State Management
+Imagine we are developing a big app over 100 of splited states(reducers) that should make a giant state. Although our app should be separeted by modules and every user should not have access to every modules or a user might not visit all the modules/pages at a single time. So, what are you thinking ? Are you going to combine all the ui states in a single point or something else. 
+
+
+Obviously we will combine some states that are necessary and others sholuld be add/remove on demand
+
+In Ajwah you might be able to add/remove states at any moment. Please have a look at the following example:
+
+```js
+import React, { PureComponent } from 'react';
+import { Connect } from 'ajwah-react-store';
+import UserState from '../states/userState';
+import { ajax } from 'rxjs/ajax';
+import { take, map, catchError } from 'rxjs/operators';
+import { LOAD_USER } from '../states/actions';
+
+
+@Connect({
+    data: state => state.user.data
+})
+class Page2 extends PureComponent {
+
+    componentWillMount() {
+        // adding State
+        this.store.addState(UserState);
+
+        ajax.getJSON('https://jsonplaceholder.typicode.com/users').pipe(
+            map(data => ({ type: LOAD_USER, payload: data })),
+            catchError(console.log),
+            take(1),
+        ).subscribe(action => this.store.dispatch(action));
+    }
+    componentWillUnmount() {
+        //removing state
+        this.store.removeState('user')
+    }
+    render() {
+        console.log('page-2', this.state)
+        const { data } = this.state;
+        return (
+            <div>{data.map(user => <div key={user.id}>{user.name}</div>)}</div>
+        )
+    }
+}
+
+export default Page2;
+
+```
+
+[Here is the Demo App](https://stackblitz.com/edit/ajwah-state-manage?file=pages%2Fpage2.tsx)
+
+## Effects
+
+continue...

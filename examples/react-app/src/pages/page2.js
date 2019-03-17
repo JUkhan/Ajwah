@@ -13,6 +13,7 @@ class Page2 extends PureComponent {
 
     componentWillMount() {
         this.store.addState(UserState);
+
         ajax.getJSON('https://jsonplaceholder.typicode.com/users').pipe(
             map(data => ({ type: LOAD_USER, payload: data })),
             catchError(console.log),
@@ -22,7 +23,7 @@ class Page2 extends PureComponent {
     componentWillUnmount() {
         this.store.removeState('user')
     }
-    render(props) {
+    render() {
         console.log('page-2', this.state)
         const { data } = this.state;
         return (
