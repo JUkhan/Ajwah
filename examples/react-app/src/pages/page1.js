@@ -4,15 +4,31 @@ import Counter from "../components/counterComponent";
 import AddTutorial from "../components/addTutorialComponent";
 import TutorialList from "../components/tutotialListComponent";
 
-import { Connect } from 'ajwah-react-store';
-
+import { Connect, getStore } from 'ajwah-react-store';
+import { INCREMENT, ASYNC_INCREMENT, DECREMENT } from '../states/actions';
+import { tap, mapTo, flatMap } from 'rxjs/operators';
+import { empty } from 'rxjs';
 
 @Connect({
     tutorials: state => state.tutorials,
     counter: state => state.counter
 })
 class Page1 extends PureComponent {
-
+    componentWillMount() {
+        console.log('com-will-mount');
+        getStore().addEffect(action$ =>
+            action$.ofType(INCREMENT)
+                .pipe(
+                    flatMap(res => {
+                        console.log(res);
+                        return empty();
+                    })
+                ), 'fx'
+        )
+    }
+    componentWillUnmount() {
+        getStore().removeEffectsByKey('fx');
+    }
     tutorialsHasNamedCounter() {
         return !!this.state.tutorials.find(_ => _.name === 'counter');
     }

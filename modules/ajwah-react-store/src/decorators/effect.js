@@ -3,28 +3,30 @@ import { ignoreElements } from 'rxjs/operators';
 import { merge } from 'rxjs';
 
 
-const METADATA_KEY = 'ajwah/effects';
+export const EFFECT_METADATA_KEY = 'ajwah/effects';
+export function EffectKey(key) {
+    return function (target) {
+        target = target.prototype;
+        if (!target.hasOwnProperty(EFFECT_METADATA_KEY)) {
+            Object.defineProperty(target, EFFECT_METADATA_KEY, {})
+        }
+        target[EFFECT_METADATA_KEY].key = key;
+
+    }
+}
 
 export function Effect({ dispatch } = { dispatch: true }) {
     return function (target, propertyName) {
-        if (!target.hasOwnProperty(METADATA_KEY)) {
-            Object.defineProperty(target, METADATA_KEY, { value: [] })
+        if (!target.hasOwnProperty(EFFECT_METADATA_KEY)) {
+            Object.defineProperty(target, EFFECT_METADATA_KEY, { value: [] })
         }
-        target[METADATA_KEY].push({ propertyName, dispatch });
+        target[EFFECT_METADATA_KEY].push({ propertyName, dispatch });
     };
 }
 export function getEffectsMetadata(instance) {
-    return instance[METADATA_KEY];
+    return instance[EFFECT_METADATA_KEY];
 }
-export function getEffects(instance) {
-    return getEffectsMetadata(instance).map(
-        ({ propertyName, dispatch }) => {
-            return typeof instance[propertyName] === 'function' ?
-                instance[propertyName]() : instance[propertyName];
 
-        }
-    );
-}
 export function mergeEffects(instance, action$) {
     const observables = getEffectsMetadata(instance).map(
         ({ propertyName, dispatch }) => {

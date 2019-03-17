@@ -10,6 +10,9 @@ export class EffectSubscription extends Subscription {
     addEffect(effObservable) {
         this.add(effObservable.subscribe(this.store));
     }
+    addEffectByKey(effObservable, subscription) {
+        subscription.add(effObservable.subscribe(this.store));
+    }
     addEffects(effectInstances, action$) {
 
         const sources = effectInstances.reduce((arr, instance) => {
@@ -18,6 +21,11 @@ export class EffectSubscription extends Subscription {
         }, []);
         const merged = merge(...sources);
         this.add(merged.subscribe(this.store));
+
+    }
+    addEffectsByKey(instance, action$, subscription) {
+        const merged = mergeEffects(instance, action$);
+        subscription.add(merged.subscribe(this.store));
 
     }
     dispose() {

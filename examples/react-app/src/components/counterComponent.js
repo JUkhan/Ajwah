@@ -1,7 +1,8 @@
 import React, { PureComponent } from 'react';
 import { INCREMENT, DECREMENT, ASYNC_INCREMENT } from "../states/actions";
 
-import { Connect } from 'ajwah-react-store';
+import { Connect, getStore } from 'ajwah-react-store';
+
 
 @Connect()
 class Counter extends PureComponent {

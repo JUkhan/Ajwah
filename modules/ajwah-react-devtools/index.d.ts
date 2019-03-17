@@ -1,5 +1,5 @@
 
-export declare function devTools({
-    maxAge = 10,
-    name = 'Ajwah DevTools'
+export declare function devTools(options: {
+    maxAge: number,
+    name: string
 }): any
