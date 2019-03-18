@@ -232,6 +232,71 @@ export default Page2;
 
 [Here is the Demo App](https://stackblitz.com/edit/ajwah-state-manage?file=pages%2Fpage2.tsx)
 
+## Effects
 
+There are several of ways to make effects in Ajwah. First of all we are talking about most recommended one:
 
-## [Doc](https://github.com/JUkhan/Ajwah)
+This is very easy just define as many effects as you need into a class  and set the class like bellow into the `effects` option of `setStoreContext` method:
+
+```js
+import SearchState from './SearchState';
+import Effects from './Effects';
+
+setStoreContext({
+  states:[SearchState],
+  effects:[Effects]
+})
+```
+## Effects.ts
+```js
+import { Effect, Action, ActionsObservable } from 'ajwah-react-store';
+import {
+    debounceTime,
+    switchMap,
+    distinctUntilChanged,
+    map,
+    tap
+} from 'rxjs/operators';
+import { SEARCH_KEYSTROKE, SEARCH_RESULT } from './actions';
+import { ajax } from 'rxjs/ajax';
+
+class Effects {
+
+    @Effect()
+    search() {
+        return (action$: ActionsObservable<Action>) => action$.ofType(SEARCH_KEYSTROKE).pipe(
+            debounceTime(700),
+            distinctUntilChanged(),
+            switchMap((action: Action) => {
+                return ajax.getJSON(`https://en.wikipedia.org/w/api.php?&origin=*&action=opensearch&search=${action.payload}&limit=5`).pipe(
+                    tap(res => console.log(res)),
+                    map(data => ({ type: SEARCH_RESULT, payload: data[1] }))
+                )
+            })
+        )
+    }
+}
+
+export default Effects;
+```
+You may have several of Effect classes and keep in mind the life time of the effects throughout the life your your application.
+
+And also have on demand ways to add/remove effects:
+* You can use `@EffectKey('your-effects-key')` class decorator. So that you can remove all the effects related with this `key` by callaing `this.store.removeEffectsByKey('your-effects-key')`
+
+```js
+@EffectKey('your-effects-key')
+class Effects {
+    .....
+}
+
+```
+There also have:
+
+* `addEffect(callback, key?)` second param `key` is optional. if you pass `key`, don't forget to remove. if not then it should get app life.
+
+* `addEffect(...effectClass)` normally add the effects having app life. If any class uses `@EffectKey('your-effects-key')` decorator then it should act acordingly.
+
+## Please note that if you are useing effect's on demand feature, you are fully responsible to take care of them. Just have a look its not going to add one more times or forget to remove(you may use `componentWillUnmount()`) otherwise memory leakage. 
+
+## [Effect Demo](https://stackblitz.com/edit/ajwah-effect?file=Effects.ts)
