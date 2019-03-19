@@ -297,6 +297,5 @@ There also have:
 
 * `addEffect(...effectClass)` normally add the effects having app life. If any class uses `@EffectKey('your-effects-key')` decorator then it should act acordingly.
 
-## Please note that if you are useing effect's on demand feature, you are fully responsible to take care of them. Just have a look its not going to add one more times or forget to remove(you may use `componentWillUnmount()`) otherwise memory leakage. 
 
 ## [Effect Demo](https://stackblitz.com/edit/ajwah-effect?file=Effects.ts)
