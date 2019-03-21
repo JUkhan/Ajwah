@@ -26,7 +26,7 @@ class Component {
         console.log('setstate:', newState)
     }
     componentWillMount() {
-
+        this.store.select(state => state.search).subscribe(res => console.log('res', res));
     }
     componentWillUnmount() {
 

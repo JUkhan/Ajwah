@@ -8,6 +8,7 @@ import { Connect, getStore } from 'ajwah-react-store';
 import { INCREMENT, ASYNC_INCREMENT, DECREMENT } from '../states/actions';
 import { tap, mapTo, flatMap } from 'rxjs/operators';
 import { empty } from 'rxjs';
+import NewCounter from '../components/newCounter';
 
 @Connect({
     tutorials: state => state.tutorials,
@@ -46,6 +47,7 @@ class Page1 extends PureComponent {
                     <TutorialList tutorials={tutorials} counter={counter}></TutorialList>
                 </div>
             </div>
+            <NewCounter vount="12"></NewCounter>
         </div>
 
     }
