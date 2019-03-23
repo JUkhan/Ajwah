@@ -1,5 +1,6 @@
 # Ajwah
-Rx based store lib for react, preact, angular, and vue
+Rx based store lib for React and Preact. Easy to use in functional components with React hooks.
+
 
 ### Installation
 
@@ -243,7 +244,7 @@ export default Page2;
 
 There are several of ways to make effects in Ajwah. First of all we are talking about most recommended one:
 
-This is very easy just define as many effects as you need into a class  and set the class like bellow into the `effects` option of `setStoreContext` method:
+This is very easy. Just define as many effects as you need into a class  and set the class like bellow into the `effects` option of `setStoreContext` method:
 
 ```js
 import SearchState from './SearchState';
@@ -289,7 +290,7 @@ export default Effects;
 You may have several of Effect classes and keep in mind the life time of the effects throughout the life your your application.
 
 And also have on demand ways to add/remove effects:
-* You can use `@EffectKey('your-effects-key')` class decorator. So that you can remove all the effects related with this `key` by callaing `this.store.removeEffectsByKey('your-effects-key')`
+* You can use `@EffectKey('your-effects-key')` class decorator. So that you can remove all the effects related with this `key` by callaing `store.removeEffectsByKey('your-effects-key')`
 
 ```js
 @EffectKey('your-effects-key')
@@ -305,4 +306,4 @@ There also have:
 * `addEffect(...effectClass)` normally add the effects having app life. If any class uses `@EffectKey('your-effects-key')` decorator then it should act acordingly.
 
 
-## [Effect Demo](https://stackblitz.com/edit/ajwah-effect?file=Effects.ts)
+### [Effect Demo](https://stackblitz.com/edit/ajwah-effect?file=Effects.ts)
