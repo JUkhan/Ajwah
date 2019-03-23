@@ -1,5 +1,5 @@
 # Ajwah
-Rx based store lib for React and Preact. Easy to use in functional components with React hooks.
+Rx based store lib for React, Preact, Angular and Vue. Easy to use in functional components with React hooks.
 
 
 ### Installation
