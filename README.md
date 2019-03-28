@@ -9,6 +9,12 @@ Rx based store lib for React, Preact. Easy to use in functional components with 
 >> npm install ajwah-react-devtools
 ```
 
+
+### For typescript
+```sh
+>> npx create-react-app my-app --scripts-version=react-scripts-ts
+```
+
 ### For `create-react-app`
 Ajwah based on decorators - this is the way enable decorators in create-react-app:
 
@@ -100,8 +106,7 @@ export default CounterState;
 import React, { PureComponent } from 'react';
 import { Connect } from 'ajwah-react-store';
 import { INCREMENT, ASYNC_INCREMENT, DECREMENT } from './actions';
-import { debounceTime, mapTo } from 'rxjs/operators';
-import { ofType } from 'ajwah-react-store'
+
 @Connect({
     counter: state => state.counter
 })
