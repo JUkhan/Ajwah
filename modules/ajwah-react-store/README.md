@@ -1,5 +1,5 @@
 # Ajwah
-Rx based store lib for React, Preact, Angular and Vue. Easy to use in functional components with React hooks.
+Rx based store lib for React, Preact. Easy to use in functional components with React hooks.
 
 
 ### Installation
@@ -53,9 +53,10 @@ export function updateObject(state, params) {
 
 ### `CounterState.js`
 ```js
-import { State, Action } from 'ajwah-react-store';
+import { State, Action, Effect, ofType } from 'ajwah-react-store';
 import { INCREMENT, DECREMENT, ASYNC_INCREMENT } from './actions';
 import { updateObject } from './util';
+import { mapTo, debounceTime } from "rxjs/operators";
 
 @State({
     name: 'counter',
@@ -77,6 +78,16 @@ class CounterState {
     asyncIncrement(state, action) {
         return updateObject(state, { msg: 'loading...' })
     }
+
+    @Effect()
+    asyncIncrementEffect() {
+        return action$ => action$.pipe(
+            ofType(ASYNC_INCREMENT),
+            debounceTime(1000),
+            mapTo({ type: INCREMENT })
+        )
+
+    }
 }
 
 export default CounterState;
@@ -96,13 +107,6 @@ import { ofType } from 'ajwah-react-store'
 })
 class CounterComponent extends PureComponent {
     
-    componentWillMount() {
-        this.store.addEffect(action$ => action$.pipe(
-            ofType(ASYNC_INCREMENT),
-            debounceTime(1000),
-            mapTo({ type: INCREMENT })
-        ))
-    }
     inc = () => {
         this.store.dispatch({ type: INCREMENT })
     }
@@ -165,12 +169,7 @@ function fxCounterComponent(props) {
     const [counter, setState] = useState({});
 
     useEffect(() => {
-         store.addEffect(action$ => action$.pipe(
-            ofType(ASYNC_INCREMENT),
-            debounceTime(1000),
-            mapTo({ type: INCREMENT })
-        ));
-        const subs = getStore().select(state => state.counter).subscribe(res => setState(res));
+        const subs = getStore().select('counter').subscribe(res => setState(res));
         return () => subs.unsubscribe();
     }, []);
 

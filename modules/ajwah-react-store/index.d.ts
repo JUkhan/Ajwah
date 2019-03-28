@@ -19,7 +19,7 @@ export declare class StoreContext {
     removeState(stateName: string): void;
     removeEffectsByKey(key: string): void;
     importState(state: any): void;
-    select<T>(callback: (state: any) => T): Observable<T>;
+    select<T=any>(pathOrMapFn: ((state: T) => any) | string, ): Observable<any>;
     addEffect<T extends ActionsObservable<Action>>(callback: (action$: ActionsObservable<Action>) => Observable<Action>, key?: string): StoreContext;
     addEffects(...effectClass: any): void;
     dispose(): void;

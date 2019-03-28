@@ -1,5 +1,5 @@
 import { BehaviorSubject } from 'rxjs';
-import { map, scan, distinctUntilChanged, debounceTime, take } from 'rxjs/operators';
+import { map, scan, distinctUntilChanged, debounceTime, take, pluck } from 'rxjs/operators';
 import { combineStates } from './combineStates';
 import { STATE_METADATA_KEY } from './decorators/state';
 
@@ -21,11 +21,25 @@ export class Store extends BehaviorSubject {
     dispatch(action) {
         this.dispatcher.next(action);
     }
-    select(callback) {
-        return this.pipe(
-            map(callback),
-            distinctUntilChanged()
-        )
+
+    select(pathOrMapFn) {
+
+        let mapped$;
+
+        if (typeof pathOrMapFn === 'string') {
+            mapped$ = this.pipe(pluck(pathOrMapFn));
+        } else if (typeof pathOrMapFn === 'function') {
+            mapped$ = this.pipe(
+                map(source => pathOrMapFn(source))
+            );
+        } else {
+            throw new TypeError(
+                `Unexpected type '${typeof pathOrMapFn}' in select operator,` +
+                ` expected 'string' or 'function'`
+            );
+        }
+
+        return mapped$.pipe(distinctUntilChanged());
     }
     next(action) {
         this.dispatcher.next(action);
@@ -58,8 +72,8 @@ export class Store extends BehaviorSubject {
         });
 
     }
-    _mapState(stateClass) {
-        const inst = new stateClass();
+    _mapState(inst) {
+        //const inst = new stateClass();
         const meta = inst[STATE_METADATA_KEY];
         this.states[meta.name] = inst;
         return meta.name;

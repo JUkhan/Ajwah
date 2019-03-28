@@ -1,0 +1,24 @@
+<!--The content below is only a placeholder and can be replaced.-->
+
+<p *ngIf="counter$|async as counter">
+  <button (click)="inc()">+</button>
+  <button (click)="dec()">-</button>
+  <button (click)="async_inc()">async(+)</button>
+  {{counter.msg||counter.count}}
+</p>
+
+<div class="row">
+  <div class="col-6">
+    <addTutorial></addTutorial>
+  </div>
+  <div class="col-6">
+    <tutorialList></tutorialList>
+  </div>
+</div>
+
+<hr>
+<button (click)="addEffect()" class="btn btn-primary">Add Effect</button>
+<button (click)="removeEffect()" class="btn btn-danger">Remove Effect</button>
+<hr>
+<button (click)="addState()" class="btn btn-primary">Add Tutorial State</button>
+<button (click)="removeState()" class="btn btn-danger">Remove Tutorial State</button>

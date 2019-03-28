@@ -26,9 +26,11 @@ class Page1 extends PureComponent {
                     })
                 ), 'fx'
         )
+        this.sub = getStore().select('counter').subscribe(res => console.log('res:::', res));
     }
     componentWillUnmount() {
         getStore().removeEffectsByKey('fx');
+        this.sub.unsubscribe();
     }
     tutorialsHasNamedCounter() {
         return !!this.state.tutorials.find(_ => _.name === 'counter');

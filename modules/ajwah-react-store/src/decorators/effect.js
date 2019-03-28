@@ -24,7 +24,7 @@ export function Effect({ dispatch } = { dispatch: true }) {
     };
 }
 export function getEffectsMetadata(instance) {
-    return instance[EFFECT_METADATA_KEY];
+    return instance[EFFECT_METADATA_KEY] || [];
 }
 
 export function mergeEffects(instance, action$) {
