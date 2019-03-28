@@ -24,6 +24,7 @@ Ajwah based on decorators - this is the way enable decorators in create-react-ap
 >> npm install --save-dev @babel/plugin-proposal-decorators
 
 ```
+
 #### add the following Babel configuration to your `package.json`
 
 ```js
