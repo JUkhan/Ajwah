@@ -8,6 +8,7 @@ Rx based store lib for React, Preact. Easy to use in functional components with 
 >> npm install ajwah-react-store
 >> npm install ajwah-react-devtools
 ```
+
 ### For typescript
 ```sh
 >> npx create-react-app my-app --scripts-version=react-scripts-ts
