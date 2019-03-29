@@ -1,8 +1,30 @@
 {
   "name": "ajwah-angular-store",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "peerDependencies": {
     "@angular/common": "^7.2.0",
     "@angular/core": "^7.2.0"
-  }
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/JUkhan/Ajwah.git"
+  },
+  "contributors": [
+    {
+      "name": "Jasim Uddin Khan",
+      "email": "jasim.uddin.khan@gmail.com"
+    }
+  ],
+  "keywords": [
+    "ajwah",
+    "rxjs",
+    "reactive",
+    "redux"
+  ],
+  "author": "Jasim Uddin Khan",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/JUkhan/Ajwah/issues"
+  },
+  "homepage": "https://github.com/JUkhan/Ajwah#readme"
 }
