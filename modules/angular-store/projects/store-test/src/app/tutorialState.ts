@@ -1,7 +1,7 @@
 
 
 import { ADD_TUTORIAL, REMOVE_TUTORIAL, ASYNC_INCREMENT, INCREMENT } from './actions';
-import { State, Action, IAction, Actions, Effect, ofType } from 'ajwah-angular-store';
+import { State, Action, Actions, Effect, ofType } from 'ajwah-angular-store';
 import { updateObject } from './util';
 import { Injectable } from '@angular/core';
 import { debounceTime, mapTo } from 'rxjs/operators';
@@ -18,13 +18,13 @@ export class TutorialState {
     }
 
     @Action(ADD_TUTORIAL)
-    addTutorial(state, action: IAction) {
+    addTutorial(state, action) {
         state.data.push(action.payload);
         return updateObject(state, {});
     }
 
     @Action(REMOVE_TUTORIAL)
-    removeTutorial(state, action: IAction) {
+    removeTutorial(state, action) {
         const data = state.data.filter(_ => _.name !== action.payload)
         return updateObject(state, { data });
     }
