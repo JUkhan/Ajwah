@@ -19,7 +19,7 @@ export class TutorialState {
 
     @Action(ADD_TUTORIAL)
     addTutorial(state, action) {
-        state.data.push(action.payload);
+        state.data = [...state.data, action.payload];
         return updateObject(state, {});
     }
 

@@ -1,9 +1,9 @@
 
-import { Injectable } from '@angular/core';
+import { Injectable, OnDestroy } from '@angular/core';
 import { BehaviorSubject } from "rxjs";
 
 @Injectable()
-export class Dispatcher extends BehaviorSubject<any> {
+export class Dispatcher extends BehaviorSubject<any> implements OnDestroy {
     constructor() {
         super({ type: '@@INIT' });
     }
@@ -21,7 +21,7 @@ export class Dispatcher extends BehaviorSubject<any> {
     complete() {
     }
 
-    dispose() {
+    ngOnDestroy() {
         super.complete();
     }
 }

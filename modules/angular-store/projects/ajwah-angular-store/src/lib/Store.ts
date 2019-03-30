@@ -4,13 +4,13 @@ import { map, scan, distinctUntilChanged, debounceTime, take, pluck } from 'rxjs
 import { combineStates } from './combineStates';
 import { STATE_METADATA_KEY } from './decorators/state';
 import { Dispatcher } from './Dispatcher';
-import { Injectable, Inject, Injector, Type } from '@angular/core';
+import { Injectable, Inject, Injector, Type, OnDestroy } from '@angular/core';
 import { ROOT_STATES, ROOT_EFFECTS } from './tokens';
 import { EffectsSubscription } from './EffectsSubscription';
 import { EFFECT_METADATA_KEY } from './decorators/effect';
 
 @Injectable()
-export class Store extends BehaviorSubject<any> {
+export class Store extends BehaviorSubject<any> implements OnDestroy {
     private _subs;
     private states;
     constructor(
@@ -67,8 +67,9 @@ export class Store extends BehaviorSubject<any> {
         this.dispatcher.complete();
     }
 
-    dispose() {
+    ngOnDestroy() {
         this.complete();
+        Object.keys(this._subs).forEach(this.removeEffectsByKey);
     }
 
     addStates(...states: Type<any>[]) {

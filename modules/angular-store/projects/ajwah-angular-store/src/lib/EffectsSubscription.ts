@@ -1,10 +1,10 @@
 
 import { Subscription, merge, Observer } from "rxjs";
 import { mergeEffects } from "./decorators/effect";
-import { Injectable } from '@angular/core';
+import { Injectable, OnDestroy } from '@angular/core';
 
 @Injectable()
-export class EffectsSubscription extends Subscription {
+export class EffectsSubscription extends Subscription implements OnDestroy {
     constructor() {
         super();
     }
@@ -21,7 +21,7 @@ export class EffectsSubscription extends Subscription {
         subscription.add(merged.subscribe(this.store));
     }
 
-    dispose() {
+    ngOnDestroy() {
         this.unsubscribe();
     }
 }
