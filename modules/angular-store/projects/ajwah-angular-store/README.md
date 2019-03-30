@@ -2,12 +2,7 @@
 Rx based store library for Angular. Manage your application's states, effects, and actions easy way.
 
 
-### Installation
 
-```sh
->> npm install ajwah-angular-store
-
-```
 
 ### Let's start with hello world `counterState`
 
@@ -262,6 +257,76 @@ export class AppComponent  {
     this.store.removeState('tutorial')
   }
   
+}
+
+```
+### `DynamicEffects.ts`
+```js
+import { debounceTime, mapTo } from 'rxjs/operators';
+import { ASYNC_INCREMENT, INCREMENT, DYNAMIC_EFFECTS_KEY } from '../actions';
+
+import { Actions, Effect, ofType, EffectKey } from 'ajwah-angular-store';
+import { Injectable } from '@angular/core';
+
+
+@Injectable({ providedIn: 'root' })
+@EffectKey(DYNAMIC_EFFECTS_KEY)
+export class DynamicEffects {
+    constructor(public action$: Actions) {
+
+    }
+
+    @Effect()
+    asyncInc = this.action$.pipe(
+        ofType(ASYNC_INCREMENT),
+        debounceTime(1000),
+        mapTo({ type: INCREMENT })
+    )
+
+
+}
+
+```
+### `TutorialState.ts`
+```js
+
+
+import { ADD_TUTORIAL, REMOVE_TUTORIAL, ASYNC_INCREMENT, INCREMENT } from '../actions';
+import { State, Action, IAction, Actions, Effect, ofType } from 'ajwah-angular-store';
+import { updateObject } from '../util';
+import { Injectable } from '@angular/core';
+import { debounceTime, mapTo } from 'rxjs/operators';
+
+@Injectable({ providedIn: 'root' })
+@State({
+    name: 'tutorial',
+    initialState: { data: [{ name: 'Ajwah', url: '' }] }
+})
+export class TutorialState {
+
+    constructor(public action$: Actions) {
+
+    }
+
+    @Action(ADD_TUTORIAL)
+    addTutorial(state, action: IAction) {
+        state.data.push(action.payload);
+        return updateObject(state, {});
+    }
+
+    @Action(REMOVE_TUTORIAL)
+    removeTutorial(state, action: IAction) {
+        const data = state.data.filter(_ => _.name !== action.payload)
+        return updateObject(state, { data });
+    }
+
+    @Effect()
+    asyncInc = this.action$.pipe(
+        ofType(ASYNC_INCREMENT),
+        debounceTime(1000),
+        mapTo({ type: INCREMENT })
+    )
+
 }
 
 ```
