@@ -2,8 +2,10 @@ import React, { PureComponent } from 'react';
 
 import { BrowserRouter as Router, Route, Link } from "react-router-dom";
 
-import Page1 from './pages/page1';
-import Page2 from './pages/page2';
+//import Page1 from './pages/page1';
+import Page1 from './pages/fxPage1';
+//import Page2 from './pages/page2';
+import Page2 from './pages/fxPage2';
 import { getStore } from 'ajwah-react-store';
 
 class App extends PureComponent {

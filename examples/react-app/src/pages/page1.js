@@ -1,8 +1,12 @@
 import React, { PureComponent } from 'react';
 
-import Counter from "../components/counterComponent";
-import AddTutorial from "../components/addTutorialComponent";
-import TutorialList from "../components/tutotialListComponent";
+//import Counter from "../components/counterComponent";
+import Counter from "../components/fxCounterComponent";
+
+//import AddTutorial from "../components/addTutorialComponent";
+import AddTutorial from "../components/fxAddTutorialComponent";
+//import TutorialList from "../components/tutotialListComponent";
+import TutorialList from "../components/fxTutotialListComponent";
 
 import { Connect, getStore } from 'ajwah-react-store';
 import { INCREMENT, ASYNC_INCREMENT, DECREMENT } from '../states/actions';
