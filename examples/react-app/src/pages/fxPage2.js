@@ -18,11 +18,11 @@ function page2(props) {
     const [user, setUser] = useState({});
 
     useEffect(() => {
-        getStore().addState(UserState);
+        getStore().addStates(UserState);
         const subs = getStore().select('user').subscribe(res => setUser(res));
         loadData();
         return () => {
-            getStore().removeState('user');
+            getStore().removeStates('user');
             subs.unsubscribe();
             console.log('page2-cleanup')
         }

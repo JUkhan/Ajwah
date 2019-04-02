@@ -7,5 +7,6 @@ export * from './lib/Dispatcher';
 export * from './lib/operators';
 export * from './lib/EffectsSubscription';
 export * from './lib/Actions';
+export * from './lib/AjwahStore'
 
 

@@ -18,9 +18,9 @@ function counter(props) {
     const { counter } = props;
     console.log('fx-counter-component');
     return <span>
-        <button onClick={increment}>+</button>
-        <button onClick={decrement}>-</button>
-        <button onClick={asyncIncrement}>Asunc (+)</button> <b>count {counter.msg || counter.count}</b>
+        <button className="btn" onClick={increment}>+</button>
+        <button className="btn" onClick={decrement}>-</button>
+        <button className="btn" onClick={asyncIncrement}>Asunc (+)</button> <b>count {counter.msg || counter.count}</b>
     </span>
 
 }

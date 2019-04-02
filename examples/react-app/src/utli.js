@@ -1,4 +1,4 @@
 
-export function updateObject(state, props) {
+export function updateObject(state, props = {}) {
     return { ...state, ...props }
 }

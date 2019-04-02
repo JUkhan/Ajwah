@@ -27,17 +27,17 @@ export function getEffectsMetadata(instance) {
     return instance[EFFECT_METADATA_KEY] || [];
 }
 
-export function mergeEffects(instance, action$) {
+export function mergeEffects(instance, action$, store$) {
     const observables = getEffectsMetadata(instance).map(
         ({ propertyName, dispatch }) => {
             const effect = typeof instance[propertyName] === 'function' ?
                 instance[propertyName]() : instance[propertyName];
 
             if (dispatch === false) {
-                return effect(action$).pipe(ignoreElements());
+                return effect(action$, store$).pipe(ignoreElements());
             }
 
-            return effect(action$);
+            return effect(action$, store$);
         }
     );
 

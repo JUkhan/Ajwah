@@ -2,32 +2,32 @@
 import { Observable, Operator } from 'rxjs';
 
 
-export interface Action {
+export interface IAction {
     type: string | Symbol;
     payload?: string;
 }
-export declare class ActionsObservable<T extends Action> extends Observable<T> {
+export declare class ActionsObservable<T extends IAction> extends Observable<T> {
 
-    lift<R extends Action>(operator: Operator<T, R>): ActionsObservable<R>;
+    lift<R extends IAction>(operator: Operator<T, R>): ActionsObservable<R>;
     lift<R>(operator: Operator<T, R>): Observable<R>;
     ofType<R extends T = T>(...key: R['type'][]): ActionsObservable<R>;
 }
 
 export declare class StoreContext {
-    dispatch(action: Action): void;
-    addState(stateClass: any): void;
-    removeState(stateName: string): void;
-    removeEffectsByKey(key: string): void;
-    importState(state: any): void;
+    dispatch(action: IAction): StoreContext;
+    addStates(...stateClassTypes: any[]): StoreContext;
+    removeStates(...stateNames: string[]): StoreContext;
+    removeEffectsByKey(key: string): StoreContext;
+    importState(state: any): StoreContext;
     select<T=any>(pathOrMapFn: ((state: T) => any) | string, ): Observable<any>;
-    addEffect<T extends ActionsObservable<Action>>(callback: (action$: ActionsObservable<Action>) => Observable<Action>, key?: string): StoreContext;
-    addEffects(...effectClass: any): void;
+    addEffect<T extends ActionsObservable<IAction>>(callback: (action$: ActionsObservable<IAction>, store$?: StoreContext) => Observable<IAction>, key?: string): StoreContext;
+    addEffects(...effectClassTypes: any[]): StoreContext;
     dispose(): void;
 }
 
 export declare function setStoreContext(options: { states: any[], effects?: any[], devTools?: any }): void;
 
-export declare function ofType<T extends Action, R extends T = T, K extends R['type']= R['type']>(...key: K[]): (source: Observable<T>) => Observable<R>;
+export declare function ofType<T extends IAction, R extends T = T, K extends R['type']= R['type']>(...key: K[]): (source: Observable<T>) => Observable<R>;
 
 export declare function getStore(): StoreContext;
 export declare function Action(actionType: string | Symbol): any;

@@ -7,19 +7,17 @@ function onSubmit(event) {
     const el = event.target.elements;
     const model = { name: el.name.value, url: el.url.value }
     getStore().dispatch({ type: ADD_TUTORIAL, payload: model });
+    el.name.value = '';
+    el.url.value = '';
 }
 function addTutorial(props) {
     console.log('fx-add-tutorial-component')
     return <form onSubmit={onSubmit}>
-        <div className="form-group">
-            <label htmlFor="name">Tutorial Name</label>
-            <input type="text" className="form-control" id="name" name="name" aria-describedby="emailHelp" placeholder="Enter Name" />
-        </div>
-        <div className="form-group">
-            <label htmlFor="url">URL</label>
-            <input type="text" className="form-control" id="url" name="url" aria-describedby="emailHelp" placeholder="Enter url" />
-        </div>
-        <button type="submit" className="btn btn-primary">Submit</button>
+        <input type="text" name="name" placeholder="Enter Name" />
+
+        <input type="text" name="url" placeholder="Enter url" />
+
+        <button type="submit" className="btn">Add Tutorial</button>
     </form>
 }
 export default addTutorial;

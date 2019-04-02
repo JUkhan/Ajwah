@@ -10,13 +10,11 @@ function tutorialList(props) {
     const { tutorials, counter } = props;
     console.log('fx-tutorial-list-component')
     return <React.Fragment>
-        <div className="list-group">
-            <a href="#" className="list-group-item list-group-item-action active">
-                Tutorials  <Counter className="mb" counter={counter} />
-            </a>
-            {tutorials.map(t => <a href="#" className="list-group-item list-group-item-action" onClick={() => onRemove(t.name)} key={t.name} >{t.name}</a>)}
-
-        </div>
+        <ul className="list-group">
+            <li className="list-group-item">Tutorials</li>
+            {tutorials.map(t => <li className="list-group-item" key={t.name} >{t.name} <span className="del" onClick={() => onRemove(t.name)}>x</span></li>)}
+        </ul>
+        <Counter counter={counter} />
     </React.Fragment>
 }
 export default tutorialList;
