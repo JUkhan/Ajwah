@@ -72,7 +72,7 @@ export class Store extends BehaviorSubject<any> implements OnDestroy {
         Object.keys(this._subs).forEach(this.removeEffectsByKey);
     }
 
-    addStates(...states: Type<any>[]) {
+    addStates(...states: Type<any>[]): Store {
 
         const instances = states.map((_ => this.injector.get(_)));
         instances.forEach((instance => {
@@ -80,18 +80,20 @@ export class Store extends BehaviorSubject<any> implements OnDestroy {
             this.next({ type: `add_state(${name})` });
             this._addEffectsByKey(instance, name);
         }));
+        return this;
     }
 
-    removeState(stateName: string) {
-        if (!this.states[stateName]) {
-            console.error(`Unknown state name '${stateName}'`);
-            return;
-        }
-        this.pipe(debounceTime(100), take(1)).subscribe((() => {
+    removeStates(...stateNames: string[]): Store {
+        for (let stateName of stateNames) {
+            if (!this.states[stateName]) {
+                console.error(`Unknown state name '${stateName}'`);
+                return;
+            }
             delete this.states[stateName];
             this.removeEffectsByKey(stateName);
             this.next({ type: `remove_state(${stateName})` });
-        }));
+        }
+        return this;
     }
 
     private _mapState(instance) {
@@ -100,11 +102,12 @@ export class Store extends BehaviorSubject<any> implements OnDestroy {
         return meta.name;
     }
 
-    importState(state) {
+    importState(state): Store {
         super.next(state);
+        return this;
     }
 
-    addEffects(...effects: Type<any>[]) {
+    addEffects(...effects: Type<any>[]): Store {
 
         const instances = effects.map((_ => this.injector.get(_)));
 
@@ -118,6 +121,7 @@ export class Store extends BehaviorSubject<any> implements OnDestroy {
                 this._addEffectsByKey(instance, key);
             }));
         }
+        return this;
     }
 
     removeEffectsByKey(key: string) {

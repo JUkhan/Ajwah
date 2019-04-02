@@ -7,13 +7,19 @@ import counterState from './counterState'
 import { TutorialList } from './tutorialList';
 import { FormsModule } from '@angular/forms';
 
+import { devTools } from 'ajwah-devtools'
+
+
 @NgModule({
   declarations: [
     AppComponent, TutorialList, AddTutorial
   ],
   imports: [
     BrowserModule, FormsModule,
-    AjwahStoreModule.forRoot({ rootStates: [counterState], })
+    AjwahStoreModule.bootstrap({
+      states: [counterState],
+      devTools: devTools()
+    })
   ],
   providers: [
 

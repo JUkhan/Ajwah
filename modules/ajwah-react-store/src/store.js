@@ -73,7 +73,6 @@ export class Store extends BehaviorSubject {
 
     }
     _mapState(inst) {
-        //const inst = new stateClass();
         const meta = inst[STATE_METADATA_KEY];
         this.states[meta.name] = inst;
         return meta.name;

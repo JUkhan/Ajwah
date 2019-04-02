@@ -47,6 +47,6 @@ export class AppComponent {
     this.store.addStates(TutorialState);
   }
   removeState() {
-    this.store.removeState('tutorial')
+    this.store.removeStates('tutorial')
   }
 }

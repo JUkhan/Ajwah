@@ -5,16 +5,18 @@ import { ROOT_STATES, ROOT_EFFECTS } from './tokens';
 import { Store } from './Store';
 import { Actions } from './Actions';
 import { EffectsSubscription } from './EffectsSubscription';
-
+let __devTools = undefined;
 @NgModule({})
 export class AjwahStoreModule {
-    static forRoot(options: {
-        rootStates: Type<any>[];
-        rootEffects?: Type<any>[];
+    static bootstrap(options: {
+        states: Type<any>[];
+        effects?: Type<any>[];
+        devTools?: any;
     }): ModuleWithProviders<AjwahStoreModule> {
-        const rootStates = options.rootStates || [];
-        const rootEffects = options.rootEffects || [];
-
+        const rootStates = options.states || [];
+        const rootEffects = options.effects || [];
+        __devTools = options.devTools;
+        console.log(__devTools);
         return {
             ngModule: AjwahStoreModule,
             providers: [
@@ -41,9 +43,19 @@ export class AjwahStoreModule {
 
 
 export function _storeFactory(states, dispatcher, effect, injector, effects) {
-    return new Store(states, dispatcher, effect, injector, effects);
+    const store = new Store(states, dispatcher, effect, injector, effects);
+    if (__devTools && __devTools.run) {
+        setTimeout(() => {
+            runDevTools({ store, dispatcher });
+        });
+    }
+    return store;
 }
 
 export function createSourceInstances(...instances) {
     return instances;
+}
+
+function runDevTools(config: any) {
+    __devTools.run(config);
 }

@@ -3,9 +3,9 @@ import { withLatestFrom } from 'rxjs/operators';
 import { parse } from 'jsan';
 
 export function devTools({
-    maxAge = 10,
-    name = 'Ajwah DevTools'
-}) {
+    maxAge,
+    name
+} = { maxAge: 8, name: 'Ajwah DevTools' }) {
     const withDevtools = typeof window === 'object' && typeof window['__REDUX_DEVTOOLS_EXTENSION__'] !== 'undefined';
     return withDevtools ? new _DevTools({ name, maxAge }) : null
 }
