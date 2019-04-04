@@ -14,4 +14,4 @@ Rx based store library for Angular, React, Preact. Manage your application's sta
 
 [React Doc](https://github.com/JUkhan/Ajwah/tree/master/docs/react#ajwah)
 
-[React Doc](https://github.com/JUkhan/Ajwah/tree/master/docs/vue#ajwah)
+[Vue Doc](https://github.com/JUkhan/Ajwah/tree/master/docs/vue#ajwah)
