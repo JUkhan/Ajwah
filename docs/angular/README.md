@@ -12,7 +12,7 @@ Rx based store library for Angular. Manage your application's states, effects, a
 ### Let's start with hello world `counterState`
 
 ```js
-import { State, Action, Effect, Actions } from 'ajwah-angular-store';
+import { State, Action, Effect, Actions, ofType } from 'ajwah-angular-store';
 import { INCREMENT, DECREMENT, ASYNC_INCREMENT } from './actions';
 import { updateObject } from './util';
 import {debounceTime, mapTo} from 'rxjs/operators';
@@ -38,12 +38,13 @@ export class CounterState {
         return updateObject(state, { msg: 'loading...' })
     }
 
-    @Effect()
-    asyncIncEffect(actions:Actions){
-      return this.action$.ofType(ASYNC_INCREMENT).pipe(
-        debounceTime(1000),
-        mapTo({type:INCREMENT})
-      );
+     @Effect()
+    asyncInc(action$: Actions) {
+        return action$.pipe(
+            ofType(ASYNC_INCREMENT),
+            debounceTime(1000),
+            mapTo({ type: INCREMENT })
+        )
     }
 
 }
