@@ -4,7 +4,7 @@ import { Observable, Operator } from 'rxjs';
 
 export interface IAction {
     type: string;
-    payload?: string;
+    payload?: any;
 }
 export declare class ActionsObservable<T extends IAction> extends Observable<T> {
 

@@ -204,7 +204,7 @@ function fxCounterComponent(props) {
 export default fxCounterComponent;
 
 ```
-### Hi, what you thinking about `Ajwah` its cool or hot &hearts;
+
 
 ### Effects
 
@@ -298,7 +298,7 @@ function removeState() {
     getStore().removeStates('tutorials')
 }
 ```
-### [Dynamic states and effects - Live](https://stackblitz.com/edit/ajwah-effect?file=Effects.ts)
+ [Dynamic states and effects - Live](https://stackblitz.com/edit/ajwah-effect?file=Effects.ts)
 
 
 ### Here is the `Todo List` app consuming `JSONPlaceholder Rest API`

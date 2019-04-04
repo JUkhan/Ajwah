@@ -204,7 +204,6 @@ function fxCounterComponent(props) {
 export default fxCounterComponent;
 
 ```
-### Hi, what you thinking about `Ajwah` its cool or hot &hearts;
 
 ### Effects
 

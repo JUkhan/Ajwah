@@ -1,5 +1,5 @@
 
 export declare function devTools({ maxAge, name }?: {
-    maxAge?: string;
+    maxAge?: number;
     name?: string
 }): any;
