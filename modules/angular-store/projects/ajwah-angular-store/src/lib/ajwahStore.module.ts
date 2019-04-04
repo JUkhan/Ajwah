@@ -1,10 +1,10 @@
 
-import { Dispatcher } from './Dispatcher';
+import { Dispatcher } from './dispatcher';
 import { NgModule, Injector, Type, ModuleWithProviders } from '@angular/core';
 import { ROOT_STATES, ROOT_EFFECTS } from './tokens';
-import { Store } from './Store';
-import { Actions } from './Actions';
-import { EffectsSubscription } from './EffectsSubscription';
+import { Store } from './store';
+import { Actions } from './actions';
+import { EffectsSubscription } from './effectsSubscription';
 let __devTools = undefined;
 @NgModule({})
 export class AjwahStoreModule {
@@ -16,7 +16,7 @@ export class AjwahStoreModule {
         const rootStates = options.states || [];
         const rootEffects = options.effects || [];
         __devTools = options.devTools;
-        console.log(__devTools);
+
         return {
             ngModule: AjwahStoreModule,
             providers: [

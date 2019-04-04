@@ -16,7 +16,7 @@ export class EffectSubscription extends Subscription {
     addEffects(effectInstances, action$) {
 
         const sources = effectInstances.reduce((arr, instance) => {
-            arr.push(mergeEffects(instance, action$ /*this.store.dispatcher*/));
+            arr.push(mergeEffects(instance, action$, this.store));
             return arr;
         }, []);
         const merged = merge(...sources);
@@ -24,7 +24,7 @@ export class EffectSubscription extends Subscription {
 
     }
     addEffectsByKey(instance, action$, subscription) {
-        const merged = mergeEffects(instance, action$);
+        const merged = mergeEffects(instance, action$, this.store);
         subscription.add(merged.subscribe(this.store));
 
     }

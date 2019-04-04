@@ -7,12 +7,12 @@ import { ofType, Effect, EffectKey } from 'ajwah-react-store';
 class CounterEffect {
 
     @Effect()
-    asyncInc() {
-        return action$ => action$.pipe(
+    asyncInc(action$) {
+        return action$.pipe(
             ofType(ASYNC_INCREMENT),
             debounceTime(1000),
             map(() => ({ type: INCREMENT }))
-        )
+        );
 
     }
 

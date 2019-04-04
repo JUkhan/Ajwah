@@ -3,6 +3,8 @@ import { getStoreContext } from './storeContext';
 
 export const AjwahStore = {
     install(Vue, options) {
-        Vue.prototype.$tore = getStoreContext(options);
+        const _store = getStoreContext(options);
+        Vue.prototype.ajwahStore = _store;
+        Vue.prototype.store = _store;
     }
 }

@@ -24,8 +24,8 @@ class TodoState {
     }
 
     @Effect()
-    dataLoadingEffect() {
-        return action$ => action$.pipe(
+    dataLoadingEffect(action$) {
+        return action$.pipe(
             ofType(LOAD_TODOS),
             mergeMap(() => ajax
                 .get('https://jsonplaceholder.typicode.com/todos?_limit=5')
@@ -43,8 +43,8 @@ class TodoState {
     }
 
     @Effect()
-    addTodoEffect() {
-        return (action$, store$) => action$.pipe(
+    addTodoEffect(action$, store$) {
+        return action$.pipe(
             ofType(ADD_TODO),
             withLatestFrom(store$.select('todo')),
             mergeMap(([action, todo]) => ajax.post('https://jsonplaceholder.typicode.com/todos', action.payload)
@@ -66,8 +66,8 @@ class TodoState {
     }
 
     @Effect()
-    updateTodoEffect() {
-        return (action$, store$) => action$.pipe(
+    updateTodoEffect(action$, store$) {
+        return action$.pipe(
             ofType(UPDATE_TODO),
             withLatestFrom(store$.select('todo')),
             mergeMap(([action, todo]) => ajax.put(`https://jsonplaceholder.typicode.com/todos/${action.payload.id}`, action.payload)
@@ -77,7 +77,7 @@ class TodoState {
                         res.completed = res.completed === 'true' ? true : false
                         const index = todo.data.findIndex(item => item.id === action.payload.id);
                         todo.data.splice(index, 1, res);
-                        const payload = { message: '' }
+                        const payload = { message: '', data: [...todo.data] }
                         return { type: TODOS_DATA, payload }
                     }),
                     catchError(err => of({ type: TODOS_DATA, payload: { message: err.message } }))
@@ -92,8 +92,8 @@ class TodoState {
     }
 
     @Effect()
-    removeTodoEffect() {
-        return (action$, store$) => action$.pipe(
+    removeTodoEffect(action$, store$) {
+        return action$.pipe(
             ofType(REMOVE_TODO),
             withLatestFrom(store$.select('todo')),
             mergeMap(([action, todo]) => ajax.delete(`https://jsonplaceholder.typicode.com/todos/${action.payload.id}`)

@@ -13,14 +13,11 @@ import { debounceTime, mapTo } from 'rxjs/operators';
 })
 export class TutorialState {
 
-    constructor(public action$: Actions) {
-
-    }
 
     @Action(ADD_TUTORIAL)
     addTutorial(state, action) {
         state.data = [...state.data, action.payload];
-        return updateObject(state, {});
+        return updateObject(state);
     }
 
     @Action(REMOVE_TUTORIAL)
@@ -30,10 +27,12 @@ export class TutorialState {
     }
 
     @Effect()
-    asyncInc = this.action$.pipe(
-        ofType(ASYNC_INCREMENT),
-        debounceTime(1000),
-        mapTo({ type: INCREMENT })
-    )
+    asyncInc(action$: Actions) {
+        return action$.pipe(
+            ofType(ASYNC_INCREMENT),
+            debounceTime(1000),
+            mapTo({ type: INCREMENT })
+        );
+    }
 
 }

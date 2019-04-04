@@ -21,8 +21,8 @@ class TutorialState {
     }
 
     @Effect()
-    asyncIncEffect() {
-        return action$ => action$.pipe(
+    asyncIncEffect(action$) {
+        return action$.pipe(
             ofType(ASYNC_INCREMENT),
             debounceTime(1000),
             mapTo({ type: INCREMENT })

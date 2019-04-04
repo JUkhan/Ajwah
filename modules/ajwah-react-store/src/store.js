@@ -1,5 +1,5 @@
-import { BehaviorSubject } from 'rxjs';
-import { map, scan, distinctUntilChanged, debounceTime, take, pluck } from 'rxjs/operators';
+import { BehaviorSubject, queueScheduler } from 'rxjs';
+import { map, scan, distinctUntilChanged, pluck, observeOn } from 'rxjs/operators';
 import { combineStates } from './combineStates';
 import { STATE_METADATA_KEY } from './decorators/state';
 
@@ -13,7 +13,9 @@ export class Store extends BehaviorSubject {
             this._mapState(state);
         }
         this.dispatcher = dispatcher;
-        this.dispatcher.pipe(
+
+        this.subscription = this.dispatcher.pipe(
+            observeOn(queueScheduler),
             scan((state, action) => combineStates(state, action, this.states), {})
         ).subscribe(newState => { super.next(newState); });
 
@@ -51,6 +53,7 @@ export class Store extends BehaviorSubject {
         this.dispatcher.complete();
     }
     dispose() {
+        this.subscription.unsubscribe();
         this.complete();
     }
     addState(stateClass) {
@@ -63,14 +66,9 @@ export class Store extends BehaviorSubject {
             console.error(`Unknown state name '${stateName}'`);
             return;
         }
-        this.pipe(
-            debounceTime(100),
-            take(1)
-        ).subscribe(() => {
-            delete this.states[stateName];
-            this.next({ type: `remove_state(${stateName})` });
-        });
 
+        delete this.states[stateName];
+        this.next({ type: `remove_state(${stateName})` });
     }
     _mapState(inst) {
         const meta = inst[STATE_METADATA_KEY];

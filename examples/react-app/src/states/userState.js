@@ -16,8 +16,8 @@ class UserState {
     }
 
     @Effect()
-    loadEffect() {
-        return action$ => action$.ofType(LOAD_USER).pipe(
+    loadEffect(action$) {
+        return action$.ofType(LOAD_USER).pipe(
             mapTo({ type: INCREMENT })
         )
     }

@@ -9,7 +9,7 @@ import { setStoreContext } from 'ajwah-react-store'
 //import TutorialState from "./states/tutoroalState";
 import TodoState from "./states/todoState";
 import CounterSate from "./states/counterState";
-import { devTools } from 'ajwah-react-devtools';
+import { devTools } from 'ajwah-devtools';
 
 
 setStoreContext({

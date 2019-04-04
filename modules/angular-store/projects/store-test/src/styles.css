@@ -1,1 +1,65 @@
 /* You can add global styles to this file, and also import other style files */
+
+form {
+    display: flex;
+  }
+  input[type="text"] {
+    flex: 10;
+    padding: 5px;
+  }
+  input[type="submit"] {
+    flex: 2;
+  }
+  
+  
+  * {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+  }
+  body {
+    font-family: Arial, Helvetica, sans-serif;
+    line-height: 1.4;
+  }
+  .btn {
+    display: inline-block;
+    border: none;
+    background: #555;
+    color: #fff;
+    padding: 7px 20px;
+    cursor: pointer;
+  }
+  .btn:hover {
+    background: #666;
+  }
+  .header {
+    background: #333;
+    color: #fff;
+    text-align: center;
+    padding: 10px;
+  }
+  .todo-container {
+    display: inline-block;
+    width: 450px;
+    margin: 0 auto;
+  }
+  .todo-item {
+    background: #f4f4f4;
+    padding: 10px;
+    border-bottom: 1px #ccc dotted;
+  }
+  .is-complete {
+    text-decoration: line-through;
+  }
+  .del {
+    background: #ff0000;
+    color: #fff;
+    border: none;
+    padding: 5px 9px;
+    border-radius: 50%;
+    cursor: pointer;
+    float: right;
+  }
+  .item-text{
+    padding-left: 10px;
+  }

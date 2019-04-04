@@ -5,8 +5,8 @@ Rx based store library for Angular. Manage your application's states, effects, a
 ### Installation
 
 ```sh
->> npm install ajwah-angular-store
-
+>> npm i ajwah-angular-store
+>> npm i ajwah-devtools
 ```
 
 ### Let's start with hello world `counterState`
@@ -39,12 +39,13 @@ export class CounterState {
     }
 
     @Effect()
-    asyncIncEffect=this.action$.ofType(ASYNC_INCREMENT).pipe(
-      debounceTime(1000),
-      mapTo({type:INCREMENT})
-    )
+    asyncIncEffect(actions:Actions){
+      return this.action$.ofType(ASYNC_INCREMENT).pipe(
+        debounceTime(1000),
+        mapTo({type:INCREMENT})
+      );
+    }
 
-    constructor(public action$:Actions){}
 }
 
 
@@ -93,7 +94,7 @@ export class CounterComponent implements OnInit  {
 
 ```
 
-### and our `app.module`
+###  `app.module`
 
 ```js
 import { NgModule } from '@angular/core';
@@ -103,13 +104,21 @@ import { FormsModule } from '@angular/forms';
 import { AppComponent } from './app.component';
 
 import {AjwahStoreModule} from 'ajwah-angular-store';
+import { devTools } from 'ajwah-devtools';
+
 import {CounterState} from './counterState';
 import {CounterComponent} from './counter.component';
+
 
 @NgModule({
   imports:      [ 
     BrowserModule, FormsModule, 
-    AjwahStoreModule.forRoot({rootStates:[CounterState]}) 
+    
+     AjwahStoreModule.bootstrap({
+      states: [CounterState],
+      devTools: devTools()
+    })
+
   ],
   declarations: [ AppComponent, CounterComponent ],
   bootstrap:    [ AppComponent ]
@@ -118,17 +127,17 @@ export class AppModule { }
 
 ```
 
-[Counter Demo App](https://stackblitz.com/edit/angular-ajwah-test?file=src%2Fapp%2FcounterState.ts)
+[Counter App - live](https://stackblitz.com/edit/angular-ajwah-test?file=src%2Fapp%2FcounterState.ts)
 
 ### Effects
 
 There are several of ways to add effects in Ajwah. You can add effects in your state class that has been shown above in `counterState`. Also you can define separate effect classes and set them into `add.module` like bellow:
 
 ```js
-AjwahStoreModule.forRoot({
-      rootStates: [CounterState, SearchState],
-      rootEffects: [SearchEffects]
-    })
+AjwahStoreModule.bootstrap({
+    states: [CounterState, SearchState],
+    effects: [SearchEffects]
+})
 
 ```
 
@@ -161,7 +170,7 @@ export class SearchState {
 ### `SearchEffects.ts`
 ```js
 
-import { Effect, Actions, IAction } from 'ajwah-angular-store';
+import { Effect, Actions, ofType } from 'ajwah-angular-store';
 import {
     debounceTime,
     switchMap,
@@ -171,28 +180,25 @@ import {
 } from 'rxjs/operators';
 import { SEARCH_KEYSTROKE, SEARCH_RESULT } from './actions';
 import { ajax } from 'rxjs/ajax';
-import { Injectable } from '@angular/core';
 import { EMPTY } from 'rxjs';
 
-@Injectable()
+
 export class SearchEffects {
 
-    constructor(public action$: Actions) { }
-
     @Effect()
-    search() {
-        return this.action$.ofType(SEARCH_KEYSTROKE)
-            .pipe(
-                debounceTime(700),
-                distinctUntilChanged(),
-                switchMap((action: IAction) => {
-                    return ajax.getJSON(`https://en.wikipedia.org/w/api.php?&origin=*&action=opensearch&search=${action.payload}&limit=5`).pipe(
-                        tap(res => console.log(res)),
-                        map(data => ({ type: SEARCH_RESULT, payload: data[1] })),
-                        catchError(err => EMPTY)
-                    )
-                })
-            )
+    search(action$: Actions) {
+        return action$.pipe(
+            ofType(SEARCH_KEYSTROKE),
+            debounceTime(700),
+            distinctUntilChanged(),
+            switchMap(action => {
+                return ajax.getJSON(`https://en.wikipedia.org/w/api.php?&origin=*&action=opensearch&search=${action.payload}&limit=5`).pipe(
+                    tap(res => console.log(res)),
+                    map(data => ({ type: SEARCH_RESULT, payload: data[1] })),
+                    catchError(err => EMPTY)
+                )
+            })
+        )
     }
 }
 
@@ -231,7 +237,7 @@ export class SearchComponent {
 
 ```
 
-In Ajwah you can dynamically add/remove your states/effects.
+### In Ajwah you can dynamically add/remove your states/effects.
 
 ```js
 
@@ -265,75 +271,243 @@ export class AppComponent  {
 }
 
 ```
-### `DynamicEffects.ts`
+
+
+[Dynamic states and effects - Live](https://stackblitz.com/edit/angular-ajwah-dynamicstates?file=src%2Fapp%2Fapp.component.ts)
+
+### Here is the `Todo List` app consuming `JSONPlaceholder Rest API`
+In this app all the todo effects has been defined into the `todoState` class. Its your choice whether you make a separete effects class like `todoEffects` 
+
+[TodoList app - Live](https://stackblitz.com/edit/angular-ajwah-todolist?file=src/app/app.component.ts)
+
+### todoService.ts
 ```js
-import { debounceTime, mapTo } from 'rxjs/operators';
-import { ASYNC_INCREMENT, INCREMENT, DYNAMIC_EFFECTS_KEY } from '../actions';
-
-import { Actions, Effect, ofType, EffectKey } from 'ajwah-angular-store';
 import { Injectable } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
 
+@Injectable()
+export class TodoService {
+    constructor(private http: HttpClient) { }
+    baseUrl = 'https://jsonplaceholder.typicode.com/todos';
 
-@Injectable({ providedIn: 'root' })
-@EffectKey(DYNAMIC_EFFECTS_KEY)
-export class DynamicEffects {
-    constructor(public action$: Actions) {
-
+    getTodos(limit: number = 5) {
+        return this.http.get(this.baseUrl + `?_limit=${limit}`);
     }
 
-    @Effect()
-    asyncInc = this.action$.pipe(
-        ofType(ASYNC_INCREMENT),
-        debounceTime(1000),
-        mapTo({ type: INCREMENT })
-    )
+    addTodo(todo: any) {
+        return this.http.post(this.baseUrl, todo);
+    }
 
+    updateTodo(todo: any) {
+        return this.http.put(this.baseUrl + `/${todo.id}`, todo);
+    }
+
+    deleteTodo(id) {
+        return this.http.delete(this.baseUrl + `/${id}`);
+    }
 
 }
-
 ```
-### `TutorialState.ts`
+
+### todoState.ts
 ```js
 
+import { State, Action, Effect, ofType, Actions, Store } from 'ajwah-angular-store';
+import { TODOS_DATA, ADD_TODO, UPDATE_TODO, REMOVE_TODO, LOAD_TODOS } from './actions';
+import { updateObject } from './util';
+import { map, mergeMap, withLatestFrom, catchError } from 'rxjs/operators';
+import { of } from 'rxjs'
+import { TodoService } from '../services/todoService';
 
-import { ADD_TUTORIAL, REMOVE_TUTORIAL, ASYNC_INCREMENT, INCREMENT } from '../actions';
-import { State, Action, IAction, Actions, Effect, ofType } from 'ajwah-angular-store';
-import { updateObject } from '../util';
-import { Injectable } from '@angular/core';
-import { debounceTime, mapTo } from 'rxjs/operators';
 
-@Injectable({ providedIn: 'root' })
 @State({
-    name: 'tutorial',
-    initialState: { data: [{ name: 'Ajwah', url: '' }] }
+    name: 'todo',
+    initialState: { message: '', data: [] }
 })
-export class TutorialState {
+export class TodoState {
 
-    constructor(public action$: Actions) {
+    constructor(private todoService: TodoService) { }
 
+    @Action(TODOS_DATA)
+    todosData(state, { payload }) {
+        return updateObject(state, payload)
     }
 
-    @Action(ADD_TUTORIAL)
-    addTutorial(state, action: IAction) {
-        state.data.push(action.payload);
-        return updateObject(state, {});
-    }
-
-    @Action(REMOVE_TUTORIAL)
-    removeTutorial(state, action: IAction) {
-        const data = state.data.filter(_ => _.name !== action.payload)
-        return updateObject(state, { data });
+    @Action(LOAD_TODOS)
+    loadTodos(state) {
+        return updateObject(state, { message: ' - loading todos....', data: [] })
     }
 
     @Effect()
-    asyncInc = this.action$.pipe(
-        ofType(ASYNC_INCREMENT),
-        debounceTime(1000),
-        mapTo({ type: INCREMENT })
-    )
+    dataLoadingEffect(actions: Actions) {
+        return actions.pipe(
+            ofType(LOAD_TODOS),
+            mergeMap(() => this.todoService.getTodos()
+                .pipe(
+                    map(data => ({ type: TODOS_DATA, payload: { message: '', data } }))
+                )),
+        );
+    }
+
+
+    @Action(ADD_TODO)
+    addTodo(state) {
+        return updateObject(state, { message: ' - Adding a new todo...' })
+    }
+
+    @Effect()
+    addTodoEffect(actions: Actions, store: Store) {
+        return actions.pipe(
+            ofType(ADD_TODO),
+            withLatestFrom(store.select('todo')),
+            mergeMap(([action, todo]) => this.todoService.addTodo(action.payload)
+                .pipe(
+                    map((newTodo: any) => {
+                        newTodo.completed = false;
+                        const payload = { message: '', data: [newTodo, ...todo.data] };
+                        return { type: TODOS_DATA, payload };
+                    })
+                )
+            )
+        );
+    }
+
+
+    @Action(UPDATE_TODO)
+    updateTodo(state, { payload }) {
+        return updateObject(state, { message: `- '${payload.title}' todo is updaeing...` })
+    }
+
+    @Effect()
+    updateTodoEffect(actions: Actions, store: Store) {
+        return actions.pipe(
+            ofType(UPDATE_TODO),
+            withLatestFrom(store.select('todo')),
+            mergeMap(([action, todo]) => this.todoService.updateTodo(action.payload)
+                .pipe(
+                    map((res: any) => {
+                        const index = todo.data.findIndex(item => item.id === action.payload.id);
+                        todo.data.splice(index, 1, res);
+                        const payload = { message: '', data: [...todo.data] }
+                        return { type: TODOS_DATA, payload }
+                    }),
+                    catchError(err => of({ type: TODOS_DATA, payload: { message: err.message } }))
+                )
+            )
+        );
+    }
+
+
+    @Action(REMOVE_TODO)
+    removeTodo(state, { payload }) {
+        return updateObject(state, { message: `- '${payload.title}' todo is removing...` })
+    }
+
+    @Effect()
+    removeTodoEffect(actions: Actions, store: Store) {
+        return actions.pipe(
+            ofType(REMOVE_TODO),
+            withLatestFrom(store.select('todo')),
+            mergeMap(([action, todo]) => this.todoService.deleteTodo(action.payload.id)
+                .pipe(
+                    map(res => {
+                        const payload = { message: '', data: todo.data.filter(item => item.id !== action.payload.id) }
+                        return { type: TODOS_DATA, payload }
+                    })
+                )
+            )
+        );
+    }
+
 
 }
 
 ```
+### addTodo.ts
+```js
+import { ADD_TODO } from '../store/actions';
+import { Store } from 'ajwah-angular-store';
+import { Component, ChangeDetectionStrategy } from '@angular/core';
 
-[Demo dynamic states and effects](https://stackblitz.com/edit/angular-ajwah-dynamicstates?file=src%2Fapp%2Fapp.component.ts)
+
+@Component({
+    selector: 'addTodo',
+    template: `
+    <form (submit)="addTodo($event)">
+        <input type="text" [(ngModel)]="title" name="title" placeholder="Add Todo..." />
+        <input type="submit" value="Submit" class="btn" />
+    </form>`,
+    changeDetection: ChangeDetectionStrategy.OnPush
+})
+export class AddTodoComponent {
+    title: string;
+    constructor(public store: Store) {
+
+    }
+
+    addTodo(e) {
+        e.preventDefault();
+        const newTodo = {
+            title: this.title,
+            completed: false
+        }
+        this.store.dispatch({ type: ADD_TODO, payload: newTodo });
+        this.title = '';
+    }
+}
+```
+### todoItem.ts
+```js
+import { Store } from 'ajwah-angular-store';
+import { REMOVE_TODO, UPDATE_TODO } from '../store/actions';
+import { Component, ChangeDetectionStrategy, Input } from '@angular/core';
+
+@Component({
+    selector: 'todoItem',
+    template: `
+    <div class="todo-item" [ngClass]="{'is-complete':todo.completed}" >
+    <p>
+      <input [checked]="todo.completed" type="checkbox" (change)="updateTodo($event)" />
+      <span class="item-text">{{todo.title}}</span>
+      <button (click)="removeTodo()" class="del">x</button>
+    </p>
+  </div>`,
+    changeDetection: ChangeDetectionStrategy.OnPush
+})
+export class TodoItemComponent {
+    title: string;
+    @Input() todo: any;
+    constructor(public store: Store) {
+
+    }
+
+    updateTodo(e) {
+        this.todo.completed = e.target.checked;
+        this.store.dispatch({ type: UPDATE_TODO, payload: this.todo })
+    }
+
+    removeTodo() {
+        this.store.dispatch({ type: REMOVE_TODO, payload: this.todo })
+    }
+}
+```
+### todos.ts
+```js
+import { Store } from 'ajwah-angular-store';
+import { Component, ChangeDetectionStrategy, Input } from '@angular/core';
+
+@Component({
+    selector: 'todos',
+    template: `
+    <div>
+        <todoItem *ngFor="let todo of todos" [todo]="todo" ></todoItem>
+    </div>
+    `,
+    changeDetection: ChangeDetectionStrategy.OnPush
+})
+export class TodosComponent {
+    @Input() todos: any[];
+    constructor(public store: Store) {
+    }
+}
+```

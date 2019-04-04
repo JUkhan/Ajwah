@@ -1,10 +1,11 @@
 # ajwah-devtools
 
-### Ajwah devTools for react, angular, vue, preact
+### Ajwah devTools for ajwah store(react, angular, vue, preact)
 
 ### React, Preact
 ```js
-import { devTools } from 'ajwah-react-devtools';
+import { setStoreContext } from 'ajwah-react-store';
+import { devTools } from 'ajwah-devtools';
 setStoreContext({
     states: [CounterSate, TutorialState],
     effects: [CounterEffect],
@@ -15,7 +16,8 @@ setStoreContext({
 
 ### Angular
 ```js
-import { devTools } from 'ajwah-react-devtools';
+import { AjwahStoreModule } from 'ajwah-angular-store';
+import { devTools } from 'ajwah-devtools';
 
 AjwahStoreModule.bootstrap({
       states: [counterState],
@@ -28,7 +30,8 @@ AjwahStoreModule.bootstrap({
 
 ### Vue
 ```js
-import { devTools } from 'ajwah-react-devtools';
+import { AjwahStore } from 'ajwah-vue-store';
+import { devTools } from 'ajwah-devtools';
 
 Vue.use(AjwahStore, {
   states: [counterState, tutorialState, todoState],

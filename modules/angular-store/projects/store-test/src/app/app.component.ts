@@ -1,10 +1,11 @@
-import { TutorialState } from './tutorialState';
+import { LOAD_TODOS } from './store/actions';
+import { Subscription } from 'rxjs';
+import { TutorialState } from './store/tutorialState';
 
-import { Component, Injector, Type } from '@angular/core';
+import { Component, Type, OnDestroy } from '@angular/core';
 import { Store } from 'ajwah-angular-store';
-import { Observable } from 'rxjs';
-import { INCREMENT, DECREMENT, ASYNC_INCREMENT } from './actions';
-import { MyEffect } from './effects';
+import { DynamicEffect } from './store/effects';
+import { DYNAMIC_EFFECTS_KEY } from './store/actions';
 
 @Component({
   selector: 'app-root',
@@ -12,36 +13,23 @@ import { MyEffect } from './effects';
   styleUrls: ['./app.component.css'],
 
 })
-export class AppComponent {
+export class AppComponent implements OnDestroy {
+  subscription: Subscription
   constructor(private store: Store) {
-    // this.getEffect(MyEffect);
-
-  }
-  getEffect(type: Type<any>) {
-    // const eff = this.inject.get(type);
-    //console.log(eff);
-  }
-  counter$: Observable<any>;
-
-  ngOnInit() {
-    this.counter$ = this.store.select(state => state.counter);
+    this.subscription = this.store.select('counter').subscribe(res => this.counter = res);
+    this.subscription.add(this.store.select('tutorial').subscribe(res => this.tutorial = res));
+    this.subscription.add(this.store.select('todo').subscribe(res => this.todo = res));
+    this.store.dispatch({ type: LOAD_TODOS });
   }
 
-  inc() {
-    this.store.dispatch({ type: INCREMENT });
-  }
-  dec() {
-    this.store.dispatch({ type: DECREMENT });
-  }
-  async_inc() {
-    this.store.dispatch({ type: ASYNC_INCREMENT });
-  }
-
+  counter: any;
+  tutorial: any;
+  todo: any;
   addEffect() {
-    this.store.addEffects(MyEffect);
+    this.store.addEffects(DynamicEffect);
   }
   removeEffect() {
-    this.store.removeEffectsByKey('test');
+    this.store.removeEffectsByKey(DYNAMIC_EFFECTS_KEY);
   }
   addState() {
     this.store.addStates(TutorialState);
@@ -49,4 +37,9 @@ export class AppComponent {
   removeState() {
     this.store.removeStates('tutorial')
   }
+
+  ngOnDestroy() {
+    this.subscription.unsubscribe();
+  }
+
 }

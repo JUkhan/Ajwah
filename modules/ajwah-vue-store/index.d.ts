@@ -14,14 +14,14 @@ export declare class ActionsObservable<T extends IAction> extends Observable<T> 
 }
 
 export declare class StoreContext {
-    dispatch(action: IAction): void;
-    addState(stateClass: any): void;
-    removeState(stateName: string): void;
-    removeEffectsByKey(key: string): void;
-    importState(state: any): void;
+    dispatch(action: IAction): StoreContext;
+    addStates(...stateClassTypes: any[]): StoreContext;
+    removeStates(...stateNames: string[]): StoreContext;
+    removeEffectsByKey(key: string): StoreContext;
+    importState(state: any): StoreContext;
     select<T=any>(pathOrMapFn: ((state: T) => any) | string, ): Observable<any>;
-    addEffect<T extends ActionsObservable<IAction>>(callback: (action$: ActionsObservable<IAction>) => Observable<IAction>, key?: string): StoreContext;
-    addEffects(...effectClass: any): void;
+    addEffect<T extends ActionsObservable<IAction>>(callback: (action$: ActionsObservable<IAction>, store$?: StoreContext) => Observable<IAction>, key?: string): StoreContext;
+    addEffects(...effectClassTypes: any[]): StoreContext;
     dispose(): void;
 }
 
@@ -29,7 +29,7 @@ export declare function getStoreContext(options: { states: any[], effects?: any[
 
 export declare function ofType<T extends IAction, R extends T = T, K extends R['type']= R['type']>(...key: K[]): (source: Observable<T>) => Observable<R>;
 
-//export declare function getStore(): StoreContext;
+export declare function getStore(): StoreContext;
 export declare function Action(actionType: string | Symbol): any;
 export declare function State(options: { name: string, initialState: any }): any;
 

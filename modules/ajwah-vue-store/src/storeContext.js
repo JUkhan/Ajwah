@@ -18,29 +18,36 @@ class StoreContext {
     }
     dispatch(action) {
         this.dispatcher.dispatch(action);
+        return this;
     }
-    addState(stateClass) {
-        const instance = new stateClass();
-        this.store.addState(instance);
-        const key = instance[STATE_METADATA_KEY].name;
-        this._addEffectsByKey(instance, key, this.actions);
-
+    addStates(...stateClassTypes) {
+        for (let stateClass of stateClassTypes) {
+            const instance = new stateClass();
+            this.store.addState(instance);
+            const key = instance[STATE_METADATA_KEY].name;
+            this._addEffectsByKey(instance, key, this.actions);
+        }
+        return this;
     }
-    removeState(stateName) {
-        this.store.removeState(stateName);
-        this.removeEffectsByKey(stateName);
+    removeStates(...stateNames) {
+        for (let stateName of stateNames) {
+            this.store.removeState(stateName);
+            this.removeEffectsByKey(stateName);
+        }
+        return this;
     }
     importState(state) {
         this.store.importState(state);
+        return this;
     }
     select(pathOrMapFn) {
         return this.store.select(pathOrMapFn);
     }
     addEffect(callback, key) {
         if (key && typeof key === 'string') {
-            this._addEffectsByKey(callback(this.actions), key);
+            this._addEffectsByKey(callback(this.actions, this.store), key);
         } else {
-            this.effSubs.addEffect(callback(this.actions));
+            this.effSubs.addEffect(callback(this.actions, this.store));
         }
         return this;
     }
@@ -49,9 +56,10 @@ class StoreContext {
             this.subs[key].unsubscribe && this.subs[key].unsubscribe();
             this.subs[key] = undefined;
         }
+        return this;
     }
-    addEffects(...effectClassType) {
-        const effects = effectClassType.map(_ => new _());
+    addEffects(...effectClassTypes) {
+        const effects = effectClassTypes.map(_ => new _());
         const globalEffects = effects.filter(ef => !ef[EFFECT_METADATA_KEY].key);
         const keysEffects = effects.filter(ef => !!ef[EFFECT_METADATA_KEY].key);
         globalEffects.length && this.effSubs.addEffects(globalEffects, this.actions);
@@ -61,6 +69,7 @@ class StoreContext {
                 this._addEffectsByKey(instance, key, this.actions);
             });
         }
+        return this;
     }
     _addEffectsByKey(instance, key, actions) {
         const subscription = this.subs[key] || (this.subs[key] = new Subscription());
@@ -81,7 +90,6 @@ class StoreContext {
 export function getStoreContext({ states = [], effects = [], devTools = undefined }) {
     const ctx = new StoreContext(states.map(_ => new _()));
     ctx.addEffects(...effects);
-
 
     if (devTools && devTools.run) {
         ctx.devTools = devTools;

@@ -3,7 +3,7 @@ import { Observable, Operator } from 'rxjs';
 
 
 export interface IAction {
-    type: string | Symbol;
+    type: string;
     payload?: string;
 }
 export declare class ActionsObservable<T extends IAction> extends Observable<T> {
