@@ -128,7 +128,7 @@ export class AppModule { }
 
 ```
 
-[Counter App - live](https://stackblitz.com/edit/angular-ajwah-test?file=src%2Fapp%2FcounterState.ts)
+[Counter App - Live](https://stackblitz.com/edit/angular-ajwah-test?file=src%2Fapp%2FcounterState.ts)
 
 ### Effects
 

@@ -27,22 +27,6 @@ export function getEffectsMetadata(instance) {
     return instance[EFFECT_METADATA_KEY] || [];
 }
 
-export function _mergeEffects(instance, action$, store$) {
-    const observables = getEffectsMetadata(instance).map(
-        ({ propertyName, dispatch }) => {
-            const effect = typeof instance[propertyName] === 'function' ?
-                instance[propertyName]() : instance[propertyName];
-
-            if (dispatch === false) {
-                return effect(action$, store$).pipe(ignoreElements());
-            }
-
-            return effect(action$, store$);
-        }
-    );
-
-    return merge(...observables);
-}
 export function mergeEffects(instance, action$, store$) {
     const observables = getEffectsMetadata(instance)
         .filter(({ propertyName }) => typeof instance[propertyName] === 'function')

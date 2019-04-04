@@ -7,8 +7,11 @@ Rx based store library for Angular, React, Preact. Manage your application's sta
 ```sh
 >> npm install ajwah-angular-store
 >> npm install ajwah-react-store
+>> npm install ajwah-vue-store
 >> npm install ajwah-devtools
 ```
 [Angular Doc](https://github.com/JUkhan/Ajwah/tree/master/docs/angular#ajwah)
 
 [React Doc](https://github.com/JUkhan/Ajwah/tree/master/docs/react#ajwah)
+
+[React Doc](https://github.com/JUkhan/Ajwah/tree/master/docs/vue#ajwah)

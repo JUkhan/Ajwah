@@ -20,7 +20,7 @@ function counter(props) {
     return <span>
         <button className="btn" onClick={increment}>+</button>
         <button className="btn" onClick={decrement}>-</button>
-        <button className="btn" onClick={asyncIncrement}>Asunc (+)</button> <b>count {counter.msg || counter.count}</b>
+        <button className="btn" onClick={asyncIncrement}>Async (+)</button> <b>count {counter.msg || counter.count}</b>
     </span>
 
 }
