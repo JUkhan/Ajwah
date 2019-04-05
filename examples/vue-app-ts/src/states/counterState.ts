@@ -1,4 +1,4 @@
-import { State, Action, Effect, ActionsObservable, IAction } from "ajwah-vue-store";
+import { State, Action, Effect, Actions } from "ajwah-vue-store";
 import { INCREMENT, DECREMENT, ASYNC_INCREMENT } from "./actions";
 import { updateObject } from "./util";
 import { mapTo, debounceTime } from 'rxjs/operators';
@@ -26,14 +26,12 @@ class CounterSate {
     }
 
     @Effect()
-    asyncEffect() {
-        return (action$: ActionsObservable<IAction>) => {
-            return action$.ofType(ASYNC_INCREMENT).pipe(
-                debounceTime(500),
-                mapTo({ type: INCREMENT }),
-
-            );
-        }
+    asyncEffect(action$: Actions) {
+        return action$.ofType(ASYNC_INCREMENT).pipe(
+            debounceTime(500),
+            mapTo({ type: INCREMENT }),
+        );
     }
+
 }
 export default CounterSate;

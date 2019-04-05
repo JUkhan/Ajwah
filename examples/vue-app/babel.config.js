@@ -2,11 +2,11 @@ module.exports = {
   presets: [
     '@vue/app'
   ],
-  "plugins": [
+  plugins: [
     [
       "@babel/plugin-proposal-decorators",
       {
-        "legacy": true
+        legacy: true
       }
     ]
   ]

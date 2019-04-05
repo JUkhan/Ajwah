@@ -53,7 +53,7 @@ Ajwah based on decorators - this is the way enable decorators in create-react-ap
 ### `counterState`
 
 ```js
-import { State, Action, Effect, ofType,IAction, ActionsObservable } from 'ajwah-react-store';
+import { State, Action, Effect, ofType, Actions } from 'ajwah-react-store';
 import { INCREMENT, DECREMENT, ASYNC_INCREMENT } from './actions';
 import { updateObject } from './util';
 import { mapTo, debounceTime } from "rxjs/operators";
@@ -80,7 +80,7 @@ class CounterState {
     }
 
     @Effect()
-    asyncIncrementEffect(action$: ActionsObservable<IAction>) {
+    asyncIncrementEffect(action$: Actions) {
         return action$.pipe(
             ofType(ASYNC_INCREMENT),
             debounceTime(1000),
@@ -137,13 +137,13 @@ export default CounterComponent;
 ### Here is the `StoreContext API`
 ```js
 class StoreContext {
-    dispatch(action: IAction): StoreContext;
+    dispatch(action: Action): StoreContext;
     addStates(...stateClassTypes: any[]): StoreContext;
     removeStates(...stateNames: string[]): StoreContext;
     removeEffectsByKey(key: string): StoreContext;
     importState(state: any): StoreContext;
     select<T=any>(pathOrMapFn: ((state: T) => any) | string, ): Observable<any>;
-    addEffect<T extends ActionsObservable<IAction>>(callback: (action$: ActionsObservable<IAction>, store$?: StoreContext) => Observable<IAction>, key?: string): StoreContext;
+    addEffect<T extends Actions<Action>>(callback: (action$: Actions<Action>, store$?: StoreContext) => Observable<Action>, key?: string): StoreContext;
     addEffects(...effectClassTypes: any[]): StoreContext;
     dispose(): void;
 }
@@ -247,7 +247,7 @@ export default SearchState;
 ### `searchEffects`
 ```js
 
-import { Effect, Actions, ofType } from 'ajwah-react-store';
+import { Effect, Actions, ofType, Actions } from 'ajwah-react-store';
 import {
     debounceTime,
     switchMap,
@@ -282,7 +282,7 @@ export default SearchEffects;
 ```
 
 
-### In Ajwah you can dynamically add/remove your states/effects.
+### In Ajwah you can dynamically add/remove application's states/effects.
 
 ```js
 function addEffect() {

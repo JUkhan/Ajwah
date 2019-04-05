@@ -1,41 +1,38 @@
 
 import { Observable, Operator } from 'rxjs';
 
-
-export interface IAction {
+interface Action {
     type: string;
     payload?: any;
 }
-export declare class ActionsObservable<T extends IAction> extends Observable<T> {
-
-    lift<R extends IAction>(operator: Operator<T, R>): ActionsObservable<R>;
+export declare class Actions<T = Action> extends Observable<T>{
+    lift<R extends Action>(operator: Operator<T, R>): Actions<R>;
     lift<R>(operator: Operator<T, R>): Observable<R>;
-    ofType<R extends T = T>(...key: R['type'][]): ActionsObservable<R>;
+    ofType<R extends T = T>(...key: string[]): Actions<R>;
 }
 
 export declare class StoreContext {
-    dispatch(action: IAction): StoreContext;
+    dispatch(action: Action): StoreContext;
     addStates(...stateClassTypes: any[]): StoreContext;
     removeStates(...stateNames: string[]): StoreContext;
     removeEffectsByKey(key: string): StoreContext;
     importState(state: any): StoreContext;
     select<T=any>(pathOrMapFn: ((state: T) => any) | string, ): Observable<any>;
-    addEffect<T extends ActionsObservable<IAction>>(callback: (action$: ActionsObservable<IAction>, store$?: StoreContext) => Observable<IAction>, key?: string): StoreContext;
+    addEffect<T extends Actions<Action>>(callback: (action$: Actions<Action>, store$?: StoreContext) => Observable<Action>, key?: string): StoreContext;
     addEffects(...effectClassTypes: any[]): StoreContext;
     dispose(): void;
 }
 
-export declare function getStoreContext(options: { states: any[], effects?: any[], devTools?: any }): void;
+export declare function setStoreContext(options: { states: any[], effects?: any[], devTools?: any }): void;
 
-export declare function ofType<T extends IAction, R extends T = T, K extends R['type']= R['type']>(...key: K[]): (source: Observable<T>) => Observable<R>;
+export declare function ofType<T extends Action, R extends T = T, K extends R['type']= R['type']>(...key: K[]): (source: Observable<T>) => Observable<R>;
 
 export declare function getStore(): StoreContext;
-export declare function Action(actionType: string | Symbol): any;
+export declare function Action(actionType: string): any;
 export declare function State(options: { name: string, initialState: any }): any;
-
-//export declare function Connect(splitedState?: { [key: string]: (state: any) => any }): any;
 export declare function Effect(options?: { dispatch: boolean }): any;
 export declare function EffectKey(key: string): any;
+
 export declare const AjwahStore: {
     install(Vue: any, options: {
         states: any[];

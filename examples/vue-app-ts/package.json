@@ -8,6 +8,7 @@
     "lint": "vue-cli-service lint"
   },
   "dependencies": {
+    "ajwah-devtools": "^0.1.1",
     "ajwah-vue-store": "file:../../modules/ajwah-vue-store",
     "core-js": "^2.6.5",
     "rxjs": "^6.4.0",

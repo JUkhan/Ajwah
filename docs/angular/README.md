@@ -238,7 +238,7 @@ export class SearchComponent {
 
 ```
 
-### In Ajwah you can dynamically add/remove your states/effects.
+### In Ajwah you can dynamically add/remove application's states/effects.
 
 ```js
 

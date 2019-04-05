@@ -28,18 +28,14 @@ export function getEffectsMetadata(instance) {
 }
 
 export function mergeEffects(instance, action$, store$) {
-    const observables = getEffectsMetadata(instance).map(
-        ({ propertyName, dispatch }) => {
-            const effect = typeof instance[propertyName] === 'function' ?
-                instance[propertyName]() : instance[propertyName];
-
+    const observables = getEffectsMetadata(instance)
+        .filter(({ propertyName }) => typeof instance[propertyName] === 'function')
+        .map(({ propertyName, dispatch }) => {
             if (dispatch === false) {
-                return effect(action$, store$).pipe(ignoreElements());
+                return instance[propertyName](action$, store$).pipe(ignoreElements());
             }
-
-            return effect(action$, store$);
-        }
-    );
+            return instance[propertyName](action$, store$);
+        });
 
     return merge(...observables);
 }

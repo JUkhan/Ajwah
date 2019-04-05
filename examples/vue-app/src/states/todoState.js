@@ -22,8 +22,8 @@ class TodoState {
     }
 
     @Effect()
-    dataLoadingEffect() {
-        return action$ => action$.pipe(
+    dataLoadingEffect(action$) {
+        return action$.pipe(
             ofType(LOAD_TODOS),
             mergeMap(() => ajax
                 .get('https://jsonplaceholder.typicode.com/todos?_limit=5')

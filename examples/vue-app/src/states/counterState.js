@@ -26,14 +26,12 @@ class CounterSate {
     }
 
     @Effect()
-    asyncEffect() {
-        return action$ => {
-            return action$.ofType(ASYNC_INCREMENT).pipe(
-                debounceTime(500),
-                mapTo({ type: INCREMENT }),
+    asyncEffect(action$) {
+        return action$.ofType(ASYNC_INCREMENT).pipe(
+            debounceTime(500),
+            mapTo({ type: INCREMENT }),
 
-            );
-        }
+        );
     }
 }
 export default CounterSate;

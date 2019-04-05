@@ -1,6 +1,6 @@
-import { Effect, IAction, ActionsObservable } from 'ajwah-react-store';
+import { Effect, Actions, StoreContext } from 'ajwah-react-store';
 import {
-    debounceTime,
+    debounceTime, withLatestFrom,
     switchMap,
     distinctUntilChanged,
     map,
@@ -12,10 +12,11 @@ class Effects {
 
     @Effect()
     search() {
-        return (action$: ActionsObservable<IAction>) => action$.ofType(SEARCH_KEYSTROKE).pipe(
+        return (action$: Actions, store: StoreContext) => action$.ofType(SEARCH_KEYSTROKE).pipe(
             debounceTime(700),
             distinctUntilChanged(),
-            switchMap((action: IAction) => {
+            //withLatestFrom(store.select('counter')),
+            switchMap(action => {
                 return ajax.getJSON(`https://en.wikipedia.org/w/api.php?&origin=*&action=opensearch&search=${action.payload}&limit=5`).pipe(
                     tap(res => console.log(res)),
                     map(data => ({ type: SEARCH_RESULT, payload: data[1] }))

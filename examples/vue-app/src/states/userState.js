@@ -17,8 +17,8 @@ class UserState {
         return updateObject(state, { data: payload, loading: false })
     }
     @Effect()
-    dataLoadingEffect() {
-        return action$ => action$.pipe(
+    dataLoadingEffect(action$) {
+        return action$.pipe(
             ofType(LOAD_USERS),
             flatMap(() => ajax
                 .get("https://jsonplaceholder.typicode.com/users")
@@ -29,8 +29,8 @@ class UserState {
     }
 
     @Effect()
-    loadedEffect() {
-        return action$ => action$.ofType(USER_DATA).pipe(
+    loadedEffect(action$) {
+        return action$.ofType(USER_DATA).pipe(
             mapTo({ type: INCREMENT })
         )
     }
