@@ -7,7 +7,7 @@ import { AjwahStore } from 'ajwah-vue-store';
 import counterState from './states/counterState';
 import tutorialState from './states/tutorialState';
 import todoState from './states/todoState';
-import { devTools } from 'ajwah-react-devtools'
+import { devTools } from 'ajwah-devtools'
 
 Vue.use(vueRx)
 

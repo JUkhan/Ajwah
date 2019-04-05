@@ -17,11 +17,11 @@ export default {
   },
   subscriptions() {
     return {
-      todo: this.$tore.select("todo")
+      todo: this.store.select("todo")
     };
   },
   created() {
-    this.$tore.dispatch({ type: LOAD_TODOS });
+    this.store.dispatch({ type: LOAD_TODOS });
   }
 };
 </script>

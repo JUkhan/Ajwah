@@ -13,19 +13,19 @@ export default {
   name: "Counter",
   subscriptions() {
     return {
-      counter: this.$tore.select("counter")
+      counter: this.store.select("counter")
     };
   },
 
   methods: {
     inc() {
-      this.$tore.dispatch({ type: INCREMENT });
+      this.store.dispatch({ type: INCREMENT });
     },
     dec() {
-      this.$tore.dispatch({ type: DECREMENT });
+      this.store.dispatch({ type: DECREMENT });
     },
     async_inc() {
-      this.$tore.dispatch({ type: ASYNC_INCREMENT });
+      this.store.dispatch({ type: ASYNC_INCREMENT });
     }
   }
 };

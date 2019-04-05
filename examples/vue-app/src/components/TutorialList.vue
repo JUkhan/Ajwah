@@ -17,12 +17,12 @@ export default {
   name: "TutorialList",
   subscriptions() {
     return {
-      tutorial: this.$tore.select("tutorial")
+      tutorial: this.store.select("tutorial")
     };
   },
   methods: {
     onRemove(name) {
-      this.$tore.dispatch({ type: REMOVE_TUTORIAL, payload: name });
+      this.store.dispatch({ type: REMOVE_TUTORIAL, payload: name });
     }
   }
 };

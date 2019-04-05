@@ -37,7 +37,7 @@ export default {
   methods: {
     addTutorial(e) {
       e.preventDefault();
-      this.$tore.dispatch({
+      this.store.dispatch({
         type: ADD_TUTORIAL,
         payload: { ...this.tutorialModel }
       });

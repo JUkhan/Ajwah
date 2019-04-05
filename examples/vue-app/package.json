@@ -9,8 +9,8 @@
   },
   "dependencies": {
     "@babel/plugin-proposal-decorators": "^7.4.0",
-    "ajwah-react-devtools": "^0.2.0",
-    "ajwah-vue-store": "^0.1.0",
+    "ajwah-devtools": "^0.1.1",
+    "ajwah-vue-store": "^0.1.1",
     "core-js": "^2.6.5",
     "rxjs": "^6.4.0",
     "vue": "^2.6.6",
