@@ -1,5 +1,5 @@
 # Ajwah
-Rx based store library for Angular, React, Preact. Manage your application's states, effects, and actions easy way. Easy to use in functional components with React hooks.
+Rx based store library for React, Vue, Angular, Preact. Manage your application's states, effects, and actions easy way. It's easy to use in functional components with React hooks.
 
 
 ### Installation

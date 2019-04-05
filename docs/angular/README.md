@@ -276,7 +276,7 @@ export class AppComponent  {
 
 [Dynamic states and effects - Live](https://stackblitz.com/edit/angular-ajwah-dynamicstates?file=src%2Fapp%2Fapp.component.ts)
 
-### Here is the `Todo List` app consuming `JSONPlaceholder Rest API`
+### Here is the `TodoList` app consuming `JSONPlaceholder Rest API`
 In this app all the todo effects has been defined into the `todoState` class. Its your choice whether you make a separete effects class like `todoEffects` 
 
 [TodoList app - Live](https://stackblitz.com/edit/angular-ajwah-todolist?file=src/app/app.component.ts)
