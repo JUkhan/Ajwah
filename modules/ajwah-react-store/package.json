@@ -1,6 +1,6 @@
 {
   "name": "ajwah-react-store",
-  "version": "0.2.8",
+  "version": "0.2.9",
   "description": "Rx based store lib for react, angular, and vue",
   "main": "lib/cjs/index.js",
   "module": "lib/esm/index.js",
