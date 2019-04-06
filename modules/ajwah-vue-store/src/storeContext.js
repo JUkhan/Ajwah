@@ -6,6 +6,7 @@ import { Actions } from './actions';
 import { EFFECT_METADATA_KEY } from './decorators/effect';
 import { Subscription } from 'rxjs';
 import { STATE_METADATA_KEY } from './decorators/state';
+import { setKeys, setActionsAndEffects } from './decorators/altdecoretors';
 
 class StoreContext {
     constructor(states) {
@@ -22,6 +23,7 @@ class StoreContext {
     }
     addStates(...stateClassTypes) {
         for (let stateClass of stateClassTypes) {
+            setActionsAndEffects(stateClass);
             const instance = new stateClass();
             this.store.addState(instance);
             const key = instance[STATE_METADATA_KEY].name;
@@ -56,12 +58,23 @@ class StoreContext {
             this.subs[key].unsubscribe && this.subs[key].unsubscribe();
             this.subs[key] = undefined;
         }
+        else {
+            throw `Unknown effect key '${key}'`;
+        }
         return this;
     }
     addEffects(...effectClassTypes) {
-        const effects = effectClassTypes.map(_ => new _());
-        const globalEffects = effects.filter(ef => !ef[EFFECT_METADATA_KEY].key);
-        const keysEffects = effects.filter(ef => !!ef[EFFECT_METADATA_KEY].key);
+        const instances = effectClassTypes.map(_ => {
+            setActionsAndEffects(_, false);
+            const inst = new _();
+            if (inst.effectKey) {
+                inst[EFFECT_METADATA_KEY].key = inst.effectKey;
+            }
+            return inst;
+        });
+
+        const globalEffects = instances.filter(ef => !ef[EFFECT_METADATA_KEY].key);
+        const keysEffects = instances.filter(ef => !!ef[EFFECT_METADATA_KEY].key);
         globalEffects.length && this.effSubs.addEffects(globalEffects, this.actions);
         if (keysEffects.length) {
             keysEffects.forEach(instance => {
@@ -86,9 +99,17 @@ class StoreContext {
     }
 }
 
-
-export function getStoreContext({ states = [], effects = [], devTools = undefined }) {
-    const ctx = new StoreContext(states.map(_ => new _()));
+export function getStoreContext({
+    states = [],
+    effects = [],
+    actionsMethodStartsWith,
+    effectsMethodStartsWith,
+    devTools = undefined }) {
+    setKeys(actionsMethodStartsWith, effectsMethodStartsWith);
+    const ctx = new StoreContext(states.map(_ => {
+        setActionsAndEffects(_);
+        return new _()
+    }));
     ctx.addEffects(...effects);
 
     if (devTools && devTools.run) {
@@ -97,3 +118,5 @@ export function getStoreContext({ states = [], effects = [], devTools = undefine
     }
     return ctx;
 }
+
+

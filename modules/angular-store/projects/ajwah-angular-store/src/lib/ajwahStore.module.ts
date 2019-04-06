@@ -5,18 +5,25 @@ import { ROOT_STATES, ROOT_EFFECTS } from './tokens';
 import { Store } from './store';
 import { Actions } from './actions';
 import { EffectsSubscription } from './effectsSubscription';
+import { setActionsAndEffects, setKeys } from './decorators/altdecoretors'
+
 let __devTools = undefined;
+
 @NgModule({})
 export class AjwahStoreModule {
     static bootstrap(options: {
         states: Type<any>[];
         effects?: Type<any>[];
         devTools?: any;
+        actionsMethodStartsWith?: string;
+        effectsMethodStartsWith?: string;
     }): ModuleWithProviders<AjwahStoreModule> {
         const rootStates = options.states || [];
         const rootEffects = options.effects || [];
         __devTools = options.devTools;
-
+        setKeys(options.actionsMethodStartsWith, options.effectsMethodStartsWith);
+        rootStates.forEach(state => { setActionsAndEffects(state); })
+        rootEffects.forEach(effect => { setActionsAndEffects(effect, false); })
         return {
             ngModule: AjwahStoreModule,
             providers: [

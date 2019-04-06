@@ -72,6 +72,12 @@ export class Store extends BehaviorSubject {
     }
     _mapState(inst) {
         const meta = inst[STATE_METADATA_KEY];
+        if (!meta.name) {
+            meta.name = inst.name;
+        }
+        if (!meta.initialState) {
+            meta.initialState = inst.initialState;
+        }
         this.states[meta.name] = inst;
         return meta.name;
     }

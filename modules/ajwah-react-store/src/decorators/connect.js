@@ -1,22 +1,49 @@
 import { getStore } from '../storeContext';
+import { Subscription } from 'rxjs';
+import { CONNECT_METADATA_KEY } from './/metakeys';
 
-const META_KEY = 'ajwah/connect'
 
 function mount() {
-    const meta = this[META_KEY];
+    const meta = this[CONNECT_METADATA_KEY];
     meta.mount.call(this);
     Object.keys(meta.mapState).forEach(key => {
-        meta.subscriptions.push(
+        meta.subscription.add(
             this.store.select(meta.mapState[key])
                 .subscribe(res => { this.setState({ [key]: res }); }));
     });
 }
 function unmount() {
-    const meta = this[META_KEY];
+    const meta = this[CONNECT_METADATA_KEY];
     meta.unmount.call(this);
-    meta.subscriptions.forEach(sub => { sub.unsubscribe(); });
+    meta.subscription.unsubscribe()
 }
-export function Connect(mapState = {}) {
+function subscriber(mapState, componentInstance) {
+    componentInstance.store = getStore();
+    const mapKeys = Object.keys(mapState);
+    if (mapKeys.length === 0) return;
+
+    let config = {
+        mount: () => { },
+        unmount: () => { },
+        subscription: new Subscription(),
+        mapState
+    };
+
+    if (componentInstance.componentWillMount) {
+        config.mount = componentInstance.componentWillMount;
+    }
+
+    componentInstance.componentWillMount = mount;
+
+    if (componentInstance.componentWillUnmount) {
+        config.unmount = componentInstance.componentWillUnmount;
+    }
+    componentInstance.componentWillUnmount = unmount;
+    componentInstance[CONNECT_METADATA_KEY] = config;
+
+}
+export function Connect(mapState = {}, component) {
+    if (component) { subscriber(mapState, component); return; }
     return function (target) {
         target = target.prototype;
 
@@ -32,7 +59,7 @@ export function Connect(mapState = {}) {
         let config = {
             mount: () => { },
             unmount: () => { },
-            subscriptions: [],
+            subscription: new Subscription(),
             mapState
         };
 
@@ -50,7 +77,7 @@ export function Connect(mapState = {}) {
             value: unmount,
         });
 
-        Object.defineProperty(target, META_KEY, {
+        Object.defineProperty(target, CONNECT_METADATA_KEY, {
             value: config,
             writable: false
         });

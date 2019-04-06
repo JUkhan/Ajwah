@@ -1,26 +1,31 @@
-import { State, Action } from "ajwah-react-store";
-import { INCREMENT, DECREMENT, ASYNC_INCREMENT } from "./actions";
-import { updateObject } from "../utli";
 
-@State({
-    name: 'counter',
-    initialState: { count: 10, msg: '' }
-})
+import { INCREMENT } from "./actions";
+import { updateObject } from "../utli";
+import { debounceTime, mapTo } from 'rxjs/operators';
+
 class CounterSate {
 
-    @Action(INCREMENT)
-    increment(state, action) {
+    name = 'counter'
+    initialState = { count: 10, msg: '' }
+
+
+    actionInc(state) {
         return updateObject(state, { count: state.count + 1, msg: '' })
     }
 
-    @Action(DECREMENT)
-    decrement(state, action) {
+    actionDec(state) {
         return updateObject(state, { count: state.count - 1, msg: '' })
     }
 
-    @Action(ASYNC_INCREMENT)
-    asyncIncrement(state, action) {
+    actionAsyncInc(state) {
         return updateObject(state, { msg: 'loading...' })
+    }
+
+    effectForAsyncInc(actions) {
+        return actions.pipe(
+            debounceTime(450),
+            mapTo({ type: INCREMENT })
+        )
     }
 }
 export default CounterSate;

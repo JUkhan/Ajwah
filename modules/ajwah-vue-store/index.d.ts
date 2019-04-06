@@ -17,7 +17,7 @@ export declare class StoreContext {
     removeStates(...stateNames: string[]): StoreContext;
     removeEffectsByKey(key: string): StoreContext;
     importState(state: any): StoreContext;
-    select<T=any>(pathOrMapFn: ((state: T) => any) | string, ): Observable<any>;
+    select<T = any>(pathOrMapFn: ((state: T) => any) | string, ): Observable<any>;
     addEffect<T extends Actions<Action>>(callback: (action$: Actions<Action>, store$?: StoreContext) => Observable<Action>, key?: string): StoreContext;
     addEffects(...effectClassTypes: any[]): StoreContext;
     dispose(): void;
@@ -25,7 +25,7 @@ export declare class StoreContext {
 
 export declare function setStoreContext(options: { states: any[], effects?: any[], devTools?: any }): void;
 
-export declare function ofType<T extends Action, R extends T = T, K extends R['type']= R['type']>(...key: K[]): (source: Observable<T>) => Observable<R>;
+export declare function ofType<T extends Action, R extends T = T, K extends R['type'] = R['type']>(...key: K[]): (source: Observable<T>) => Observable<R>;
 
 export declare function getStore(): StoreContext;
 export declare function Action(actionType: string): any;
@@ -38,6 +38,8 @@ export declare const AjwahStore: {
         states: any[];
         effects?: any[];
         devTools?: any;
+        actionsMethodStartsWith?: string;
+        effectsMethodStartsWith?: string;
     }): void;
 };
 

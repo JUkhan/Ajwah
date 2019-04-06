@@ -1,7 +1,7 @@
 
-export const INCREMENT = 'inc';
-export const DECREMENT = 'dec';
-export const ASYNC_INCREMENT = 'asycInc';
+export const INCREMENT = 'Inc';
+export const DECREMENT = 'Dec';
+export const ASYNC_INCREMENT = 'AsyncInc';
 
 export const ADD_TUTORIAL = 'addTutorial';
 export const REMOVE_TUTORIAL = 'removeTutorial';

@@ -5,7 +5,8 @@ import router from './router';
 import vueRx from 'vue-rx';
 import { AjwahStore } from 'ajwah-vue-store';
 import { devTools } from 'ajwah-devtools';
-import counterState from './states/counterState'
+//import counterState from './states/counterState'
+import counterState from './states/counterState2'
 
 Vue.use(vueRx);
 

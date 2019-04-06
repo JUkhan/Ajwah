@@ -19,6 +19,7 @@ import { TodosComponent } from './components/todos';
 import { HttpClientModule } from '@angular/common/http';
 import { TodoService } from './services/todoService';
 
+
 @NgModule({
   declarations: [
     AppComponent, TutorialList, AddTutorial, Counter, SearchComponent,
@@ -29,7 +30,9 @@ import { TodoService } from './services/todoService';
     AjwahStoreModule.bootstrap({
       states: [counterState, SearchState, TodoState],
       effects: [SearchEffects],
-      devTools: devTools()
+      devTools: devTools(),
+      //actionsMethodStartsWith: 'myAction',
+      //effectsMethodStartsWith: 'myEffect'
     })
   ],
   providers: [

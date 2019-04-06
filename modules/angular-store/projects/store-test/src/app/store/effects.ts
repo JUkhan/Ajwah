@@ -6,12 +6,12 @@ import { Injectable } from '@angular/core';
 
 
 @Injectable({ providedIn: 'root' })
-@EffectKey(DYNAMIC_EFFECTS_KEY)
+//@EffectKey(DYNAMIC_EFFECTS_KEY)
 export class DynamicEffect {
 
-
-    @Effect()
-    asyncInc(action$: Actions) {
+    effectKey = DYNAMIC_EFFECTS_KEY;
+    //@Effect()
+    effectAsyncInc(action$: Actions) {
         return action$.pipe(
             ofType(ASYNC_INCREMENT),
             debounceTime(1000),

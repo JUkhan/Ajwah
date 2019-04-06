@@ -1,14 +1,15 @@
 
 import { ignoreElements } from 'rxjs/operators';
 import { merge } from 'rxjs';
+import { getEffectKey } from './altdecoretors';
+import { ofType } from '../operators';
+import { EFFECT_METADATA_KEY } from './metakeys';
 
-
-export const EFFECT_METADATA_KEY = 'ajwah/effects';
 export function EffectKey(key: string) {
     return function (target) {
         target = target.prototype;
         if (!target.hasOwnProperty(EFFECT_METADATA_KEY)) {
-            Object.defineProperty(target, EFFECT_METADATA_KEY, {})
+            Object.defineProperty(target, EFFECT_METADATA_KEY, { value: { effects: [] } })
         }
         target[EFFECT_METADATA_KEY].key = key;
 
@@ -18,35 +19,32 @@ export function EffectKey(key: string) {
 export function Effect({ dispatch } = { dispatch: true }) {
     return function (target, propertyName) {
         if (!target.hasOwnProperty(EFFECT_METADATA_KEY)) {
-            Object.defineProperty(target, EFFECT_METADATA_KEY, { value: [] })
+            Object.defineProperty(target, EFFECT_METADATA_KEY, { value: { effects: [] } })
         }
-        target[EFFECT_METADATA_KEY].push({ propertyName, dispatch });
+        target[EFFECT_METADATA_KEY].effects.push({ propertyName, dispatch });
+
     };
 }
 export function getEffectsMetadata(instance) {
-    return instance[EFFECT_METADATA_KEY] || [];
+    return instance[EFFECT_METADATA_KEY] && instance[EFFECT_METADATA_KEY].effects || [];
 }
 
-export function _mergeEffects(instance) {
-    const observables = getEffectsMetadata(instance).map((({ propertyName, dispatch }) => {
-        const observable = typeof instance[propertyName] === 'function' ?
-            instance[propertyName]() : instance[propertyName];
-        if (dispatch === false) {
-            return ignoreElements.call(observable);
-        }
-        return observable;
-    }));
-    return merge(...observables);
-}
 export function mergeEffects(instance, action$, store$) {
     const observables = getEffectsMetadata(instance)
         .filter(({ propertyName }) => typeof instance[propertyName] === 'function')
         .map(({ propertyName, dispatch }) => {
-            if (dispatch === false) {
-                return instance[propertyName](action$, store$).pipe(ignoreElements());
+            if (propertyName.startsWith(getEffectKey() + 'For')) {
+                return callEffectFunction(instance, propertyName, dispatch, action$.pipe(ofType(...propertyName.replace(getEffectKey() + 'For', '').replace('_ndispatch', '').split('Or'))), store$);
             }
-            return instance[propertyName](action$, store$);
+            return callEffectFunction(instance, propertyName, dispatch, action$, store$);
+
         });
 
     return merge(...observables);
+}
+function callEffectFunction(instance, propertyName, dispatch, action$, store$) {
+    if (dispatch === false) {
+        return instance[propertyName](action$, store$).pipe(ignoreElements());
+    }
+    return instance[propertyName](action$, store$);
 }

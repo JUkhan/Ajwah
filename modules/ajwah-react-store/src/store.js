@@ -1,7 +1,7 @@
 import { BehaviorSubject, queueScheduler } from 'rxjs';
 import { map, scan, distinctUntilChanged, pluck, observeOn } from 'rxjs/operators';
 import { combineStates } from './combineStates';
-import { STATE_METADATA_KEY } from './decorators/state';
+import { STATE_METADATA_KEY } from './decorators/metakeys';
 
 export class Store extends BehaviorSubject {
 
@@ -72,6 +72,12 @@ export class Store extends BehaviorSubject {
     }
     _mapState(inst) {
         const meta = inst[STATE_METADATA_KEY];
+        if (!meta.name) {
+            meta.name = inst.name;
+        }
+        if (!meta.initialState) {
+            meta.initialState = inst.initialState;
+        }
         this.states[meta.name] = inst;
         return meta.name;
     }

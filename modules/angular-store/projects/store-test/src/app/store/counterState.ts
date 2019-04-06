@@ -1,38 +1,37 @@
 import { debounceTime, mapTo } from 'rxjs/operators';
 
-import { State, Action, Effect, Actions } from 'ajwah-angular-store';
+import { Actions, ofType, Effect } from 'ajwah-angular-store';
 import { INCREMENT, DECREMENT, ASYNC_INCREMENT } from './actions';
 import { updateObject } from './util';
 
-@State({
-    name: 'counter',
-    initialState: { count: 5, msg: '' }
-})
+
 class CounterState {
-    constructor(public action$: Actions) {
 
-    }
+    name = 'counter';
+    initialState = { count: 15, msg: '' };
 
-    @Action(INCREMENT)
-    increment(state, action) {
+    actionInc(state) {
         return updateObject(state, { count: state.count + 1, msg: '' })
     }
 
-    @Action(DECREMENT)
-    decrement(state, action) {
+    actionDec(state) {
         return updateObject(state, { count: state.count - 1, msg: '' })
     }
 
-    @Action(ASYNC_INCREMENT)
-    asyncIncrement(state, action) {
+    actionAsyncInc(state) {
         return updateObject(state, { msg: 'loading...' })
     }
 
-    /*@Effect()
-    asyncInc = this.action$.ofType(ASYNC_INCREMENT).pipe(
-        debounceTime(1000),
-        mapTo({ type: INCREMENT })
-    )*/
+    //@Effect()
+    effectForAsyncIncOrDec(action$: Actions) {
+        return action$.pipe(
+            //ofType(ASYNC_INCREMENT),
+            debounceTime(450),
+            mapTo({ type: INCREMENT })
+        )
+    }
+
+
 }
 
 export default CounterState;

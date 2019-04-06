@@ -2,12 +2,12 @@
 import { BehaviorSubject, Subscription, Observable, queueScheduler } from 'rxjs';
 import { map, scan, distinctUntilChanged, pluck, subscribeOn } from 'rxjs/operators';
 import { combineStates } from './combineStates';
-import { STATE_METADATA_KEY } from './decorators/state';
+import { STATE_METADATA_KEY, EFFECT_METADATA_KEY } from './decorators/metakeys';
 import { Dispatcher } from './dispatcher';
 import { Injectable, Inject, Injector, Type, OnDestroy } from '@angular/core';
 import { ROOT_STATES, ROOT_EFFECTS } from './tokens';
 import { EffectsSubscription } from './effectsSubscription';
-import { EFFECT_METADATA_KEY } from './decorators/effect';
+import { setActionsAndEffects } from './decorators/altdecoretors';
 
 @Injectable()
 export class Store extends BehaviorSubject<any> implements OnDestroy {
@@ -76,8 +76,10 @@ export class Store extends BehaviorSubject<any> implements OnDestroy {
     }
 
     addStates(...states: Type<any>[]): Store {
-
-        const instances = states.map((_ => this.injector.get(_)));
+        const instances = states.map(_ => {
+            setActionsAndEffects(_);
+            return this.injector.get(_);
+        });
         instances.forEach((instance => {
             const name = this.mapState(instance);
             this.next({ type: `add_state(${name})` });
@@ -101,6 +103,12 @@ export class Store extends BehaviorSubject<any> implements OnDestroy {
 
     private mapState(instance) {
         const meta = instance[STATE_METADATA_KEY];
+        if (!meta.name) {
+            meta.name = instance.name;
+        }
+        if (!meta.initialState) {
+            meta.initialState = instance.initialState;
+        }
         this.states[meta.name] = instance;
         return meta.name;
     }
@@ -112,11 +120,18 @@ export class Store extends BehaviorSubject<any> implements OnDestroy {
 
     addEffects(...effects: Type<any>[]): Store {
 
-        const instances = effects.map((_ => this.injector.get(_)));
+        const instances = effects.map(_ => {
+            setActionsAndEffects(_, false);
+            const inst = this.injector.get(_);
+            if (inst.effectKey) {
+                inst[EFFECT_METADATA_KEY].key = inst.effectKey;
+            }
+            return inst;
+        });
 
-        const globalEffects = instances.filter((ef => !ef[EFFECT_METADATA_KEY].key));
+        const globalEffects = instances.filter(ef => !ef[EFFECT_METADATA_KEY].key);
 
-        const keysEffects = instances.filter((ef => !!ef[EFFECT_METADATA_KEY].key));
+        const keysEffects = instances.filter(ef => !!ef[EFFECT_METADATA_KEY].key);
         globalEffects.length && this.effect.addEffects(globalEffects);
         if (keysEffects.length) {
             keysEffects.forEach((instance => {
@@ -124,13 +139,17 @@ export class Store extends BehaviorSubject<any> implements OnDestroy {
                 this.addEffectsByKey(instance, key);
             }));
         }
+
         return this;
+
     }
 
     removeEffectsByKey(key: string) {
         if (this.subscriptionMap[key]) {
             this.subscriptionMap[key].unsubscribe && this.subscriptionMap[key].unsubscribe();
-            this.subscriptionMap[key] = null;
+            this.subscriptionMap[key] = undefined;
+        } else {
+            throw `Unknown effect key '${key}'`;
         }
     }
 

@@ -14,34 +14,30 @@ import { tap, mapTo, flatMap } from 'rxjs/operators';
 import { empty } from 'rxjs';
 import NewCounter from '../components/newCounter';
 
-@Connect({
+/*@Connect({
     tutorials: state => state.tutorials,
     counter: state => state.counter
-})
+})*/
 class Page1 extends PureComponent {
+    constructor() {
+        super()
+        Connect({
+            tutorials: state => state.tutorials,
+            counter: state => state.counter
+        }, this)
+    }
     componentWillMount() {
-        console.log('com-will-mount');
-        getStore().addEffect(action$ =>
-            action$.ofType(INCREMENT)
-                .pipe(
-                    flatMap(res => {
-                        console.log(res);
-                        return empty();
-                    })
-                ), 'fx'
-        )
-        this.sub = getStore().select('counter').subscribe(res => console.log('res:::', res));
+        console.log('componentWillMount');
     }
     componentWillUnmount() {
-        getStore().removeEffectsByKey('fx');
-        this.sub.unsubscribe();
+        console.log('componentWillUnmount');
     }
     tutorialsHasNamedCounter() {
         return !!this.state.tutorials.find(_ => _.name === 'counter');
     }
     render() {
         console.log('page1');
-        const { counter, tutorials } = this.state;
+        const { counter, tutorials = [] } = this.state;
         return <div>
             {this.tutorialsHasNamedCounter() ?
                 <div className="text-danger">Please remove counter tutorial.</div> : <Counter counter={counter}></Counter>}
@@ -53,7 +49,7 @@ class Page1 extends PureComponent {
                     <TutorialList tutorials={tutorials} counter={counter}></TutorialList>
                 </div>
             </div>
-            <NewCounter vount="12"></NewCounter>
+
         </div>
 
     }

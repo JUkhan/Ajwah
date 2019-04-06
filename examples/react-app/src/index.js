@@ -6,7 +6,7 @@ import App from './App';
 import * as serviceWorker from './serviceWorker';
 import { setStoreContext } from 'ajwah-react-store'
 //import CounterEffect from "./states/counterEffects";
-//import TutorialState from "./states/tutoroalState";
+import TutorialState from "./states/tutoroalState";
 import TodoState from "./states/todoState";
 import CounterSate from "./states/counterState";
 import { devTools } from 'ajwah-devtools';
@@ -15,7 +15,9 @@ import { devTools } from 'ajwah-devtools';
 setStoreContext({
     states: [CounterSate, TodoState],
     effects: [],
-    devTools: devTools({ maxAge: 10 })
+    devTools: devTools({ maxAge: 10 }),
+    //actionsMethodStartsWith: 'myAction',
+    //effectsMethodStartsWith:'myEffect'
 });
 
 ReactDOM.render(<App />, document.getElementById('root'));

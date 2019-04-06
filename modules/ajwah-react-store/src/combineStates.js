@@ -1,4 +1,4 @@
-import { STATE_METADATA_KEY } from "./decorators/state";
+import { STATE_METADATA_KEY } from "./decorators/metakeys";
 
 function updateState(state, action, instance) {
     const metaProp = instance[STATE_METADATA_KEY];

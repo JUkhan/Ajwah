@@ -1,22 +1,176 @@
 # Ajwah
-Rx based store library for React, Preact. Manage your application's states, effects, and actions easy way. Easy to use in functional components with React hooks.
+Rx based store library for React, Vue, Angular, Preact. Manage your application's states, effects, and actions easy way. It's easy to use in functional components with React hooks.
 
 
 ### Installation
 
 ```sh
->> npm install ajwah-react-store
+>> npm install ajwah-store
 >> npm install ajwah-devtools
 ```
+In Ajwah there are two different coding styles
+* Coding by Decorators
+* Coding by Convention
 
+Here is the samples of all decorators and it's corresponding coding by convention
 
-### For typescript
-```sh
->> npx create-react-app my-app --scripts-version=react-scripts-ts
+### `@Action()`
+```js
+    @Action('Inc')
+    increment(state, action){
+        return updateObject(state, { count: state.count + 1, msg: '' })
+    }
+
+    // Convention: function name starts with `action` followed by  action name - [action][actionName](...){...}
+
+    actionInc(state, action){
+        return updateObject(state, { count: state.count + 1, msg: '' })
+    }
 ```
 
-### For javascript
-Ajwah based on decorators - this is the way enable decorators in create-react-app:
+### `@Effect()`
+```js
+    @Effect()
+    asyncIncrement(actions:Actions, store:StoreContext){
+        return actions.pipe(
+            ofType('AsyncInc'),
+            debounceTime(500),
+            mapTo({type:'Inc'})
+        )
+    }
+
+    // Convention: function name starts with `effect` followed by anything - [effect][any](...){...}
+
+    effectAsyncInc(actions:Actions, store:StoreContext){
+        return actions.pipe(
+            ofType('AsyncInc'),
+            debounceTime(500),
+            mapTo({type:'Inc'})
+        )
+    }
+    //@Effect(...) decoretor: you may mas `dispatch:flase` -  by default it's true. if you pass `false`, you effect should be disabled.
+
+    @Effect({dispatch:flase})
+    asyncIncrement(actions:Actions, store:StoreContext){
+        return actions.pipe(
+            ofType('AsyncInc'),
+            debounceTime(500),
+            mapTo({type:'Inc'})
+        )
+    }
+
+    //Convention: for `dispatch:false` - just function name ends with `_ndispatch`
+
+    effectAsyncInc_ndispatch(actions:Actions, store:StoreContext){
+        return actions.pipe(
+            ofType('AsyncInc'),
+            debounceTime(500),
+            mapTo({type:'Inc'})
+        )
+    }
+
+    // you may use `For` for getting rid of `ofType('...')` - [effect][For][actionName](...){...}. Use 'Or' for multiple actions name. ex: effectForAsyncIncOrDec(...)
+    effectForAsyncInc(actions:Actions, store:StoreContext){
+        return actions.pipe(
+            //ofType('AsyncInc'), now it's not necessary
+            debounceTime(500),
+            mapTo({type:'Inc'})
+        )
+    }
+    // '_ndispatch' with `For` ex: effectForAsyncInc_ndispatch()
+    effectForAsyncInc_ndispatch(actions:Actions, store:StoreContext){
+        return actions.pipe(
+            debounceTime(500),
+            mapTo({type:'Inc'})
+        )
+    }
+
+```
+### @State() 
+```js
+    @State({
+        name: 'counter',
+        initialState: { count: 5, msg: '' }
+    })
+    class CounterState{
+
+    }
+
+    //Convention:
+
+    class CounterState{
+        constructor(){
+            this.name= 'counter';
+            this.initialState={ count: 5, msg: '' };
+        }
+    }
+
+```
+### @Connect() 
+```js
+    @Connect({
+        counter: state => state.counter
+    })
+    class CounterComponent extends PureComponent {
+
+
+    }
+
+    //Convention:
+
+    class CounterComponent extends PureComponent {
+        constructor(){
+            super()
+            Connect({counter: state => state.counter}, this);
+        }
+    }
+
+```
+### @EffectKey() 
+```js
+    @EffectKey(DYNAMIC_EFFECTS_KEY)
+    class DynamicEffect{
+
+    }
+
+    //Convention:
+
+    class DynamicEffect{
+        constructor(){
+            this.effectKey=DYNAMIC_EFFECTS_KEY;
+        }
+    }
+
+```
+
+`Note: Please remember the starts with 'action' and 'effect'. This is by default. You may change whatever you want into the 'setStoreContext'` 
+
+```js
+    setStoreContext({
+        states: [CounterSate, TodoState],
+        effects: [TodoEffects],
+        devTools: devTools({ maxAge: 10 }),
+        actionsMethodStartsWith: 'myAction', // default 'action'
+        effectsMethodStartsWith:'myEffect'  // default 'effect'
+    });
+
+    //Now your actions and  effects should be
+
+    myActionInc(state, action){
+        return updateObject(state, { count: state.count + 1, msg: '' })
+    }
+
+    myEffectAsyncInc(actions:Actions, store:StoreContext){
+        return actions.pipe(
+            ofType('AsyncInc'),
+            debounceTime(500),
+            mapTo({type:'Inc'})
+        )
+    }
+
+```
+
+### To enable decorators in create-react-app javascript(if you are interested to use decoretors)
 
 ```sh
 >> npx create-react-app my-app
@@ -43,17 +197,17 @@ Ajwah based on decorators - this is the way enable decorators in create-react-ap
 ```
 ```sh
 >> npm install rxjs
->> npm install ajwah-react-store
+>> npm install ajwah-store
 >> npm install ajwah-devtools //optional
 >> npm start
 ```
 
-### Let's start with hello world `counterState`
+### Let's start with the hello world `counterState`
 
-### `counterState`
+### `counterState using decoretors`
 
 ```js
-import { State, Action, Effect, ofType, Actions } from 'ajwah-react-store';
+import { State, Action, Effect, ofType, Actions } from 'ajwah-store';
 import { INCREMENT, DECREMENT, ASYNC_INCREMENT } from './actions';
 import { updateObject } from './util';
 import { mapTo, debounceTime } from "rxjs/operators";
@@ -91,14 +245,49 @@ class CounterState {
 }
 
 export default CounterState;
+```
+### `counterState using convention`
+```js
+import { Actions } from 'ajwah-store';
+import { INCREMENT } from "./actions";
+import { updateObject } from "../utli";
+import { debounceTime, mapTo } from 'rxjs/operators';
 
+class CounterSate {
+
+    name = 'counter'
+    initialState = { count: 10, msg: '' }
+
+
+    actionInc(state) {
+        return updateObject(state, { count: state.count + 1, msg: '' })
+    }
+
+    actionDec(state) {
+        return updateObject(state, { count: state.count - 1, msg: '' })
+    }
+
+    actionAsyncInc(state) {
+        return updateObject(state, { msg: 'loading...' })
+    }
+
+    effectForAsyncInc(actions:Actions) {
+        return actions.pipe(
+            debounceTime(450),
+            mapTo({ type: INCREMENT })
+        )
+    }
+}
+export default CounterSate;
 
 ```
+`You can choose any style you like or any combination - ajwah support both together`
+
 ### `CounterComponent`
 ```js
 
 import React, { PureComponent } from 'react';
-import { Connect, StoreContext } from 'ajwah-react-store';
+import { Connect, StoreContext } from 'ajwah-store';
 import { INCREMENT, ASYNC_INCREMENT, DECREMENT } from './actions';
 
 @Connect({
@@ -154,7 +343,7 @@ class StoreContext {
 ```js
 import React from 'react';
 import ReactDOM from 'react-dom';
-import { setStoreContext } from 'ajwah-react-store';
+import { setStoreContext } from 'ajwah-store';
 
 import CounterState from './CounterState';
 import Counter from './CounterComponent';
@@ -177,7 +366,7 @@ ReactDOM.render(<Counter />, document.getElementById('root'));
 
 ```js
 import React, { useState, useEffect } from 'react'
-import { getStore} from 'ajwah-react-store'
+import { getStore} from 'ajwah-store'
 import { INCREMENT, DECREMENT, ASYNC_INCREMENT } from './actions';
 
 
@@ -220,7 +409,7 @@ setStoreContext({
 ### `searchState`
 ```js
 
-import {State, Action} from 'ajwah-react-store';
+import {State, Action} from 'ajwah-store';
 import {SEARCH_KEYSTROKE, SEARCH_RESULT} from './actions';
 import {updateObject} from './util';
 
@@ -247,7 +436,7 @@ export default SearchState;
 ### `searchEffects`
 ```js
 
-import { Effect, Actions, ofType, Actions } from 'ajwah-react-store';
+import { Effect, Actions, ofType, Actions } from 'ajwah-store';
 import {
     debounceTime,
     switchMap,
@@ -301,7 +490,7 @@ function removeState() {
  [Dynamic states and effects - Live](https://stackblitz.com/edit/ajwah-effect?file=Effects.ts)
 
 
-### Here is the `Todo List` app consuming `JSONPlaceholder Rest API`
+### Here is the `TodoList` app consuming `JSONPlaceholder Rest API`
 In this app all the todo effects has been defined into the `todoState` class. Its your choice whether you make a separete effects class like `todoEffects` 
 
 [TodoList app - Live](https://stackblitz.com/edit/ajwah-state-manage?file=pages%2Fpage2.tsx)
@@ -311,7 +500,7 @@ In this app all the todo effects has been defined into the `todoState` class. It
 import React, { useState, useEffect } from 'react';
 import Todos from "../components/Todos";
 import AddTodo from "../components/AddTodo";
-import { getStore } from 'ajwah-react-store';
+import { getStore } from 'ajwah-store';
 import { LOAD_TODOS } from '../states/actions'
 
 function todoPage() {
@@ -341,7 +530,7 @@ export default todoPage;
 ### todoState
 ```js
 
-import { State, Action, Effect, ofType } from 'ajwah-react-store';
+import { State, Action, Effect, ofType } from 'ajwah-store';
 import { TODOS_DATA, ADD_TODO, UPDATE_TODO, REMOVE_TODO, LOAD_TODOS } from './actions';
 import { updateObject } from '../utli';
 import { map, mergeMap, withLatestFrom, catchError } from 'rxjs/operators';
@@ -456,7 +645,7 @@ export default TodoState;
 ### addTodoComponent
 ```js
 import React from 'react';
-import { getStore } from "ajwah-react-store";
+import { getStore } from 'ajwah-store';
 import { ADD_TODO } from '../states/actions'
 
 function addItem(e) {
@@ -499,7 +688,7 @@ export default todos;
 ### todoItemComponent
 ```js
 import React from 'react';
-import { getStore } from "ajwah-react-store";
+import { getStore } from 'ajwah-store';
 import { REMOVE_TODO, UPDATE_TODO } from '../states/actions'
 
 function updateTodo(todo, e) {

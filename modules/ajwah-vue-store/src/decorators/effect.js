@@ -8,7 +8,7 @@ export function EffectKey(key) {
     return function (target) {
         target = target.prototype;
         if (!target.hasOwnProperty(EFFECT_METADATA_KEY)) {
-            Object.defineProperty(target, EFFECT_METADATA_KEY, {})
+            Object.defineProperty(target, EFFECT_METADATA_KEY, { value: { effects: [] } })
         }
         target[EFFECT_METADATA_KEY].key = key;
 
@@ -18,13 +18,14 @@ export function EffectKey(key) {
 export function Effect({ dispatch } = { dispatch: true }) {
     return function (target, propertyName) {
         if (!target.hasOwnProperty(EFFECT_METADATA_KEY)) {
-            Object.defineProperty(target, EFFECT_METADATA_KEY, { value: [] })
+            Object.defineProperty(target, EFFECT_METADATA_KEY, { value: { effects: [] } })
         }
-        target[EFFECT_METADATA_KEY].push({ propertyName, dispatch });
+        target[EFFECT_METADATA_KEY].effects.push({ propertyName, dispatch });
+
     };
 }
 export function getEffectsMetadata(instance) {
-    return instance[EFFECT_METADATA_KEY] || [];
+    return instance[EFFECT_METADATA_KEY] && instance[EFFECT_METADATA_KEY].effects || [];
 }
 
 export function mergeEffects(instance, action$, store$) {
