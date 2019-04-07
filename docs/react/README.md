@@ -477,7 +477,7 @@ export default SearchEffects;
 
 ```js
 addEffect() {
-    this.store.addEffects(CounterEffect);
+    this.store.addEffects(DynamicEffect);
 }
 removeEffect() {
     this.store.removeEffectsByKey(DYNAMIC_EFFECTS_KEY);
