@@ -12,7 +12,7 @@ In Ajwah there are two different coding styles
 * Coding by Decorators
 * Coding by Convention
 
-Here is the samples of all decorators and it's corresponding coding by convention
+Here are the samples of all the decorators and it's corresponding coding by convention
 
 ### `@Action()`
 ```js
