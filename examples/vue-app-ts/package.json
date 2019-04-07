@@ -9,7 +9,7 @@
   },
   "dependencies": {
     "ajwah-devtools": "^0.1.1",
-    "ajwah-store": "file:../../modules/ajwah-store",
+    "ajwah-store": "^0.2.0",
     "core-js": "^2.6.5",
     "rxjs": "^6.4.0",
     "vue": "^2.6.6",
