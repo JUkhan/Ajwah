@@ -1,6 +1,6 @@
 import React from 'react';
 import { REMOVE_TUTORIAL } from "../states/actions";
-import { getStore } from "ajwah-react-store";
+import { getStore } from "ajwah-store";
 import Counter from './fxCounterComponent';
 
 function onRemove(name) {

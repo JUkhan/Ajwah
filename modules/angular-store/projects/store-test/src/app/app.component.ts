@@ -1,8 +1,9 @@
 import { LOAD_TODOS } from './store/actions';
 import { Subscription } from 'rxjs';
-import { TutorialState } from './store/tutorialState';
+//import { TutorialState } from './store/tutorialState';
+import { TutorialState } from './store.convention/tutorialState';
 
-import { Component, Type, OnDestroy } from '@angular/core';
+import { Component, OnDestroy } from '@angular/core';
 import { Store } from 'ajwah-angular-store';
 import { DynamicEffect } from './store/effects';
 import { DYNAMIC_EFFECTS_KEY } from './store/actions';

@@ -1,5 +1,5 @@
 import React from 'react';
-import { getStore } from "ajwah-react-store";
+import { getStore } from "ajwah-store";
 import { REMOVE_TODO, UPDATE_TODO } from '../states/actions'
 
 function updateTodo(todo, e) {

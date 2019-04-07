@@ -3,7 +3,7 @@ import UserState from '../states/userState';
 import { ajax } from 'rxjs/ajax';
 import { take, map } from 'rxjs/operators';
 import { LOAD_USER } from '../states/actions';
-import { getStore } from 'ajwah-react-store';
+import { getStore } from 'ajwah-store';
 
 
 function loadData() {

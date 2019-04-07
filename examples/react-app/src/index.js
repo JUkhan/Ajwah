@@ -4,7 +4,7 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import './index.css';
 import App from './App';
 import * as serviceWorker from './serviceWorker';
-import { setStoreContext } from 'ajwah-react-store'
+import { setStoreContext } from 'ajwah-store'
 //import CounterEffect from "./states/counterEffects";
 import TutorialState from "./states/tutoroalState";
 import TodoState from "./states/todoState";

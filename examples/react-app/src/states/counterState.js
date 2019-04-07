@@ -21,7 +21,7 @@ class CounterSate {
         return updateObject(state, { msg: 'loading...' })
     }
 
-    effectForAsyncInc(actions) {
+    effectForAsyncIncOrDec(actions) {
         return actions.pipe(
             debounceTime(450),
             mapTo({ type: INCREMENT })

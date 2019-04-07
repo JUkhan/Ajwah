@@ -1,6 +1,6 @@
 import React from 'react';
 import { ADD_TUTORIAL } from "../states/actions";
-import { getStore } from 'ajwah-react-store';
+import { getStore } from 'ajwah-store';
 
 function onSubmit(event) {
     event.preventDefault();

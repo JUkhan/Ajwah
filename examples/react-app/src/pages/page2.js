@@ -1,5 +1,5 @@
 import React, { PureComponent } from 'react';
-import { Connect } from 'ajwah-react-store';
+import { Connect } from 'ajwah-store';
 import UserState from '../states/userState';
 import { ajax } from 'rxjs/ajax';
 import { take, map, catchError } from 'rxjs/operators';

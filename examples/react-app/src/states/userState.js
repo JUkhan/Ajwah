@@ -1,5 +1,5 @@
 
-import { State, Action, Effect } from 'ajwah-react-store';
+import { State, Action, Effect } from 'ajwah-store';
 import { LOAD_USER, INCREMENT } from './actions';
 import { updateObject } from '../utli';
 import { mapTo } from 'rxjs/operators';

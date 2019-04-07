@@ -7,7 +7,7 @@ import Page1 from './pages/fxPage1';
 //import Page2 from './pages/page2';
 import Page2 from './pages/fxPage2';
 import Page3 from './pages/page3';
-import { getStore } from 'ajwah-react-store';
+import { getStore } from 'ajwah-store';
 
 class App extends PureComponent {
 

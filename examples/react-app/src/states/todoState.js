@@ -1,5 +1,5 @@
 
-import { State, Action, Effect, ofType } from 'ajwah-react-store';
+import { State, Action, Effect, ofType } from 'ajwah-store';
 import { TODOS_DATA, ADD_TODO, UPDATE_TODO, REMOVE_TODO, LOAD_TODOS } from './actions';
 import { updateObject } from '../utli';
 import { map, mergeMap, withLatestFrom, catchError } from 'rxjs/operators';

@@ -3,7 +3,7 @@ import React, { useState, useEffect } from 'react';
 import Counter from "../components/fxCounterComponent";
 import AddTutorial from "../components/fxAddTutorialComponent";
 import TutorialList from "../components/fxTutotialListComponent";
-import { getStore } from 'ajwah-react-store';
+import { getStore } from 'ajwah-store';
 import { DYNAMIC_EFFECTS_KEY } from '../states/actions'
 import CounterEffect from "../states/counterEffects";
 import TutorialState from "../states/tutoroalState";

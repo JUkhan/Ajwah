@@ -146,7 +146,7 @@ Here is the samples of all decorators and it's corresponding coding by conventio
 `Note: Please remember the starts with 'action' and 'effect'. This is by default. You may change whatever you want into the 'setStoreContext'` 
 
 ```js
-    setStoreContext({
+   AjwahStoreModule.bootstrap({
         states: [CounterSate, TodoState],
         effects: [TodoEffects],
         devTools: devTools({ maxAge: 10 }),
@@ -175,7 +175,7 @@ Here is the samples of all decorators and it's corresponding coding by conventio
 ### `counterState using decoretors`
 
 ```js
-import { State, Action, Effect, ofType, Actions } from 'ajwah-store';
+import { State, Action, Effect, ofType, Actions } from 'ajwah-angular-store';
 import { INCREMENT, DECREMENT, ASYNC_INCREMENT } from './actions';
 import { updateObject } from './util';
 import { mapTo, debounceTime } from "rxjs/operators";
@@ -216,7 +216,7 @@ export default CounterState;
 ```
 ### `counterState using convention`
 ```js
-import { Actions } from 'ajwah-store';
+import { Actions } from 'ajwah-angular-store';
 import { INCREMENT } from "./actions";
 import { updateObject } from "../utli";
 import { debounceTime, mapTo } from 'rxjs/operators';

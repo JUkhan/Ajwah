@@ -11,9 +11,12 @@ import { FormsModule } from '@angular/forms';
 
 import { devTools } from 'ajwah-devtools'
 import { Counter } from './components/counter';
-import { SearchEffects } from './store/SearchEffects';
-import { SearchState } from './store/SearchState';
-import { TodoState } from './store/todoState';
+//import { SearchEffects } from './store/SearchEffects';
+import { SearchEffects } from './store.convention/SearchEffects';
+//import { SearchState } from './store/SearchState';
+import { SearchState } from './store.convention/SearchState';
+//import { TodoState } from './store/todoState';
+import { TodoState } from './store.convention/todoState';
 import { TodoItemComponent } from './components/todoItem';
 import { TodosComponent } from './components/todos';
 import { HttpClientModule } from '@angular/common/http';

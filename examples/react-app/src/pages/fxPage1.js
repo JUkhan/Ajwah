@@ -4,7 +4,7 @@ import Counter from "../components/fxCounterComponent";
 //import TutorialList from "../components/fxTutotialListComponent";
 import Todos from "../components/Todos";
 import AddTodo from "../components/AddTodo";
-import { getStore } from 'ajwah-react-store';
+import { getStore } from 'ajwah-store';
 import { LOAD_TODOS } from '../states/actions'
 
 function page1() {

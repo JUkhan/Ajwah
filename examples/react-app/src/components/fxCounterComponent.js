@@ -1,7 +1,7 @@
 import React from 'react';
 import { INCREMENT, DECREMENT, ASYNC_INCREMENT } from "../states/actions";
 
-import { getStore } from 'ajwah-react-store';
+import { getStore } from 'ajwah-store';
 
 function increment() {
     getStore().dispatch({ type: INCREMENT });

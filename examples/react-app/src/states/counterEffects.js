@@ -1,7 +1,7 @@
 
 import { ASYNC_INCREMENT, INCREMENT, DYNAMIC_EFFECTS_KEY } from "./actions";
 import { map, debounceTime } from "rxjs/operators";
-import { ofType, Effect, EffectKey } from 'ajwah-react-store';
+import { ofType, Effect, EffectKey } from 'ajwah-store';
 
 //@EffectKey(DYNAMIC_EFFECTS_KEY)
 class CounterEffect {

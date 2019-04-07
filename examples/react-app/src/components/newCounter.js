@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react'
-import { getStore } from 'ajwah-react-store'
+import { getStore } from 'ajwah-store'
 import { INCREMENT, DECREMENT, ASYNC_INCREMENT } from '../states/actions';
 
 function cc(props) {

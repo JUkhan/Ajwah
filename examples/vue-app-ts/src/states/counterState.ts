@@ -1,4 +1,4 @@
-import { State, Action, Effect, Actions } from "ajwah-vue-store";
+import { State, Action, Effect, Actions } from "ajwah-store";
 import { INCREMENT, DECREMENT, ASYNC_INCREMENT } from "./actions";
 import { updateObject } from "./util";
 import { mapTo, debounceTime } from 'rxjs/operators';

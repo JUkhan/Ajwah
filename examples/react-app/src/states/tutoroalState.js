@@ -1,4 +1,4 @@
-import { State, Action, Effect, ofType } from 'ajwah-react-store'
+import { State, Action, Effect, ofType } from 'ajwah-store'
 import { ADD_TUTORIAL, REMOVE_TUTORIAL } from './actions';
 import { mapTo, debounceTime } from 'rxjs/operators';
 import { ASYNC_INCREMENT, INCREMENT } from './actions';

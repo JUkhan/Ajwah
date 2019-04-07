@@ -8,7 +8,7 @@ import AddTutorial from "../components/fxAddTutorialComponent";
 //import TutorialList from "../components/tutotialListComponent";
 import TutorialList from "../components/fxTutotialListComponent";
 
-import { Connect, getStore } from 'ajwah-react-store';
+import { Connect, getStore } from 'ajwah-store';
 import { INCREMENT, ASYNC_INCREMENT, DECREMENT } from '../states/actions';
 import { tap, mapTo, flatMap } from 'rxjs/operators';
 import { empty } from 'rxjs';

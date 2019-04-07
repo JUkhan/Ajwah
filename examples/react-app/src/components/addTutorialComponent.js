@@ -1,6 +1,6 @@
 import React, { PureComponent } from 'react';
 import { ADD_TUTORIAL } from "../states/actions";
-import { getStore } from 'ajwah-react-store';
+import { getStore } from 'ajwah-store';
 
 
 class AddTutorial extends PureComponent {

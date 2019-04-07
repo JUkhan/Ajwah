@@ -1,0 +1,51 @@
+{
+  "name": "ajwah-store",
+  "version": "0.2.0",
+  "description": "Rx based store lib for react, angular, and vue",
+  "main": "lib/cjs/index.js",
+  "module": "lib/esm/index.js",
+  "typings": "index.d.ts",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "npm run build:esm && npm run build:cjs",
+    "clean": "rimraf lib temp dist",
+    "build:esm": "gulp build:esm",
+    "build:cjs": "babel src -d lib/cjs"
+  },
+  "devDependencies": {
+    "babel-core": "^6.26.0",
+    "babel-plugin-transform-object-rest-spread": "^6.8.0",
+    "babel-preset-env": "^1.6.1",
+    "babel-cli": "^6.11.4",
+    "babel-register": "^6.11.6",
+    "gulp": "^3.9.1",
+    "gulp-babel": "^6.1.2",
+    "rimraf": "^2.5.4",
+    "rxjs": "^6.4.0"
+  },
+  "peerDependencies": {
+    "rxjs": ">=6.0.0-beta.0 <7"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/JUkhan/Ajwah.git"
+  },
+  "contributors": [
+    {
+      "name": "Jasim Uddin Khan",
+      "email": "jasim.uddin.khan@gmail.com"
+    }
+  ],
+  "keywords": [
+    "ajwah",
+    "rxjs",
+    "reactive",
+    "redux"
+  ],
+  "author": "Jasim Uddin Khan",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/JUkhan/Ajwah/issues"
+  },
+  "homepage": "https://github.com/JUkhan/Ajwah#readme"
+}
