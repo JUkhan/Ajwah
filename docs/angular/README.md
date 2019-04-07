@@ -69,7 +69,9 @@ Here are the samples of all the decorators and it's corresponding coding by conv
         )
     }
 
-    // you may use `For` for getting rid of `ofType('...')` - [effect][For][actionName](...){...}. Use 'Or' for multiple actions name. ex: effectForAsyncIncOrDec(...)
+    // you may use `For` for getting rid of `ofType('...')` - [effect][For][actionName](...){...}. 
+    // Use 'Or' for multiple actions name. ex: effectForAsyncIncOrDec(...) 
+    // - [effect][For][actionName][Or][actionName][Or][actionName][...](){}
     effectForAsyncInc(actions:Actions, store:StoreContext){
         return actions.pipe(
             //ofType('AsyncInc'), now it's not necessary
