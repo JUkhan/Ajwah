@@ -476,17 +476,17 @@ export default SearchEffects;
 ### In Ajwah you can dynamically add/remove application's states/effects.
 
 ```js
-function addEffect() {
-    getStore().addEffects(CounterEffect);
+addEffect() {
+    this.store.addEffects(CounterEffect);
 }
-function removeEffect() {
-    getStore().removeEffectsByKey(DYNAMIC_EFFECTS_KEY);
+removeEffect() {
+    this.store.removeEffectsByKey(DYNAMIC_EFFECTS_KEY);
 }
-function addState() {
-    getStore().addStates(TutorialState);
+addState() {
+    this.store.addStates(TutorialState);
 }
-function removeState() {
-    getStore().removeStates('tutorials')
+removeState() {
+    this.store.removeStates('tutorials')
 }
 ```
  [Dynamic states and effects - Live](https://stackblitz.com/edit/ajwah-effect?file=Effects.ts)
