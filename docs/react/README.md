@@ -377,7 +377,7 @@ function fxCounterComponent(props) {
     const [counter, setState] = useState({});
 
     useEffect(() => {
-        const subs = getStore().select('counter').subscribe(res => setState(res));
+        const subs = store.select('counter').subscribe(res => setState(res));
         return () => subs.unsubscribe();
     }, []);
 
