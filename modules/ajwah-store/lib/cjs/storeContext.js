@@ -24,6 +24,8 @@ var _metakeys = require('./decorators/metakeys');
 
 var _altdecoretors = require('./decorators/altdecoretors');
 
+var _operators = require('rxjs/operators');
+
 function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = Array(arr.length); i < arr.length; i++) { arr2[i] = arr[i]; } return arr2; } else { return Array.from(arr); } }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -189,6 +191,11 @@ var StoreContext = function () {
         value: function _addEffectsByKey(instance, key, actions) {
             var subscription = this.subs[key] || (this.subs[key] = new _rxjs.Subscription());
             if (actions) this.effSubs.addEffectsByKey(instance, actions, subscription);else this.effSubs.addEffectByKey(instance, subscription);
+        }
+    }, {
+        key: 'exportState',
+        value: function exportState() {
+            return this.dispatcher.pipe((0, _operators.withLatestFrom)(this.store));
         }
     }, {
         key: 'dispose',

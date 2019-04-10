@@ -6,6 +6,7 @@ import { Actions } from './actions';
 import { Subscription } from 'rxjs';
 import { STATE_METADATA_KEY, EFFECT_METADATA_KEY } from './decorators/metakeys';
 import { setKeys, setActionsAndEffects } from './decorators/altdecoretors';
+import { withLatestFrom } from 'rxjs/operators';
 
 class StoreContext {
     constructor(states) {
@@ -89,7 +90,11 @@ class StoreContext {
             this.effSubs.addEffectsByKey(instance, actions, subscription);
         else this.effSubs.addEffectByKey(instance, subscription);
     }
-
+    exportState() {
+        return this.dispatcher.pipe(
+            withLatestFrom(this.store)
+        )
+    }
     dispose() {
         this.dispatcher.dispose();
         this.store.dispose();

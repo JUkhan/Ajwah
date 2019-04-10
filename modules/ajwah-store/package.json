@@ -47,5 +47,6 @@
   "bugs": {
     "url": "https://github.com/JUkhan/Ajwah/issues"
   },
-  "homepage": "https://github.com/JUkhan/Ajwah#readme"
+  "homepage": "https://github.com/JUkhan/Ajwah#readme",
+  "dependencies": {}
 }

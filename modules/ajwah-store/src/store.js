@@ -16,7 +16,7 @@ export class Store extends BehaviorSubject {
 
         this.subscription = this.dispatcher.pipe(
             observeOn(queueScheduler),
-            scan((state, action) => combineStates(state, action, this.states), {})
+            scan((state, action) => action.type === '@@importState' ? action.payload : combineStates(state, action, this.states), {})
         ).subscribe(newState => { super.next(newState); });
 
     }
@@ -82,6 +82,13 @@ export class Store extends BehaviorSubject {
         return meta.name;
     }
     importState(state) {
-        super.next(state);
+        Object.keys(this.states).forEach((key) => {
+            if (!state[key]) {
+                var metaProp = this.states[key][STATE_METADATA_KEY];
+                var initData = Array.isArray(metaProp.initialState) ? [...metaProp.initialState] : { ...metaProp.initialState };
+                state[key] = initData;
+            }
+        });
+        this.next({ type: '@@importState', payload: state });
     }
 }

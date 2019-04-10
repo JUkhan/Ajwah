@@ -5,6 +5,8 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.Store = undefined;
 
+var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
+
 var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
@@ -18,6 +20,8 @@ var _operators = require('rxjs/operators');
 var _combineStates = require('./combineStates');
 
 var _metakeys = require('./decorators/metakeys');
+
+function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = Array(arr.length); i < arr.length; i++) { arr2[i] = arr[i]; } return arr2; } else { return Array.from(arr); } }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
@@ -63,7 +67,7 @@ var Store = function (_BehaviorSubject) {
         _this.dispatcher = dispatcher;
 
         _this.subscription = _this.dispatcher.pipe((0, _operators.observeOn)(_rxjs.queueScheduler), (0, _operators.scan)(function (state, action) {
-            return (0, _combineStates.combineStates)(state, action, _this.states);
+            return action.type === '@@importState' ? action.payload : (0, _combineStates.combineStates)(state, action, _this.states);
         }, {})).subscribe(function (newState) {
             _get(Store.prototype.__proto__ || Object.getPrototypeOf(Store.prototype), 'next', _this).call(_this, newState);
         });
@@ -148,7 +152,17 @@ var Store = function (_BehaviorSubject) {
     }, {
         key: 'importState',
         value: function importState(state) {
-            _get(Store.prototype.__proto__ || Object.getPrototypeOf(Store.prototype), 'next', this).call(this, state);
+            var _this2 = this;
+
+            //state = Object.assign({}, state);
+            Object.keys(this.states).forEach(function (key) {
+                if (!state[key]) {
+                    var metaProp = _this2.states[key][_metakeys.STATE_METADATA_KEY];
+                    var initData = Array.isArray(metaProp.initialState) ? [].concat(_toConsumableArray(metaProp.initialState)) : _extends({}, metaProp.initialState);
+                    state[key] = initData;
+                }
+            });
+            this.next({ type: '@@importState', payload: state });
         }
     }]);
 

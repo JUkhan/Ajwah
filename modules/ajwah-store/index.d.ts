@@ -18,6 +18,7 @@ export declare class StoreContext {
     removeStates(...stateNames: string[]): StoreContext;
     removeEffectsByKey(key: string): StoreContext;
     importState(state: any): StoreContext;
+    exportState(): Observable<any[]>;
     select<T = any>(pathOrMapFn: ((state: T) => any) | string, ): Observable<any>;
     addEffect<T extends Actions<Action>>(callback: (action$: Actions<Action>, store$?: StoreContext) => Observable<Action>, key?: string): StoreContext;
     addEffects(...effectClassTypes: any[]): StoreContext;

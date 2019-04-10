@@ -11,6 +11,22 @@ import { getStore } from 'ajwah-store';
 
 class App extends PureComponent {
 
+  componentWillMount() {
+    getStore().exportState().subscribe(([action, state]) => {
+
+      console.log(action, state);
+      if (action.type === '@@INIT') {
+        const data = sessionStorage.getItem('appState')
+        data && getStore().importState(JSON.parse(data))
+      }
+      else {
+        state = { ...state };// JSON.parse(JSON.stringify(state));
+        state.todo = undefined;
+        sessionStorage.setItem('appState', JSON.stringify(state))
+      }
+    });
+  }
+
   componentWillUnmount() {
     getStore().dispose();
   }

@@ -6,7 +6,7 @@
     "@babel/core": "7.2.2",
     "@svgr/webpack": "4.1.0",
     "ajwah-devtools": "file:../../modules/ajwah-devtools",
-    "ajwah-store": "^0.2.0",
+    "ajwah-store": "file:../../modules/ajwah-store",
     "babel-core": "7.0.0-bridge.0",
     "babel-eslint": "9.0.0",
     "babel-jest": "23.6.0",
