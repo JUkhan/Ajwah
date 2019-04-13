@@ -1,4 +1,4 @@
-import { EFFECT_METADATA_KEY, STATE_METADATA_KEY } from './metakeys';
+import { EFFECT_METADATA_KEY, STATE_METADATA_KEY } from '../tokens';
 
 var __actionKey = 'action';
 var __effectKey = 'effect';

@@ -1,12 +1,14 @@
 import React from 'react';
 import { ADD_TUTORIAL } from "../states/actions";
-import { getStore } from 'ajwah-store';
+import { dispatch } from 'ajwah-store';
+
 
 function onSubmit(event) {
     event.preventDefault();
     const el = event.target.elements;
     const model = { name: el.name.value, url: el.url.value }
-    getStore().dispatch({ type: ADD_TUTORIAL, payload: model });
+    console.log(model);
+    dispatch(ADD_TUTORIAL, model);
     el.name.value = '';
     el.url.value = '';
 }

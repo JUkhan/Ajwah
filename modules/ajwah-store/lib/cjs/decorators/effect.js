@@ -16,17 +16,17 @@ var _altdecoretors = require('./altdecoretors');
 
 var _operators2 = require('../operators');
 
-var _metakeys = require('./metakeys');
+var _tokens = require('../tokens');
 
 function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = Array(arr.length); i < arr.length; i++) { arr2[i] = arr[i]; } return arr2; } else { return Array.from(arr); } }
 
 function EffectKey(key) {
     return function (target) {
         target = target.prototype;
-        if (!target.hasOwnProperty(_metakeys.EFFECT_METADATA_KEY)) {
-            Object.defineProperty(target, _metakeys.EFFECT_METADATA_KEY, { value: { effects: [] } });
+        if (!target.hasOwnProperty(_tokens.EFFECT_METADATA_KEY)) {
+            Object.defineProperty(target, _tokens.EFFECT_METADATA_KEY, { value: { effects: [] } });
         }
-        target[_metakeys.EFFECT_METADATA_KEY].key = key;
+        target[_tokens.EFFECT_METADATA_KEY].key = key;
     };
 }
 
@@ -35,14 +35,14 @@ function Effect() {
         dispatch = _ref.dispatch;
 
     return function (target, propertyName) {
-        if (!target.hasOwnProperty(_metakeys.EFFECT_METADATA_KEY)) {
-            Object.defineProperty(target, _metakeys.EFFECT_METADATA_KEY, { value: { effects: [] } });
+        if (!target.hasOwnProperty(_tokens.EFFECT_METADATA_KEY)) {
+            Object.defineProperty(target, _tokens.EFFECT_METADATA_KEY, { value: { effects: [] } });
         }
-        target[_metakeys.EFFECT_METADATA_KEY].effects.push({ propertyName: propertyName, dispatch: dispatch });
+        target[_tokens.EFFECT_METADATA_KEY].effects.push({ propertyName: propertyName, dispatch: dispatch });
     };
 }
 function getEffectsMetadata(instance) {
-    return instance[_metakeys.EFFECT_METADATA_KEY] && instance[_metakeys.EFFECT_METADATA_KEY].effects || [];
+    return instance[_tokens.EFFECT_METADATA_KEY] && instance[_tokens.EFFECT_METADATA_KEY].effects || [];
 }
 
 function mergeEffects(instance, action$, store$) {
@@ -54,7 +54,7 @@ function mergeEffects(instance, action$, store$) {
             dispatch = _ref3.dispatch;
 
         if (propertyName.startsWith((0, _altdecoretors.getEffectKey)() + 'For')) {
-            return callEffectFunction(instance, propertyName, dispatch, action$.pipe(_operators2.ofType.apply(undefined, _toConsumableArray(propertyName.replace((0, _altdecoretors.getEffectKey)() + 'For', '').replace('_ndispatch', '').split('Or')))), store$);
+            return callEffectFunction(instance, propertyName, dispatch, action$.pipe(_operators2.ofType.apply(undefined, _toConsumableArray(splitByActionNames(propertyName)))), store$);
         }
         return callEffectFunction(instance, propertyName, dispatch, action$, store$);
     });
@@ -66,4 +66,15 @@ function callEffectFunction(instance, propertyName, dispatch, action$, store$) {
         return instance[propertyName](action$, store$).pipe((0, _operators.ignoreElements)());
     }
     return instance[propertyName](action$, store$);
+}
+
+function splitByActionNames(str) {
+    str = str.replace((0, _altdecoretors.getEffectKey)() + 'For', '').replace('_ndispatch', '').split(/Or([A-Z])/);
+
+    var arr = str.reduce(function (res, item, index, list) {
+        if (index % 2) res.push(list.slice(index, index + 2).join(''));
+        return res;
+    }, []);
+    arr.push(str[0]);
+    return arr;
 }

@@ -4,9 +4,10 @@ import { Dispatcher } from './dispatcher';
 import { EffectSubscription } from './effectSubscription';
 import { Actions } from './actions';
 import { Subscription } from 'rxjs';
-import { STATE_METADATA_KEY, EFFECT_METADATA_KEY } from './decorators/metakeys';
+import { STATE_METADATA_KEY, EFFECT_METADATA_KEY } from './tokens';
 import { setKeys, setActionsAndEffects } from './decorators/altdecoretors';
-import { withLatestFrom } from 'rxjs/operators';
+import { withLatestFrom, map } from 'rxjs/operators';
+import { copyObj } from './utils';
 
 class StoreContext {
     constructor(states) {
@@ -17,10 +18,15 @@ class StoreContext {
         this.effSubs = new EffectSubscription(this.store);
         this.effSubs.addEffects(states, this.actions);
     }
-    dispatch(action) {
-        this.dispatcher.dispatch(action);
+    dispatch(actionName, payload) {
+        if (typeof actionName === 'object') {
+            this.dispatcher.dispatch(actionName);
+            return this;
+        }
+        this.dispatcher.dispatch({ type: actionName, payload });
         return this;
     }
+
     addStates(...stateClassTypes) {
         for (let stateClass of stateClassTypes) {
             setActionsAndEffects(stateClass);
@@ -92,9 +98,14 @@ class StoreContext {
     }
     exportState() {
         return this.dispatcher.pipe(
-            withLatestFrom(this.store)
+            withLatestFrom(this.store),
+            map(arr => {
+                arr[1] = copyObj(arr[1]);
+                return arr;
+            })
         )
     }
+
     dispose() {
         this.dispatcher.dispose();
         this.store.dispose();

@@ -7,7 +7,7 @@ exports.setKeys = setKeys;
 exports.setActionsAndEffects = setActionsAndEffects;
 exports.getEffectKey = getEffectKey;
 
-var _metakeys = require('./metakeys');
+var _tokens = require('../tokens');
 
 var __actionKey = 'action';
 var __effectKey = 'effect';
@@ -26,26 +26,26 @@ function setActionsAndEffects(target) {
 
     target = target.prototype;
     if (includeStates) {
-        if (!target.hasOwnProperty(_metakeys.STATE_METADATA_KEY)) {
-            Object.defineProperty(target, _metakeys.STATE_METADATA_KEY, { value: { actions: {} } });
+        if (!target.hasOwnProperty(_tokens.STATE_METADATA_KEY)) {
+            Object.defineProperty(target, _tokens.STATE_METADATA_KEY, { value: { actions: {} } });
         }
     }
 
-    if (!target.hasOwnProperty(_metakeys.EFFECT_METADATA_KEY)) {
-        Object.defineProperty(target, _metakeys.EFFECT_METADATA_KEY, { value: { effects: [] } });
+    if (!target.hasOwnProperty(_tokens.EFFECT_METADATA_KEY)) {
+        Object.defineProperty(target, _tokens.EFFECT_METADATA_KEY, { value: { effects: [] } });
     }
 
     Object.getOwnPropertyNames(target).forEach(function (prop) {
         if (includeStates) {
             if (prop.startsWith(__actionKey)) {
                 var actionType = prop.substr(__actionKey.length);
-                target[_metakeys.STATE_METADATA_KEY].actions[actionType] = prop;
+                target[_tokens.STATE_METADATA_KEY].actions[actionType] = prop;
             }
         }
 
         if (prop.startsWith(__effectKey)) {
             var dispatch = !prop.endsWith('_ndispatch');
-            target[_metakeys.EFFECT_METADATA_KEY].effects.push({ propertyName: prop, dispatch: dispatch });
+            target[_tokens.EFFECT_METADATA_KEY].effects.push({ propertyName: prop, dispatch: dispatch });
         }
     });
 }

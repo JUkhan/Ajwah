@@ -3,7 +3,7 @@ import { Subscription } from 'rxjs';
 //import { TutorialState } from './store/tutorialState';
 import { TutorialState } from './store.convention/tutorialState';
 
-import { Component, OnDestroy } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { Store } from 'ajwah-angular-store';
 import { DynamicEffect } from './store/effects';
 import { DYNAMIC_EFFECTS_KEY } from './store/actions';
@@ -14,7 +14,7 @@ import { DYNAMIC_EFFECTS_KEY } from './store/actions';
   styleUrls: ['./app.component.css'],
 
 })
-export class AppComponent implements OnDestroy {
+export class AppComponent implements OnDestroy, OnInit {
   subscription: Subscription
   constructor(private store: Store) {
     this.subscription = this.store.select('counter').subscribe(res => this.counter = res);
@@ -41,6 +41,12 @@ export class AppComponent implements OnDestroy {
 
   ngOnDestroy() {
     this.subscription.unsubscribe();
+  }
+  ngOnInit() {
+    this.store.exportState().subscribe(([action, state]) => {
+      state.todo = undefined;
+      console.log(action, state);
+    })
   }
 
 }

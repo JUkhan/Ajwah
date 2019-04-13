@@ -4,7 +4,7 @@ import { Observable, Operator } from 'rxjs';
 
 interface Action {
     type: string;
-    payload?: any;
+    [key: string]: any;
 }
 export declare class Actions<T = Action> extends Observable<T>{
     lift<R extends Action>(operator: Operator<T, R>): Actions<R>;
@@ -13,7 +13,9 @@ export declare class Actions<T = Action> extends Observable<T>{
 }
 
 export declare class StoreContext {
-    dispatch(action: Action): StoreContext;
+    dispatch(actionName: Action): StoreContext;
+    dispatch(actionName: string): StoreContext;
+    dispatch(actionName: string, payload?: any): StoreContext;
     addStates(...stateClassTypes: any[]): StoreContext;
     removeStates(...stateNames: string[]): StoreContext;
     removeEffectsByKey(key: string): StoreContext;
@@ -37,6 +39,11 @@ export declare function State(options: { name: string, initialState: any }): any
 export declare function Connect(splitedState?: { [key: string]: (state: any) => any }, componentInstance?: any): any;
 export declare function Effect(options?: { dispatch: boolean }): any;
 export declare function EffectKey(key: string): any;
+
+export function dispatch(actionName: Action): StoreContext;
+export function dispatch(actionName: string): StoreContext;
+export function dispatch(actionName: string, payload?: any): StoreContext;
+export function subscribe(mapStore: { [key: string]: (state: any) => void }): () => void;
 
 export declare const AjwahStore: {
     install(Vue: any, options: {

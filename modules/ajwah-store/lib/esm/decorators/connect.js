@@ -2,7 +2,7 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
 
 import { getStore } from '../storeContext';
 import { Subscription } from 'rxjs';
-import { CONNECT_METADATA_KEY } from './/metakeys';
+import { CONNECT_METADATA_KEY } from '../tokens';
 
 function mount() {
     var _this = this;

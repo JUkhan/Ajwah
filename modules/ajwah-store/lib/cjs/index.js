@@ -81,3 +81,18 @@ Object.defineProperty(exports, 'AjwahStore', {
     return _ajwahStore.AjwahStore;
   }
 });
+
+var _hotfx = require('./hotfx');
+
+Object.defineProperty(exports, 'dispatch', {
+  enumerable: true,
+  get: function get() {
+    return _hotfx.dispatch;
+  }
+});
+Object.defineProperty(exports, 'subscribe', {
+  enumerable: true,
+  get: function get() {
+    return _hotfx.subscribe;
+  }
+});

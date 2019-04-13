@@ -1,7 +1,4 @@
-import { filter } from 'rxjs/operators';
-
 import { Observable, Operator } from "rxjs";
-import { ofType } from "./operators";
 import { Injectable, Inject } from '@angular/core';
 import { Dispatcher } from './dispatcher';
 import { Action } from './model';
@@ -16,16 +13,15 @@ export class Actions<V = Action> extends Observable<V> {
     }
 
     lift<R>(operator: Operator<V, R>): Observable<R> {
-        const observable = new Actions<V>();
-        observable.source = this;
+        const observable = new Actions<V>(this);
         observable.operator = operator as any;
         return observable as any;
     }
 
-    // ofType(...actionTypes: string[]){
-    //     return this.pipe(
-    //         filter((action:Action)=>actionTypes.some(type=>type===action.type))
-    //     )
-    //     //return ofType(...actionTypes)(this);
-    // }
+    /*ofType(...actionTypes: string[]) {
+        return this.pipe(
+            filter((action: Action) => actionTypes.some(type => type === action.type))
+        )
+        return ofType(...actionTypes)(this);
+    }*/
 }

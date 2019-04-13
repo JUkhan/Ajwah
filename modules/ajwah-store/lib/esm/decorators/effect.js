@@ -4,7 +4,7 @@ import { ignoreElements } from 'rxjs/operators';
 import { merge } from 'rxjs';
 import { getEffectKey } from './altdecoretors';
 import { ofType } from '../operators';
-import { EFFECT_METADATA_KEY } from './metakeys';
+import { EFFECT_METADATA_KEY } from '../tokens';
 
 export function EffectKey(key) {
     return function (target) {
@@ -40,7 +40,7 @@ export function mergeEffects(instance, action$, store$) {
             dispatch = _ref3.dispatch;
 
         if (propertyName.startsWith(getEffectKey() + 'For')) {
-            return callEffectFunction(instance, propertyName, dispatch, action$.pipe(ofType.apply(undefined, _toConsumableArray(propertyName.replace(getEffectKey() + 'For', '').replace('_ndispatch', '').split('Or')))), store$);
+            return callEffectFunction(instance, propertyName, dispatch, action$.pipe(ofType.apply(undefined, _toConsumableArray(splitByActionNames(propertyName)))), store$);
         }
         return callEffectFunction(instance, propertyName, dispatch, action$, store$);
     });
@@ -52,4 +52,15 @@ function callEffectFunction(instance, propertyName, dispatch, action$, store$) {
         return instance[propertyName](action$, store$).pipe(ignoreElements());
     }
     return instance[propertyName](action$, store$);
+}
+
+function splitByActionNames(str) {
+    str = str.replace(getEffectKey() + 'For', '').replace('_ndispatch', '').split(/Or([A-Z])/);
+
+    var arr = str.reduce(function (res, item, index, list) {
+        if (index % 2) res.push(list.slice(index, index + 2).join(''));
+        return res;
+    }, []);
+    arr.push(str[0]);
+    return arr;
 }

@@ -1,6 +1,6 @@
 
 
-import { State, Action } from 'ajwah-react-store';
+import { State, Action } from 'ajwah-store';
 import { SEARCH_KEYSTROKE, SEARCH_RESULT } from './actions';
 import { updateObject } from './util';
 

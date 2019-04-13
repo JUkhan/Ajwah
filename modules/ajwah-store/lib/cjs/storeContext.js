@@ -4,6 +4,8 @@ Object.defineProperty(exports, "__esModule", {
     value: true
 });
 
+var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
+
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
 exports.setStoreContext = setStoreContext;
@@ -20,11 +22,13 @@ var _actions = require('./actions');
 
 var _rxjs = require('rxjs');
 
-var _metakeys = require('./decorators/metakeys');
+var _tokens = require('./tokens');
 
 var _altdecoretors = require('./decorators/altdecoretors');
 
 var _operators = require('rxjs/operators');
+
+var _utils = require('./utils');
 
 function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = Array(arr.length); i < arr.length; i++) { arr2[i] = arr[i]; } return arr2; } else { return Array.from(arr); } }
 
@@ -44,8 +48,12 @@ var StoreContext = function () {
 
     _createClass(StoreContext, [{
         key: 'dispatch',
-        value: function dispatch(action) {
-            this.dispatcher.dispatch(action);
+        value: function dispatch(actionName, payload) {
+            if ((typeof actionName === 'undefined' ? 'undefined' : _typeof(actionName)) === 'object') {
+                this.dispatcher.dispatch(actionName);
+                return this;
+            }
+            this.dispatcher.dispatch({ type: actionName, payload: payload });
             return this;
         }
     }, {
@@ -66,7 +74,7 @@ var StoreContext = function () {
                     (0, _altdecoretors.setActionsAndEffects)(stateClass);
                     var instance = new stateClass();
                     this.store.addState(instance);
-                    var key = instance[_metakeys.STATE_METADATA_KEY].name;
+                    var key = instance[_tokens.STATE_METADATA_KEY].name;
                     this._addEffectsByKey(instance, key, this.actions);
                 }
             } catch (err) {
@@ -166,21 +174,21 @@ var StoreContext = function () {
                 (0, _altdecoretors.setActionsAndEffects)(_, false);
                 var inst = new _();
                 if (inst.effectKey) {
-                    inst[_metakeys.EFFECT_METADATA_KEY].key = inst.effectKey;
+                    inst[_tokens.EFFECT_METADATA_KEY].key = inst.effectKey;
                 }
                 return inst;
             });
 
             var globalEffects = instances.filter(function (ef) {
-                return !ef[_metakeys.EFFECT_METADATA_KEY].key;
+                return !ef[_tokens.EFFECT_METADATA_KEY].key;
             });
             var keysEffects = instances.filter(function (ef) {
-                return !!ef[_metakeys.EFFECT_METADATA_KEY].key;
+                return !!ef[_tokens.EFFECT_METADATA_KEY].key;
             });
             globalEffects.length && this.effSubs.addEffects(globalEffects, this.actions);
             if (keysEffects.length) {
                 keysEffects.forEach(function (instance) {
-                    var key = instance[_metakeys.EFFECT_METADATA_KEY].key;
+                    var key = instance[_tokens.EFFECT_METADATA_KEY].key;
                     _this._addEffectsByKey(instance, key, _this.actions);
                 });
             }
@@ -195,7 +203,10 @@ var StoreContext = function () {
     }, {
         key: 'exportState',
         value: function exportState() {
-            return this.dispatcher.pipe((0, _operators.withLatestFrom)(this.store));
+            return this.dispatcher.pipe((0, _operators.withLatestFrom)(this.store), (0, _operators.map)(function (arr) {
+                arr[1] = (0, _utils.copyObj)(arr[1]);
+                return arr;
+            }));
         }
     }, {
         key: 'dispose',

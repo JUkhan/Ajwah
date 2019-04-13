@@ -11,7 +11,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "ajwah-react-store": "file:../../modules/ajwah-react-store",
+    "ajwah-store": "file:../../modules/ajwah-store",
     "rxjs": "^6.4.0",
     "typescript": "^3.3.3333"
   }

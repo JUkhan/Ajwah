@@ -1,3 +1,5 @@
+var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
+
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
 function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = Array(arr.length); i < arr.length; i++) { arr2[i] = arr[i]; } return arr2; } else { return Array.from(arr); } }
@@ -9,9 +11,10 @@ import { Dispatcher } from './dispatcher';
 import { EffectSubscription } from './effectSubscription';
 import { Actions } from './actions';
 import { Subscription } from 'rxjs';
-import { STATE_METADATA_KEY, EFFECT_METADATA_KEY } from './decorators/metakeys';
+import { STATE_METADATA_KEY, EFFECT_METADATA_KEY } from './tokens';
 import { setKeys, setActionsAndEffects } from './decorators/altdecoretors';
-import { withLatestFrom } from 'rxjs/operators';
+import { withLatestFrom, map } from 'rxjs/operators';
+import { copyObj } from './utils';
 
 var StoreContext = function () {
     function StoreContext(states) {
@@ -27,8 +30,12 @@ var StoreContext = function () {
 
     _createClass(StoreContext, [{
         key: 'dispatch',
-        value: function dispatch(action) {
-            this.dispatcher.dispatch(action);
+        value: function dispatch(actionName, payload) {
+            if ((typeof actionName === 'undefined' ? 'undefined' : _typeof(actionName)) === 'object') {
+                this.dispatcher.dispatch(actionName);
+                return this;
+            }
+            this.dispatcher.dispatch({ type: actionName, payload: payload });
             return this;
         }
     }, {
@@ -178,7 +185,10 @@ var StoreContext = function () {
     }, {
         key: 'exportState',
         value: function exportState() {
-            return this.dispatcher.pipe(withLatestFrom(this.store));
+            return this.dispatcher.pipe(withLatestFrom(this.store), map(function (arr) {
+                arr[1] = copyObj(arr[1]);
+                return arr;
+            }));
         }
     }, {
         key: 'dispose',

@@ -1,7 +1,8 @@
 import { BehaviorSubject, queueScheduler } from 'rxjs';
 import { map, scan, distinctUntilChanged, pluck, observeOn } from 'rxjs/operators';
 import { combineStates } from './combineStates';
-import { STATE_METADATA_KEY } from './decorators/metakeys';
+import { STATE_METADATA_KEY } from './tokens';
+import { copyObj } from './utils';
 
 export class Store extends BehaviorSubject {
 
@@ -84,8 +85,8 @@ export class Store extends BehaviorSubject {
     importState(state) {
         Object.keys(this.states).forEach((key) => {
             if (!state[key]) {
-                var metaProp = this.states[key][STATE_METADATA_KEY];
-                var initData = Array.isArray(metaProp.initialState) ? [...metaProp.initialState] : { ...metaProp.initialState };
+                const metaProp = this.states[key][STATE_METADATA_KEY];
+                const initData = copyObj(metaProp.initialState);
                 state[key] = initData;
             }
         });

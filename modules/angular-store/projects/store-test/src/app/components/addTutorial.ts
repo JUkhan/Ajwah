@@ -21,7 +21,7 @@ export class AddTutorial {
 
     addTutorial(e) {
         e.preventDefault();
-        this.store.dispatch({ type: ADD_TUTORIAL, payload: { ...this.tutorialModel } });
+        this.store.dispatch(ADD_TUTORIAL, { ...this.tutorialModel });
         this.tutorialModel.name = '';
         this.tutorialModel.url = '';
     }

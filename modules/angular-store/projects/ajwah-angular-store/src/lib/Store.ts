@@ -1,13 +1,14 @@
 
 import { BehaviorSubject, Subscription, Observable, queueScheduler } from 'rxjs';
-import { map, scan, distinctUntilChanged, pluck, subscribeOn } from 'rxjs/operators';
+import { map, scan, distinctUntilChanged, pluck, subscribeOn, withLatestFrom } from 'rxjs/operators';
 import { combineStates } from './combineStates';
-import { STATE_METADATA_KEY, EFFECT_METADATA_KEY } from './decorators/metakeys';
 import { Dispatcher } from './dispatcher';
 import { Injectable, Inject, Injector, Type, OnDestroy } from '@angular/core';
-import { ROOT_STATES, ROOT_EFFECTS } from './tokens';
+import { ROOT_STATES, ROOT_EFFECTS, STATE_METADATA_KEY, EFFECT_METADATA_KEY, ImportState } from './tokens';
 import { EffectsSubscription } from './effectsSubscription';
 import { setActionsAndEffects } from './decorators/altdecoretors';
+import { Action } from './model'
+import { copyObj } from './utils';
 
 @Injectable()
 export class Store extends BehaviorSubject<any> implements OnDestroy {
@@ -28,7 +29,7 @@ export class Store extends BehaviorSubject<any> implements OnDestroy {
         }
         this.storeSubscription = this.dispatcher.pipe(
             subscribeOn(queueScheduler),
-            scan(((state, action) => combineStates(state, action, this.states)), {}))
+            scan(((state, action: any) => action.type === '@@importState' ? action.payload : combineStates(state, action, this.states)), {}))
             .subscribe((newState => { super.next(newState); }));
 
         this.effect.store = this;
@@ -36,10 +37,17 @@ export class Store extends BehaviorSubject<any> implements OnDestroy {
         if (initEffects.length)
             this.effect.addEffects(initEffects);
     }
-
-    dispatch(action: { type: string, payload?: any }) {
-        this.dispatcher.next(action);
+    dispatch(actionName: Action): void;
+    dispatch(actionName: string): void;
+    dispatch(actionName: string, payload?: any): void;
+    dispatch(actionName: string | Action, payload?: any): void {
+        if (typeof actionName === 'object') {
+            this.dispatcher.next(actionName);
+            return;
+        }
+        this.dispatcher.next({ type: actionName, payload });
     }
+
 
     select<T = any>(pathOrMapFn: ((state: T) => any) | string): Observable<any> {
 
@@ -48,7 +56,7 @@ export class Store extends BehaviorSubject<any> implements OnDestroy {
             mapped$ = this.pipe(pluck(pathOrMapFn));
         }
         else if (typeof pathOrMapFn === 'function') {
-            mapped$ = this.pipe(map((source => pathOrMapFn(source))));
+            mapped$ = this.pipe(map(((source: any) => pathOrMapFn(source))));
         }
         else {
             throw new TypeError(`Unexpected type '${typeof pathOrMapFn}' in select operator,` +
@@ -57,7 +65,7 @@ export class Store extends BehaviorSubject<any> implements OnDestroy {
         return mapped$.pipe(distinctUntilChanged());
     }
 
-    next(action: { type: string, payload?: any }) {
+    next(action: Action) {
         this.dispatcher.next(action);
     }
 
@@ -92,7 +100,7 @@ export class Store extends BehaviorSubject<any> implements OnDestroy {
         for (let stateName of stateNames) {
             if (!this.states[stateName]) {
                 console.error(`Unknown state name '${stateName}'`);
-                return;
+                return this;
             }
             delete this.states[stateName];
             this.removeEffectsByKey(stateName);
@@ -113,9 +121,24 @@ export class Store extends BehaviorSubject<any> implements OnDestroy {
         return meta.name;
     }
 
-    importState(state): Store {
-        super.next(state);
-        return this;
+    importState(state) {
+        Object.keys(this.states).forEach((key) => {
+            if (!state[key]) {
+                const metaProp = this.states[key][STATE_METADATA_KEY];
+                const initData = copyObj(metaProp.initialState);
+                state[key] = initData;
+            }
+        });
+        this.next({ type: ImportState, payload: state });
+    }
+    exportState(): Observable<any[]> {
+        return this.dispatcher.pipe(
+            withLatestFrom(this),
+            map(arr => {
+                arr[1] = copyObj(arr[1]);
+                return arr;
+            })
+        );
     }
 
     addEffects(...effects: Type<any>[]): Store {

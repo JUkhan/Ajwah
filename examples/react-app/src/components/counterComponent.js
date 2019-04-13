@@ -1,7 +1,7 @@
 import React, { PureComponent } from 'react';
 import { INCREMENT, DECREMENT, ASYNC_INCREMENT } from "../states/actions";
 
-import { Connect, getStore } from 'ajwah-store';
+import { Connect } from 'ajwah-store';
 
 
 @Connect()
@@ -20,9 +20,9 @@ class Counter extends PureComponent {
         const { counter } = this.props;
         console.log('counter-component');
         return <span>
-            <button onClick={this.increment}>+</button>
-            <button onClick={this.decrement}>-</button>
-            <button onClick={this.asyncIncrement}>Asunc (+)</button> <b>count {counter.msg || counter.count}</b>
+            <button className="btn" onClick={this.increment}>+</button>
+            <button className="btn" onClick={this.decrement}>-</button>
+            <button className="btn" onClick={this.asyncIncrement}>Asunc (+)</button> <b>count {counter.msg || counter.count}</b>
         </span>
     }
 }

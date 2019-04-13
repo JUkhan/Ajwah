@@ -1,6 +1,6 @@
 import React, { PureComponent } from 'react';
 import { ADD_TUTORIAL } from "../states/actions";
-import { getStore } from 'ajwah-store';
+import { dispatch } from 'ajwah-store';
 
 
 class AddTutorial extends PureComponent {
@@ -8,7 +8,8 @@ class AddTutorial extends PureComponent {
         event.preventDefault();
         const el = event.target.elements;
         const model = { name: el.name.value, url: el.url.value }
-        getStore().dispatch({ type: ADD_TUTORIAL, payload: model });
+        debugger
+        dispatch({ type: ADD_TUTORIAL, payload: model });
     }
     render() {
         console.log('add-tutorial-component')

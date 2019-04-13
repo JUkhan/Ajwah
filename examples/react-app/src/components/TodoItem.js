@@ -1,14 +1,15 @@
 import React from 'react';
-import { getStore } from "ajwah-store";
+import { dispatch } from "ajwah-store";
 import { REMOVE_TODO, UPDATE_TODO } from '../states/actions'
 
 function updateTodo(todo, e) {
   todo.completed = e.target.checked;
-  getStore().dispatch({ type: UPDATE_TODO, payload: todo })
+  dispatch({ type: UPDATE_TODO, payload: todo })
 }
 
 function removeTodo(todo) {
-  getStore().dispatch({ type: REMOVE_TODO, payload: todo })
+
+  dispatch(REMOVE_TODO, todo)
 }
 
 function todoItem(props) {

@@ -122,7 +122,7 @@ Here are the samples of all the decorators and it's corresponding coding by conv
 
     class CounterComponent extends PureComponent {
         constructor(){
-            super()
+            //do not forget to pass the second param
             Connect({counter: state => state.counter}, this);
         }
     }
@@ -333,6 +333,7 @@ class StoreContext {
     removeStates(...stateNames: string[]): StoreContext;
     removeEffectsByKey(key: string): StoreContext;
     importState(state: any): StoreContext;
+    exportState():Observable<any[]>;
     select<T=any>(pathOrMapFn: ((state: T) => any) | string, ): Observable<any>;
     addEffect<T extends Actions<Action>>(callback: (action$: Actions<Action>, store$?: StoreContext) => Observable<Action>, key?: string): StoreContext;
     addEffects(...effectClassTypes: any[]): StoreContext;
@@ -368,24 +369,22 @@ ReactDOM.render(<Counter />, document.getElementById('root'));
 
 ```js
 import React, { useState, useEffect } from 'react'
-import { getStore} from 'ajwah-store'
+import { dispatch, subscribe} from 'ajwah-store'
 import { INCREMENT, DECREMENT, ASYNC_INCREMENT } from './actions';
 
 
 function fxCounterComponent(props) {
-    const store = getStore();
-    const [counter, setState] = useState({});
+    
+    const [counter, setCounterState] = useState({});
 
-    useEffect(() => {
-        const subs = store.select('counter').subscribe(res => setState(res));
-        return () => subs.unsubscribe();
-    }, []);
+    //in the subscribe function 'counter' is the state name
+    useEffect(() => subscribe({counter:setCounterState}), []);
 
     return (
         <div>
-            <button onClick={() => store.dispatch({ type: INCREMENT })}>+</button>
-            <button onClick={() => store.dispatch({ type: DECREMENT })}>-</button>
-            <button onClick={() => store.dispatch({ type: ASYNC_INCREMENT })}>async(+)</button>
+            <button onClick={() => dispatch({ type: INCREMENT })}>+</button>
+            <button onClick={() => dispatch({ type: DECREMENT })}>-</button>
+            <button onClick={() => dispatch({ type: ASYNC_INCREMENT })}>async(+)</button>
             {counter.msg || counter.count}
         </div>
     );
@@ -439,13 +438,7 @@ export default SearchState;
 ```js
 
 import { Effect, Actions, ofType, Actions } from 'ajwah-store';
-import {
-    debounceTime,
-    switchMap,
-    distinctUntilChanged,
-    map, catchError,
-    tap
-} from 'rxjs/operators';
+import {debounceTime,switchMap,distinctUntilChanged,map, catchError,tap} from 'rxjs/operators';
 import { SEARCH_KEYSTROKE, SEARCH_RESULT } from './actions';
 import { ajax } from 'rxjs/ajax';
 import { EMPTY } from 'rxjs';

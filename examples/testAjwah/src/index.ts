@@ -1,7 +1,7 @@
 import { SEARCH_KEYSTROKE } from './actions';
 
 
-import { setStoreContext, Connect, StoreContext } from 'ajwah-react-store';
+import { setStoreContext, Connect, StoreContext } from 'ajwah-store';
 import SearchState from './SearchState';
 
 import Effects from './Effects';
@@ -32,7 +32,7 @@ class Component {
 
     }
     search() {
-        this.store.dispatch({ type: SEARCH_KEYSTROKE, payload: 'java' });
+        this.store.dispatch(SEARCH_KEYSTROKE, 'java');
     }
     render() {
         console.log(this.state);

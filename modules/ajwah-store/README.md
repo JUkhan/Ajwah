@@ -120,7 +120,7 @@ Here is the samples of all decorators and it's corresponding coding by conventio
 
     class CounterComponent extends PureComponent {
         constructor(){
-            super()
+            //do not forget to pass the second param
             Connect({counter: state => state.counter}, this);
         }
     }

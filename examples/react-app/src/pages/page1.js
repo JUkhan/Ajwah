@@ -1,7 +1,7 @@
 import React, { PureComponent } from 'react';
 
-//import Counter from "../components/counterComponent";
-import Counter from "../components/fxCounterComponent";
+import Counter from "../components/counterComponent";
+//import Counter from "../components/fxCounterComponent";
 
 //import AddTutorial from "../components/addTutorialComponent";
 import AddTutorial from "../components/fxAddTutorialComponent";

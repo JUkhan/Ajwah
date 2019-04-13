@@ -1,6 +1,6 @@
 
 //export const STATE_METADATA_KEY = 'ajwah/state';
-import { STATE_METADATA_KEY } from './metakeys';
+import { STATE_METADATA_KEY } from '../tokens';
 export function State({ name, initialState = {} }) {
     return function (target) {
         target = target.prototype;

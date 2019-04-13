@@ -1,12 +1,8 @@
-var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
-
 var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
 var _get = function get(object, property, receiver) { if (object === null) object = Function.prototype; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { return get(parent, property, receiver); } } else if ("value" in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } };
-
-function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = Array(arr.length); i < arr.length; i++) { arr2[i] = arr[i]; } return arr2; } else { return Array.from(arr); } }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
@@ -17,7 +13,8 @@ function _inherits(subClass, superClass) { if (typeof superClass !== "function" 
 import { BehaviorSubject, queueScheduler } from 'rxjs';
 import { map, scan, distinctUntilChanged, pluck, observeOn } from 'rxjs/operators';
 import { combineStates } from './combineStates';
-import { STATE_METADATA_KEY } from './decorators/metakeys';
+import { STATE_METADATA_KEY } from './tokens';
+import { copyObj } from './utils';
 
 var Store = function (_BehaviorSubject) {
     _inherits(Store, _BehaviorSubject);
@@ -144,11 +141,10 @@ var Store = function (_BehaviorSubject) {
         value: function importState(state) {
             var _this2 = this;
 
-            //state = Object.assign({}, state);
             Object.keys(this.states).forEach(function (key) {
                 if (!state[key]) {
                     var metaProp = _this2.states[key][STATE_METADATA_KEY];
-                    var initData = Array.isArray(metaProp.initialState) ? [].concat(_toConsumableArray(metaProp.initialState)) : _extends({}, metaProp.initialState);
+                    var initData = copyObj(metaProp.initialState);
                     state[key] = initData;
                 }
             });

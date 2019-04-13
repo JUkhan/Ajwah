@@ -1,14 +1,15 @@
 
 import { Injectable, OnDestroy } from '@angular/core';
 import { BehaviorSubject } from "rxjs";
+import { Action } from './model'
 
 @Injectable()
-export class Dispatcher extends BehaviorSubject<any> implements OnDestroy {
+export class Dispatcher extends BehaviorSubject<Action> implements OnDestroy {
     constructor() {
         super({ type: '@@INIT' });
     }
 
-    dispatch(action) {
+    dispatch(action: Action) {
         if (typeof action === 'undefined') {
             throw new TypeError(`Actions must be objects`);
         }

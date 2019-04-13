@@ -6,7 +6,7 @@ Object.defineProperty(exports, "__esModule", {
 exports.State = State;
 exports.Action = Action;
 
-var _metakeys = require('./metakeys');
+var _tokens = require('../tokens');
 
 function State(_ref) {
     var name = _ref.name,
@@ -15,19 +15,19 @@ function State(_ref) {
 
     return function (target) {
         target = target.prototype;
-        if (!target.hasOwnProperty(_metakeys.STATE_METADATA_KEY)) {
-            Object.defineProperty(target, _metakeys.STATE_METADATA_KEY, { value: { name: name, initialState: initialState, actions: {} } });
+        if (!target.hasOwnProperty(_tokens.STATE_METADATA_KEY)) {
+            Object.defineProperty(target, _tokens.STATE_METADATA_KEY, { value: { name: name, initialState: initialState, actions: {} } });
         }
-        target[_metakeys.STATE_METADATA_KEY].name = name;
-        target[_metakeys.STATE_METADATA_KEY].initialState = initialState;
+        target[_tokens.STATE_METADATA_KEY].name = name;
+        target[_tokens.STATE_METADATA_KEY].initialState = initialState;
     };
 }
 
 function Action(actionType) {
     return function (target, propertyName) {
-        if (!target.hasOwnProperty(_metakeys.STATE_METADATA_KEY)) {
-            Object.defineProperty(target, _metakeys.STATE_METADATA_KEY, { value: { actions: {} } });
+        if (!target.hasOwnProperty(_tokens.STATE_METADATA_KEY)) {
+            Object.defineProperty(target, _tokens.STATE_METADATA_KEY, { value: { actions: {} } });
         }
-        target[_metakeys.STATE_METADATA_KEY].actions[actionType] = propertyName;
+        target[_tokens.STATE_METADATA_KEY].actions[actionType] = propertyName;
     };
 }

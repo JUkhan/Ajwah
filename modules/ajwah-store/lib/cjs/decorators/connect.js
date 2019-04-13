@@ -9,14 +9,14 @@ var _storeContext = require('../storeContext');
 
 var _rxjs = require('rxjs');
 
-var _metakeys = require('.//metakeys');
+var _tokens = require('../tokens');
 
 function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
 
 function mount() {
     var _this = this;
 
-    var meta = this[_metakeys.CONNECT_METADATA_KEY];
+    var meta = this[_tokens.CONNECT_METADATA_KEY];
     meta.mount.call(this);
     Object.keys(meta.mapState).forEach(function (key) {
         meta.subscription.add(_this.store.select(meta.mapState[key]).subscribe(function (res) {
@@ -25,7 +25,7 @@ function mount() {
     });
 }
 function unmount() {
-    var meta = this[_metakeys.CONNECT_METADATA_KEY];
+    var meta = this[_tokens.CONNECT_METADATA_KEY];
     meta.unmount.call(this);
     meta.subscription.unsubscribe();
 }
@@ -51,7 +51,7 @@ function subscriber(mapState, componentInstance) {
         config.unmount = componentInstance.componentWillUnmount;
     }
     componentInstance.componentWillUnmount = unmount;
-    componentInstance[_metakeys.CONNECT_METADATA_KEY] = config;
+    componentInstance[_tokens.CONNECT_METADATA_KEY] = config;
 }
 function Connect() {
     var mapState = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
@@ -96,7 +96,7 @@ function Connect() {
             value: unmount
         });
 
-        Object.defineProperty(target, _metakeys.CONNECT_METADATA_KEY, {
+        Object.defineProperty(target, _tokens.CONNECT_METADATA_KEY, {
             value: config,
             writable: false
         });

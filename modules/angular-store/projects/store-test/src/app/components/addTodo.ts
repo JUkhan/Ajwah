@@ -24,7 +24,7 @@ export class AddTodoComponent {
             title: this.title,
             completed: false
         }
-        this.store.dispatch({ type: ADD_TODO, payload: newTodo });
+        this.store.dispatch(ADD_TODO, newTodo);
         this.title = '';
     }
 }
