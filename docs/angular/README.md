@@ -205,7 +205,7 @@ export class CounterState {
     }
 
     @Effect()
-    asyncInc(action$: Actions) {
+    ofAsyncInc(action$: Actions) {
         return action$.pipe(
             ofType(ASYNC_INCREMENT),
             debounceTime(1000),
