@@ -6,7 +6,7 @@ import App from './App';
 import * as serviceWorker from './serviceWorker';
 import { setStoreContext } from 'ajwah-store'
 //import CounterEffect from "./states/counterEffects";
-import TutorialState from "./states/tutoroalState";
+//import TutorialState from "./states/tutoroalState";
 import TodoState from "./states/todoState";
 import CounterSate from "./states/counterState";
 import { devTools } from 'ajwah-devtools';

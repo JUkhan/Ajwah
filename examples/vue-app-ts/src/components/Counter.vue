@@ -9,6 +9,8 @@
 
 <script>
 import { INCREMENT, DECREMENT, ASYNC_INCREMENT } from "../states/actions";
+import { dispatch } from "ajwah-store";
+
 export default {
   name: "Counter",
   subscriptions() {
@@ -19,7 +21,8 @@ export default {
 
   methods: {
     inc() {
-      this.store.dispatch({ type: INCREMENT });
+      //this.store.dispatch({ type: INCREMENT });
+      dispatch(INCREMENT);
     },
     dec() {
       this.store.dispatch({ type: DECREMENT });

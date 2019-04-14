@@ -4,7 +4,7 @@ Object.defineProperty(exports, "__esModule", {
     value: true
 });
 exports.dispatch = dispatch;
-exports.subscribe = subscribe;
+exports.subscriptions = subscriptions;
 
 var _storeContext = require('./storeContext');
 
@@ -14,11 +14,11 @@ function dispatch(actionName, payload) {
     try {
         return (0, _storeContext.getStore)().dispatch(actionName, payload);
     } catch (error) {
-        throw 'This dispatch() function should not work in vue. please use this.store.dispatch()';
+        throw 'usually dispatch() function does not work in vue. You need to set the \'exposeStore\' boolean option \'true\' to make it workable. ex: Vue.use(AjwahStore, {exposeStore:true})';
     }
 }
 
-function subscribe(obj) {
+function subscriptions(obj) {
     var subs = new _rxjs.Subscription();
     Object.keys(obj).forEach(function (stateName) {
         return subs.add((0, _storeContext.getStore)().select(stateName).subscribe(function (data) {

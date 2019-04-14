@@ -236,5 +236,8 @@ export function getStoreContext(options) {
 }
 
 export function getStore() {
-    return __store;;
+    if (__store === undefined) {
+        console.info('usually getStore() function does not work in vue. You need to set the \'exposeStore\' boolean option \'true\' to make it workable. ex: Vue.use(AjwahStore, {exposeStore:true})');
+    }
+    return __store;
 }

@@ -90,9 +90,9 @@ Object.defineProperty(exports, 'dispatch', {
     return _hotfx.dispatch;
   }
 });
-Object.defineProperty(exports, 'subscribe', {
+Object.defineProperty(exports, 'subscriptions', {
   enumerable: true,
   get: function get() {
-    return _hotfx.subscribe;
+    return _hotfx.subscriptions;
   }
 });

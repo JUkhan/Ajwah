@@ -5,7 +5,7 @@ import Counter from "../components/counterComponent";
 //import TutorialList from "../components/fxTutotialListComponent";
 import Todos from "../components/Todos";
 import AddTodo from "../components/AddTodo";
-import { subscribe, dispatch } from 'ajwah-store';
+import { subscriptions, dispatch } from 'ajwah-store';
 import { LOAD_TODOS } from '../states/actions'
 
 function page1() {
@@ -16,7 +16,7 @@ function page1() {
 
     useEffect(() => {
         dispatch(LOAD_TODOS)
-        return subscribe({ counter: setCounter, todo: setTodo })
+        return subscriptions({ counter: setCounter, todo: setTodo })
     }, [])
 
 
