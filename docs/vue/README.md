@@ -370,6 +370,7 @@ new Vue({
 }).$mount('#app');
 
 ```
+[Counter app - Live](https://codesandbox.io/s/42ql8y5x)
 
 ### Effects
 
