@@ -1,10 +1,10 @@
 import React from 'react';
 import { REMOVE_TUTORIAL } from "../states/actions";
-import { getStore } from "ajwah-store";
+import { dispatch } from "ajwah-store";
 import Counter from './fxCounterComponent';
 
 function onRemove(name) {
-    getStore().dispatch({ type: REMOVE_TUTORIAL, payload: name });
+    dispatch(REMOVE_TUTORIAL, name);
 }
 function tutorialList(props) {
     const { tutorials, counter } = props;

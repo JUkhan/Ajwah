@@ -7,14 +7,19 @@ import { Connect } from 'ajwah-store';
 @Connect()
 class Counter extends PureComponent {
 
+    constructor() {
+        super();
+        //Connect(null, this)
+    }
+
     increment = () => {
-        this.store.dispatch({ type: INCREMENT });
+        this.storeCtx.dispatch({ type: INCREMENT });
     }
     decrement = () => {
-        this.store.dispatch({ type: DECREMENT });
+        this.storeCtx.dispatch({ type: DECREMENT });
     }
     asyncIncrement = () => {
-        this.store.dispatch({ type: ASYNC_INCREMENT });
+        this.storeCtx.dispatch({ type: ASYNC_INCREMENT });
     }
     render() {
         const { counter } = this.props;

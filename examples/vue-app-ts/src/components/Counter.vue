@@ -9,13 +9,13 @@
 
 <script>
 import { INCREMENT, DECREMENT, ASYNC_INCREMENT } from "../states/actions";
-import { dispatch } from "ajwah-store";
+import { dispatch, storeCtx } from "ajwah-store";
 
 export default {
   name: "Counter",
   subscriptions() {
     return {
-      counter: this.store.select("counter")
+      counter: storeCtx().select("counter")
     };
   },
 
@@ -25,10 +25,10 @@ export default {
       dispatch(INCREMENT);
     },
     dec() {
-      this.store.dispatch({ type: DECREMENT });
+      this.storeCtx.dispatch({ type: DECREMENT });
     },
     async_inc() {
-      this.store.dispatch({ type: ASYNC_INCREMENT });
+      this.storeCtx.dispatch({ type: ASYNC_INCREMENT });
     }
   }
 };

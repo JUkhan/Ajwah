@@ -100,10 +100,9 @@ Here are the samples of all the decorators and it's corresponding coding by conv
     //Convention:
 
     class CounterState{
-        constructor(){
-            this.name= 'counter';
-            this.initialState={ count: 5, msg: '' };
-        }
+            name= 'counter';
+            initialState={ count: 5, msg: '' };
+        
     }
 
 ```
@@ -306,19 +305,19 @@ export default {
   name: "Counter",
   subscriptions() {
     return {
-      counter: this.store.select('counter')
+      counter: this.storeCtx.select('counter')
     };
   },
 
   methods: {
     inc() {
-      this.store.dispatch({ type: INCREMENT });
+      this.storeCtx.dispatch({ type: INCREMENT });
     },
     dec() {
-      this.store.dispatch({ type: DECREMENT });
+      this.storeCtx.dispatch({ type: DECREMENT });
     },
     async_inc() {
-      this.store.dispatch({ type: ASYNC_INCREMENT });
+      this.storeCtx.dispatch({ type: ASYNC_INCREMENT });
     }
   }
 };
@@ -328,7 +327,7 @@ export default {
 ```
 
 
-### Here is the `Store API`
+### Here is the `StoreContext API`
 ```js
 class StoreContext {
     dispatch(action: Action): StoreContext;
@@ -453,16 +452,16 @@ export default SearchEffects;
 ```js
 methods{
     addEffect() {
-        this.store.addEffects(DynamicEffect);
+        this.storeCtx.addEffects(DynamicEffect);
     }
     removeEffect() {
-        this.store.removeEffectsByKey(DYNAMIC_EFFECTS_KEY);
+        this.storeCtx.removeEffectsByKey(DYNAMIC_EFFECTS_KEY);
     }
     addState() {
-        this.store.addStates(TutorialState);
+        this.storeCtx.addStates(TutorialState);
     }
     removeState() {
-        this.store.removeStates('tutorials')
+        this.storeCtx.removeStates('tutorials')
     }
 }
 ```

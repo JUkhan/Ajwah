@@ -13,7 +13,7 @@ Vue.use(vueRx);
 Vue.use(AjwahStore, {
   states: [counterState],
   devTools: devTools(),
-  exposeStore: true
+  exposeStoreContext: true
 })
 
 Vue.config.productionTip = false;

@@ -101,10 +101,10 @@ Here are the samples of all the decorators and it's corresponding coding by conv
     //Convention:
 
     class CounterState{
-        constructor(){
-            this.name= 'counter';
-            this.initialState={ count: 5, msg: '' };
-        }
+        
+        name= 'counter';
+        initialState={ count: 5, msg: '' };
+        
     }
 
 ```
@@ -297,16 +297,16 @@ import { INCREMENT, ASYNC_INCREMENT, DECREMENT } from './actions';
 })
 class CounterComponent extends PureComponent {
 
-    store:StoreContext;
+    storeCtx:StoreContext;
 
     inc = () => {
-        this.store.dispatch({ type: INCREMENT })
+        this.storeCtx.dispatch({ type: INCREMENT })
     }
     dec = () => {
-        this.store.dispatch({ type: DECREMENT })
+        this.storeCtx.dispatch({ type: DECREMENT })
     }
     asyncInc = () => {
-        this.store.dispatch({ type: ASYNC_INCREMENT })
+        this.storeCtx.dispatch({ type: ASYNC_INCREMENT })
     }
     render() {
         const { counter } = this.state;
@@ -323,7 +323,7 @@ class CounterComponent extends PureComponent {
 export default CounterComponent;
 
 ```
-### `Connect decorator` takes a single object literal type param (key value pairs). Key should be any name and value should be a function that must return a part of your application's states. You can define as many pairs as you want. All keys and its corresponding states should be available as component state. Your component should be re-render if any key corresponding state is updated from anywhere in the application. And your component should have a `StoreContext` property as the name of `store`.
+### `Connect decorator` takes a single object literal type param (key value pairs). Key should be any name and value should be a function that must return a part of your application's states. You can define as many pairs as you want. All keys and its corresponding states should be available as component state. Your component should be re-render if any key corresponding state is updated from anywhere in the application. And your component should have a `StoreContext` property as the name of `storeCtx`.
 
 ### Here is the `StoreContext API`
 ```js
@@ -369,7 +369,7 @@ ReactDOM.render(<Counter />, document.getElementById('root'));
 
 ```js
 import React, { useState, useEffect } from 'react'
-import { dispatch, subscribe} from 'ajwah-store'
+import { dispatch, subscriptions} from 'ajwah-store'
 import { INCREMENT, DECREMENT, ASYNC_INCREMENT } from './actions';
 
 
@@ -377,8 +377,8 @@ function fxCounterComponent(props) {
     
     const [counter, setCounterState] = useState({});
 
-    //in the subscribe function 'counter' is the state name
-    useEffect(() => subscribe({counter:setCounterState}), []);
+    //in the subscriptions function 'counter' is the state name
+    useEffect(() => subscriptions({counter:setCounterState}), []);
 
     return (
         <div>
@@ -470,16 +470,16 @@ export default SearchEffects;
 
 ```js
 addEffect() {
-    this.store.addEffects(DynamicEffect);
+    this.storeCtx.addEffects(DynamicEffect);
 }
 removeEffect() {
-    this.store.removeEffectsByKey(DYNAMIC_EFFECTS_KEY);
+    this.storeCtx.removeEffectsByKey(DYNAMIC_EFFECTS_KEY);
 }
 addState() {
-    this.store.addStates(TutorialState);
+    this.storeCtx.addStates(TutorialState);
 }
 removeState() {
-    this.store.removeStates('tutorials')
+    this.storeCtx.removeStates('tutorials')
 }
 ```
  [Dynamic states and effects - Live](https://stackblitz.com/edit/ajwah-effect?file=Effects.ts)
@@ -495,7 +495,7 @@ In this app all the todo effects has been defined into the `todoState` class. It
 import React, { useState, useEffect } from 'react';
 import Todos from "../components/Todos";
 import AddTodo from "../components/AddTodo";
-import { getStore } from 'ajwah-store';
+import { storeCtx } from 'ajwah-store';
 import { LOAD_TODOS } from '../states/actions'
 
 function todoPage() {
@@ -503,7 +503,7 @@ function todoPage() {
     const [todo, setTodo] = useState({});
 
     useEffect(() => {
-        const subscription = store.select('todo').subscribe(res => setTodo(res));
+        const subscription = storeCtx().select('todo').subscribe(res => setTodo(res));
         store.dispatch({ type: LOAD_TODOS });
         return () => subscription.unsubscribe();
     }, []);
@@ -640,7 +640,7 @@ export default TodoState;
 ### addTodoComponent
 ```js
 import React from 'react';
-import { getStore } from 'ajwah-store';
+import { dispatch } from 'ajwah-store';
 import { ADD_TODO } from '../states/actions'
 
 function addItem(e) {
@@ -649,7 +649,7 @@ function addItem(e) {
     title: e.target.elements.title.value,
     completed: false
   }
-  getStore().dispatch({ type: ADD_TODO, payload: newTodo });
+  dispatch({ type: ADD_TODO, payload: newTodo });
   e.target.elements.title.value = '';
 }
 
@@ -683,16 +683,16 @@ export default todos;
 ### todoItemComponent
 ```js
 import React from 'react';
-import { getStore } from 'ajwah-store';
+import { dispatch } from 'ajwah-store';
 import { REMOVE_TODO, UPDATE_TODO } from '../states/actions'
 
 function updateTodo(todo, e) {
   todo.completed = e.target.checked;
-  getStore().dispatch({ type: UPDATE_TODO, payload: todo })
+  dispatch({ type: UPDATE_TODO, payload: todo })
 }
 
 function removeTodo(todo) {
-  getStore().dispatch({ type: REMOVE_TODO, payload: todo })
+  dispatch({ type: REMOVE_TODO, payload: todo })
 }
 
 function todoItem(props) {

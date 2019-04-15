@@ -32,7 +32,7 @@ export declare function getStoreContext(options: { states: any[], effects?: any[
 
 export declare function ofType<T extends Action, R extends T = T, K extends R['type'] = R['type']>(...key: K[]): (source: Observable<T>) => Observable<R>;
 
-export declare function getStore(): StoreContext;
+export declare function storeCtx(): StoreContext;
 export declare function Action(actionType: string): any;
 export declare function State(options: { name: string, initialState: any }): any;
 
@@ -43,7 +43,7 @@ export declare function EffectKey(key: string): any;
 export function dispatch(actionName: Action): StoreContext;
 export function dispatch(actionName: string): StoreContext;
 export function dispatch(actionName: string, payload?: any): StoreContext;
-export function subscriptions(mapStore: { [key: string]: (state: any) => void }): () => void;
+export function subscriptions(mapState: { [key: string]: (state: any) => void }): () => void;
 
 export declare const AjwahStore: {
     install(Vue: any, options: {
@@ -52,7 +52,7 @@ export declare const AjwahStore: {
         devTools?: any;
         actionsMethodStartsWith?: string;
         effectsMethodStartsWith?: string;
-        exposeStore?: boolean;
+        exposeStoreContext?: boolean;
     }): void;
 };
 

@@ -3,13 +3,13 @@ import React, { useState, useEffect } from 'react';
 import Counter from "../components/fxCounterComponent";
 import AddTutorial from "../components/fxAddTutorialComponent";
 import TutorialList from "../components/fxTutotialListComponent";
-import { getStore } from 'ajwah-store';
+import { storeCtx } from 'ajwah-store';
 import { DYNAMIC_EFFECTS_KEY } from '../states/actions'
 import CounterEffect from "../states/counterEffects";
 import TutorialState from "../states/tutoroalState";
 
 function page3() {
-    const store = getStore();
+    const store = storeCtx();
     const [tutorials, setTutorial] = useState([]);
     const [counter, setCounter] = useState({});
 
@@ -52,16 +52,16 @@ function page3() {
 
 }
 function addEffect() {
-    getStore().addEffects(CounterEffect);
+    storeCtx().addEffects(CounterEffect);
 }
 function removeEffect() {
-    getStore().removeEffectsByKey(DYNAMIC_EFFECTS_KEY);
+    storeCtx().removeEffectsByKey(DYNAMIC_EFFECTS_KEY);
 }
 function addState() {
-    getStore().addStates(TutorialState);
+    storeCtx().addStates(TutorialState);
 }
 function removeState() {
-    getStore().removeStates('tutorials')
+    storeCtx().removeStates('tutorials')
 }
 
 export default page3;

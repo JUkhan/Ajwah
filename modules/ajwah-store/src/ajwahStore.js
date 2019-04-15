@@ -1,11 +1,10 @@
 
-import { getStoreContext, setStoreContext, getStore } from './storeContext';
+import { getStoreContext, setStoreContext, storeCtx } from './storeContext';
 
 export const AjwahStore = {
     install(Vue, options) {
-        options.exposeStore = options.exposeStore || false;
-        const _store = options.exposeStore ? (setStoreContext(options) || getStore()) : getStoreContext(options);
-        Vue.prototype.store$ = _store;
-        Vue.prototype.store = _store;
+        options.exposeStoreContext = options.exposeStoreContext || false;
+        const _store = options.exposeStoreContext ? (setStoreContext(options) || storeCtx()) : getStoreContext(options);
+        Vue.prototype.storeCtx = _store;
     }
 }

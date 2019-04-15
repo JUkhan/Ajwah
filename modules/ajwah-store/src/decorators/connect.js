@@ -1,4 +1,4 @@
-import { getStore } from '../storeContext';
+import { storeCtx } from '../storeContext';
 import { Subscription } from 'rxjs';
 import { CONNECT_METADATA_KEY } from '../tokens';
 
@@ -18,7 +18,7 @@ function unmount() {
     meta.subscription.unsubscribe()
 }
 function subscriber(mapState, componentInstance) {
-    componentInstance.store = getStore();
+    componentInstance.storeCtx = storeCtx();
     const mapKeys = Object.keys(mapState);
     if (mapKeys.length === 0) return;
 
@@ -43,12 +43,13 @@ function subscriber(mapState, componentInstance) {
 
 }
 export function Connect(mapState = {}, component) {
+    if (!mapState) { mapState = {}; }
     if (component) { subscriber(mapState, component); return; }
     return function (target) {
         target = target.prototype;
 
-        Object.defineProperty(target, 'store', {
-            get() { return getStore(); },
+        Object.defineProperty(target, 'storeCtx', {
+            get() { return storeCtx(); },
             enumerable: true,
             configurable: true
         });

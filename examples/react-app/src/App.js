@@ -7,20 +7,19 @@ import Page1 from './pages/fxPage1';
 //import Page2 from './pages/page2';
 import Page2 from './pages/fxPage2';
 import Page3 from './pages/page3';
-import { getStore } from 'ajwah-store';
+import { storeCtx } from 'ajwah-store';
 
 class App extends PureComponent {
 
   componentWillMount() {
-    getStore().exportState().subscribe(([action, state]) => {
+    storeCtx().exportState().subscribe(([action, state]) => {
 
       console.log(action, state);
       if (action.type === '@@INIT') {
         const data = sessionStorage.getItem('appState')
-        data && getStore().importState(JSON.parse(data))
+        data && storeCtx().importState(JSON.parse(data))
       }
       else {
-        state = { ...state };// JSON.parse(JSON.stringify(state));
         state.todo = undefined;
         sessionStorage.setItem('appState', JSON.stringify(state))
       }
@@ -28,7 +27,7 @@ class App extends PureComponent {
   }
 
   componentWillUnmount() {
-    getStore().dispose();
+    storeCtx().dispose();
   }
   render(props) {
     console.log('root-component');
