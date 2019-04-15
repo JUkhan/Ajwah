@@ -8,7 +8,7 @@ function mount() {
     meta.mount.call(this);
     Object.keys(meta.mapState).forEach(key => {
         meta.subscription.add(
-            this.store.select(meta.mapState[key])
+            this.storeCtx.select(meta.mapState[key])
                 .subscribe(res => { this.setState({ [key]: res }); }));
     });
 }
