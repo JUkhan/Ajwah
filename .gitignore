@@ -63,5 +63,4 @@ typings/
 
 dist/
 modules/ajwah-react-devtools/lib/
-modules/ajwah-react-store/lib/
-modules/ajwah-vue-store/lib/
+modules/ajwah-store/lib/

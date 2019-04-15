@@ -12,12 +12,12 @@ export function dispatch(actionName, payload) {
 
 export function subscriptions(obj) {
     const subs = new Subscription();
-    Object.keys(obj).forEach(stateName =>
+    Object.keys(obj).forEach(stateName => {
         subs.add(
             getStore()
                 .select(stateName)
                 .subscribe(data => obj[stateName](data))
-        )
-    );
-    return () => subs.unsubscribe();
+        );
+    });
+    return () => { subs.unsubscribe(); }
 }
