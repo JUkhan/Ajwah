@@ -465,4 +465,5 @@ methods{
     }
 }
 ```
+[Dynamic states and effects App - Live](https://codesandbox.io/s/5z5o6n7lqx)
 ### Please have a look at the [Ajwah React Doc](https://github.com/JUkhan/Ajwah/tree/master/docs/react#ajwah) for live demo. And apply these in your vue app - Ajwah Api is same for all.
