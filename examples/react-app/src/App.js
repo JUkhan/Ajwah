@@ -12,7 +12,7 @@ import { storeCtx } from 'ajwah-store';
 class App extends PureComponent {
 
   componentWillMount() {
-    storeCtx().exportState().subscribe(([action, state]) => {
+    /*storeCtx().exportState().subscribe(([action, state]) => {
 
       console.log(action, state);
       if (action.type === '@@INIT') {
@@ -23,7 +23,7 @@ class App extends PureComponent {
         state.todo = undefined;
         sessionStorage.setItem('appState', JSON.stringify(state))
       }
-    });
+    });*/
   }
 
   componentWillUnmount() {

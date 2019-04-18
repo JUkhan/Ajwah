@@ -21,7 +21,7 @@ function page3() {
 
         return () => {
             subs.unsubscribe();
-            //store.removeStates('tutorials');
+            store.removeStates('tutorials');
         }
     }, []);
 
