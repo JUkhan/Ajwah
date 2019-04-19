@@ -4,7 +4,7 @@ import { Dispatcher } from './dispatcher';
 import { EffectSubscription } from './effectSubscription';
 import { Actions } from './actions';
 import { Subscription } from 'rxjs';
-import { STATE_METADATA_KEY, EFFECT_METADATA_KEY } from './tokens';
+import { STATE_METADATA_KEY, EFFECT_METADATA_KEY, IMPORT_STATE } from './tokens';
 import { setKeys, setActionsAndEffects } from './decorators/altdecoretors';
 import { withLatestFrom, map } from 'rxjs/operators';
 import { copyObj } from './utils';
@@ -130,7 +130,7 @@ function storeContextFactory({
 
     if (devTools && devTools.run) {
         ctx.devTools = devTools;
-        devTools.run(ctx);
+        devTools.run({ dispatcher: ctx.dispatcher, store: ctx.store, importState: IMPORT_STATE });
     }
     return ctx;
 }
@@ -143,7 +143,8 @@ export function getStoreContext(options) {
 
 export function storeCtx() {
     if (__store === undefined) {
-        console.info(`usually storeCtx() function does not work in vue. You need to set the 'exposeStoreContext' boolean option 'true' to make it workable. ex: Vue.use(AjwahStore, {exposeStoreContext:true})`)
+        console.info(`usually storeCtx() function does not work in vue. You need to set the 'exposeStoreContext' boolean option 'true' to make it workable. ex: Vue.use(AjwahStore, {exposeStoreContext:true})`);
+        throw 'storeCtx undefined';
     }
     return __store;
 }

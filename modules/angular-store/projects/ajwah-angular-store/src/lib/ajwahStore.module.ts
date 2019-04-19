@@ -1,7 +1,7 @@
 
 import { Dispatcher } from './dispatcher';
 import { NgModule, Injector, Type, ModuleWithProviders } from '@angular/core';
-import { ROOT_STATES, ROOT_EFFECTS } from './tokens';
+import { ROOT_STATES, ROOT_EFFECTS, IMPORT_STATE } from './tokens';
 import { Store } from './store';
 import { Actions } from './actions';
 import { EffectsSubscription } from './effectsSubscription';
@@ -52,9 +52,7 @@ export class AjwahStoreModule {
 export function _storeFactory(states, dispatcher, effect, injector, effects) {
     const store = new Store(states, dispatcher, effect, injector, effects);
     if (__devTools && __devTools.run) {
-        setTimeout(() => {
-            runDevTools({ store, dispatcher });
-        });
+        runDevTools({ store, dispatcher, importState: IMPORT_STATE });
     }
     return store;
 }

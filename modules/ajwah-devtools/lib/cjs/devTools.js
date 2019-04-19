@@ -26,7 +26,7 @@ function devTools() {
         name = _ref.name;
 
     var withDevtools = (typeof window === 'undefined' ? 'undefined' : _typeof(window)) === 'object' && typeof window['__REDUX_DEVTOOLS_EXTENSION__'] !== 'undefined';
-    return withDevtools ? new _DevTools({ name: name, maxAge: maxAge }) : null;
+    return withDevtools ? new _DevTools({ name: name, maxAge: maxAge, logOnly: true }) : null;
 }
 
 var _DevTools = function () {
@@ -47,19 +47,14 @@ var _DevTools = function () {
             this.unsubscribe = this.devTools.subscribe(function (message) {
                 return _this.dispatchMonitorAction(message);
             });
-            ctx.dispatcher.pipe((0, _operators.withLatestFrom)(ctx.store)).subscribe(function (_ref2) {
+            ctx.dispatcher.pipe((0, _operators.filter)(function (action) {
+                return action.type !== ctx.importState;
+            }), (0, _operators.withLatestFrom)(ctx.store)).subscribe(function (_ref2) {
                 var _ref3 = _slicedToArray(_ref2, 2),
                     action = _ref3[0],
                     state = _ref3[1];
 
-                if (action.type === '@@importState' || action.___isCalLiftedState) {
-                    return;
-                }
-                if (action.type === 'INIT') {
-                    _this.initValue = state;
-                }
-                //console.log(action, state);
-                _this.sendStatusToDevTools(action, state);
+                _this.devTools.send(action, state);
             });
         }
     }, {
@@ -67,11 +62,6 @@ var _DevTools = function () {
         value: function dispose() {
             this.unsubscribe();
             window.devToolsExtension.disconnect();
-        }
-    }, {
-        key: 'sendStatusToDevTools',
-        value: function sendStatusToDevTools(action, state) {
-            this.devTools.send(action, state);
         }
     }, {
         key: 'setAppState',
@@ -87,28 +77,6 @@ var _DevTools = function () {
         key: 'copyObj',
         value: function copyObj(obj) {
             return _extends({}, obj);
-        }
-    }, {
-        key: 'getInitState',
-        value: function getInitState() {
-            var state = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
-
-
-            return {
-                actionsById: {
-                    0: {
-                        action: { type: "@@INIT" },
-                        stack: undefined,
-                        timestamp: +Date.now(),
-                        type: "PERFORM_ACTION"
-                    }
-                },
-                computedStates: [{ state: state }],
-                currentStateIndex: 0,
-                nextActionId: 1,
-                skippedActionIds: [],
-                stagedActionIds: [0]
-            };
         }
     }, {
         key: 'dispatchMonitorAction',
@@ -134,19 +102,17 @@ var _DevTools = function () {
                         state.skippedActionIds.forEach(function (id) {
                             delete state.actionsById[id];
                             state.computedStates.splice(id, 1);
-                            state.stagedActionIds.splice(id, 1);
                         });
                         state.currentStateIndex -= state.skippedActionIds.length;
                         state.nextActionId -= state.skippedActionIds.length;
                         state.skippedActionIds = [];
                         var actionsById = {};
+                        state.stagedActionIds = [];
                         Object.keys(state.actionsById).forEach(function (id, index) {
                             actionsById[index] = state.actionsById[id];
+                            state.stagedActionIds.push(index);
                         });
                         state.actionsById = actionsById;
-                        for (var i = 0; i < state.stagedActionIds.length; i++) {
-                            state.stagedActionIds[i] = i;
-                        }
                         this.devTools.send(null, state);
                         break;
                     case 'JUMP_TO_STATE':
@@ -201,6 +167,7 @@ var _DevTools = function () {
                 this.devTools.send(null, liftedState);
                 return;
             }
+
             this.setAppState(this.copyObj(liftedState.computedStates[this.findStartIndex(liftedState, start)].state));
             for (var i = skipped ? start : start + 1; i < liftedState.stagedActionIds.length; i++) {
                 if (i !== start && liftedState.skippedActionIds.indexOf(liftedState.stagedActionIds[i]) !== -1) continue; // it's already skipped

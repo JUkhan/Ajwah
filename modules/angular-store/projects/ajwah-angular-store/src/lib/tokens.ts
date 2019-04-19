@@ -8,4 +8,4 @@ export const AFTER_BOOTSTRAP_EFFECT = new InjectionToken('Token: ajwah/bootstrap
 
 export const EFFECT_METADATA_KEY = 'ajwah/effects';
 export const STATE_METADATA_KEY = 'ajwah/state';
-export const ImportState = 'ImportState';
+export const IMPORT_STATE = Symbol('ImportState');

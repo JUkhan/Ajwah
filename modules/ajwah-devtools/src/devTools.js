@@ -1,5 +1,5 @@
 
-import { withLatestFrom } from 'rxjs/operators';
+import { withLatestFrom, filter } from 'rxjs/operators';
 import { parse } from 'jsan';
 
 export function devTools({
@@ -20,26 +20,17 @@ class _DevTools {
         this.devTools = window.__REDUX_DEVTOOLS_EXTENSION__.connect(this.config);
         this.unsubscribe = this.devTools.subscribe((message) => this.dispatchMonitorAction(message));
         ctx.dispatcher.pipe(
+            filter(action => action.type !== ctx.importState),
             withLatestFrom(ctx.store)
         ).subscribe(([action, state]) => {
-
-            if (action.type === '@@importState' || action.___isCalLiftedState) {
-                return;
-            }
-            if (action.type === 'INIT') {
-                this.initValue = state;
-            }
-            //console.log(action, state);
-            this.sendStatusToDevTools(action, state);
+            this.devTools.send(action, state);
         })
     }
     dispose() {
         this.unsubscribe();
         window.devToolsExtension.disconnect();
     }
-    sendStatusToDevTools(action, state) {
-        this.devTools.send(action, state);
-    }
+
     setAppState(state) {
         this.ctx.store.importState(state);
     }
@@ -48,24 +39,6 @@ class _DevTools {
     }
     copyObj(obj) {
         return { ...obj };
-    }
-    getInitState(state = {}) {
-
-        return {
-            actionsById: {
-                0: {
-                    action: { type: "@@INIT" },
-                    stack: undefined,
-                    timestamp: +Date.now(),
-                    type: "PERFORM_ACTION"
-                }
-            },
-            computedStates: [{ state }],
-            currentStateIndex: 0,
-            nextActionId: 1,
-            skippedActionIds: [],
-            stagedActionIds: [0]
-        }
     }
 
     dispatchMonitorAction(message) {
@@ -90,19 +63,17 @@ class _DevTools {
                     state.skippedActionIds.forEach(id => {
                         delete state.actionsById[id];
                         state.computedStates.splice(id, 1);
-                        state.stagedActionIds.splice(id, 1)
                     })
                     state.currentStateIndex -= state.skippedActionIds.length;
                     state.nextActionId -= state.skippedActionIds.length;
                     state.skippedActionIds = [];
                     var actionsById = {};
+                    state.stagedActionIds = [];
                     Object.keys(state.actionsById).forEach((id, index) => {
                         actionsById[index] = state.actionsById[id];
+                        state.stagedActionIds.push(index);
                     })
                     state.actionsById = actionsById;
-                    for (var i = 0; i < state.stagedActionIds.length; i++) {
-                        state.stagedActionIds[i] = i;
-                    }
                     this.devTools.send(null, state);
                     break;
                 case 'JUMP_TO_STATE':
@@ -151,6 +122,7 @@ class _DevTools {
             this.devTools.send(null, liftedState);
             return;
         }
+
         this.setAppState(this.copyObj(liftedState.computedStates[this.findStartIndex(liftedState, start)].state));
         for (let i = (skipped ? start : start + 1); i < liftedState.stagedActionIds.length; i++) {
             if (i !== start &&

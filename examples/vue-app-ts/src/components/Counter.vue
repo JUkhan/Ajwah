@@ -15,7 +15,7 @@ export default {
   name: "Counter",
   subscriptions() {
     return {
-      counter: storeCtx().select("counter")
+      counter: this.storeCtx.select("counter")
     };
   },
 

@@ -4,7 +4,7 @@ import { map, scan, distinctUntilChanged, pluck, subscribeOn, withLatestFrom } f
 import { combineStates } from './combineStates';
 import { Dispatcher } from './dispatcher';
 import { Injectable, Inject, Injector, Type, OnDestroy } from '@angular/core';
-import { ROOT_STATES, ROOT_EFFECTS, STATE_METADATA_KEY, EFFECT_METADATA_KEY, ImportState } from './tokens';
+import { ROOT_STATES, ROOT_EFFECTS, STATE_METADATA_KEY, EFFECT_METADATA_KEY, IMPORT_STATE } from './tokens';
 import { EffectsSubscription } from './effectsSubscription';
 import { setActionsAndEffects } from './decorators/altdecoretors';
 import { Action } from './model'
@@ -29,7 +29,7 @@ export class Store extends BehaviorSubject<any> implements OnDestroy {
         }
         this.storeSubscription = this.dispatcher.pipe(
             subscribeOn(queueScheduler),
-            scan(((state, action: any) => action.type === '@@importState' ? action.payload : combineStates(state, action, this.states)), {}))
+            scan(((state, action: any) => action.type === IMPORT_STATE ? action.payload : combineStates(state, action, this.states)), {}))
             .subscribe((newState => { super.next(newState); }));
 
         this.effect.store = this;
@@ -90,8 +90,8 @@ export class Store extends BehaviorSubject<any> implements OnDestroy {
         });
         instances.forEach((instance => {
             const name = this.mapState(instance);
-            this.next({ type: `add_state(${name})` });
             this.addEffectsByKey(instance, name);
+            this.next({ type: `add_state(${name})` });
         }));
         return this;
     }
@@ -129,7 +129,7 @@ export class Store extends BehaviorSubject<any> implements OnDestroy {
                 state[key] = initData;
             }
         });
-        this.next({ type: ImportState, payload: state });
+        this.next({ type: IMPORT_STATE as any, payload: state });
     }
     exportState(): Observable<any[]> {
         return this.dispatcher.pipe(
