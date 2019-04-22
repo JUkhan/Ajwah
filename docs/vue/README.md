@@ -47,7 +47,7 @@ Here are the samples of all the decorators and it's corresponding coding by conv
             mapTo({type:'Inc'})
         )
     }
-    //@Effect(...) decoretor: you may mas `dispatch:flase` -  by default it's true. if you pass `false`, you effect should be disabled.
+    //@Effect(...) decoretor: you may pass `dispatch:flase` -  by default it's true. if you pass `false`, you effect should be disabled.
 
     @Effect({dispatch:flase})
     asyncIncrement(actions:Actions, store:StoreContext){
@@ -106,26 +106,7 @@ Here are the samples of all the decorators and it's corresponding coding by conv
     }
 
 ```
-### @Connect() 
-```js
-    @Connect({
-        counter: state => state.counter
-    })
-    class CounterComponent extends PureComponent {
 
-
-    }
-
-    //Convention:
-
-    class CounterComponent extends PureComponent {
-        constructor(){
-            super()
-            Connect({counter: state => state.counter}, this);
-        }
-    }
-
-```
 ### @EffectKey() 
 ```js
     @EffectKey(DYNAMIC_EFFECTS_KEY)
@@ -136,9 +117,8 @@ Here are the samples of all the decorators and it's corresponding coding by conv
     //Convention:
 
     class DynamicEffect{
-        constructor(){
-            this.effectKey=DYNAMIC_EFFECTS_KEY;
-        }
+
+       effectKey=DYNAMIC_EFFECTS_KEY;
     }
 
 ```
@@ -329,13 +309,16 @@ export default {
 
 ### Here is the `StoreContext API`
 ```js
-class StoreContext {
-    dispatch(action: Action): StoreContext;
+export declare class StoreContext {
+    dispatch(actionName: Action): StoreContext;
+    dispatch(actionName: string): StoreContext;
+    dispatch(actionName: string, payload?: any): StoreContext;
     addStates(...stateClassTypes: any[]): StoreContext;
     removeStates(...stateNames: string[]): StoreContext;
     removeEffectsByKey(key: string): StoreContext;
     importState(state: any): StoreContext;
-    select<T=any>(pathOrMapFn: ((state: T) => any) | string, ): Observable<any>;
+    exportState(): Observable<any[]>;
+    select<T = any>(pathOrMapFn: ((state: T) => any) | string, ): Observable<any>;
     addEffect<T extends Actions<Action>>(callback: (action$: Actions<Action>, store$?: StoreContext) => Observable<Action>, key?: string): StoreContext;
     addEffects(...effectClassTypes: any[]): StoreContext;
     dispose(): void;

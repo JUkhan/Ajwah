@@ -48,7 +48,7 @@ Here are the samples of all the decorators and it's corresponding coding by conv
             mapTo({type:'Inc'})
         )
     }
-    //@Effect(...) decoretor: you may mas `dispatch:flase` -  by default it's true. if you pass `false`, you effect should be disabled.
+    //@Effect(...) decoretor: you may pass `dispatch:flase` -  by default it's true. if you pass `false`, you effect should be disabled.
 
     @Effect({dispatch:flase})
     asyncIncrement(actions:Actions, store:StoreContext){
@@ -101,33 +101,12 @@ Here are the samples of all the decorators and it's corresponding coding by conv
     //Convention:
 
     class CounterState{
-        constructor(){
-            this.name= 'counter';
-            this.initialState={ count: 5, msg: '' };
-        }
+        name= 'counter';
+        initialState={ count: 5, msg: '' };
     }
 
 ```
-### @Connect() 
-```js
-    @Connect({
-        counter: state => state.counter
-    })
-    class CounterComponent extends PureComponent {
 
-
-    }
-
-    //Convention:
-
-    class CounterComponent extends PureComponent {
-        constructor(){
-            super()
-            Connect({counter: state => state.counter}, this);
-        }
-    }
-
-```
 ### @EffectKey() 
 ```js
     @EffectKey(DYNAMIC_EFFECTS_KEY)
@@ -138,9 +117,9 @@ Here are the samples of all the decorators and it's corresponding coding by conv
     //Convention:
 
     class DynamicEffect{
-        constructor(){
-            this.effectKey=DYNAMIC_EFFECTS_KEY;
-        }
+        
+        effectKey=DYNAMIC_EFFECTS_KEY;
+       
     }
 
 ```
