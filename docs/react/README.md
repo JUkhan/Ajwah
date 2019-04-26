@@ -381,9 +381,9 @@ function fxCounterComponent(props) {
 
     return (
         <div>
-            <button onClick={() => dispatch({ type: Inc })}>+</button>
-            <button onClick={() => dispatch({ type: Dec })}>-</button>
-            <button onClick={() => dispatch({ type: AsyncInc })}>async(+)</button>
+            <button onClick={() => dispatch(Inc)}>+</button>
+            <button onClick={() => dispatch(Dec)}>-</button>
+            <button onClick={() => dispatch(AsyncInc)}>async(+)</button>
             {counter.msg || counter.count}
         </div>
     );
