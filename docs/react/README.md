@@ -251,6 +251,7 @@ export default CounterState;
 import { Actions } from 'ajwah-store';
 import { updateObject } from "../utli";
 import { debounceTime, mapTo } from 'rxjs/operators';
+import { Inc } from "./actions";
 
 class CounterSate {
 
@@ -273,7 +274,7 @@ class CounterSate {
     effectForAsyncInc(actions:Actions) {
         return actions.pipe(
             debounceTime(450),
-            mapTo({ type: 'Inc' })
+            mapTo({ type: Inc })
         )
     }
 }
