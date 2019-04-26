@@ -208,7 +208,7 @@ Here are the samples of all the decorators and it's corresponding coding by conv
 
 ```js
 import { State, Action, Effect, ofType, Actions } from 'ajwah-store';
-import { INCREMENT, DECREMENT, ASYNC_INCREMENT } from './actions';
+import { Inc, Dec, AsyncInc } from './actions';
 import { updateObject } from './util';
 import { mapTo, debounceTime } from "rxjs/operators";
 
@@ -218,17 +218,17 @@ import { mapTo, debounceTime } from "rxjs/operators";
 })
 class CounterState {
 
-    @Action(INCREMENT)
+    @Action(Inc)
     increment(state, action) {
         return updateObject(state, { count: state.count + 1, msg: '' })
     }
 
-    @Action(DECREMENT)
+    @Action(Dec)
     decrement(state, action) {
         return updateObject(state, { count: state.count - 1, msg: '' })
     }
 
-    @Action(ASYNC_INCREMENT)
+    @Action(AsyncInc)
     asyncIncrement(state, action) {
         return updateObject(state, { msg: 'loading...' })
     }
@@ -236,9 +236,9 @@ class CounterState {
     @Effect()
     ofAsyncInc(action$: Actions) {
         return action$.pipe(
-            ofType(ASYNC_INCREMENT),
+            ofType(AsyncInc),
             debounceTime(1000),
-            mapTo({ type: INCREMENT })
+            mapTo({ type: Inc })
         )
 
     }
@@ -249,7 +249,6 @@ export default CounterState;
 ### `counterState using convention`
 ```js
 import { Actions } from 'ajwah-store';
-import { INCREMENT } from "./actions";
 import { updateObject } from "../utli";
 import { debounceTime, mapTo } from 'rxjs/operators';
 
@@ -274,7 +273,7 @@ class CounterSate {
     effectForAsyncInc(actions:Actions) {
         return actions.pipe(
             debounceTime(450),
-            mapTo({ type: INCREMENT })
+            mapTo({ type: 'Inc' })
         )
     }
 }
@@ -288,7 +287,7 @@ export default CounterSate;
 
 import React, { PureComponent } from 'react';
 import { Connect, StoreContext } from 'ajwah-store';
-import { INCREMENT, ASYNC_INCREMENT, DECREMENT } from './actions';
+import { Inc, AsyncInc, Dec } from './actions';
 
 @Connect({
     counter: state => state.counter
@@ -298,13 +297,13 @@ class CounterComponent extends PureComponent {
     storeCtx:StoreContext;
 
     inc = () => {
-        this.storeCtx.dispatch({ type: INCREMENT })
+        this.storeCtx.dispatch({ type: Inc })
     }
     dec = () => {
-        this.storeCtx.dispatch({ type: DECREMENT })
+        this.storeCtx.dispatch({ type: Dec })
     }
     asyncInc = () => {
-        this.storeCtx.dispatch({ type: ASYNC_INCREMENT })
+        this.storeCtx.dispatch({ type: AsyncInc })
     }
     render() {
         const { counter } = this.state;
@@ -370,7 +369,7 @@ ReactDOM.render(<Counter />, document.getElementById('root'));
 ```js
 import React, { useState, useEffect } from 'react'
 import { dispatch, subscriptions} from 'ajwah-store'
-import { INCREMENT, DECREMENT, ASYNC_INCREMENT } from './actions';
+import { Inc, Dec, AsyncInc } from './actions';
 
 
 function fxCounterComponent(props) {
@@ -382,9 +381,9 @@ function fxCounterComponent(props) {
 
     return (
         <div>
-            <button onClick={() => dispatch({ type: INCREMENT })}>+</button>
-            <button onClick={() => dispatch({ type: DECREMENT })}>-</button>
-            <button onClick={() => dispatch({ type: ASYNC_INCREMENT })}>async(+)</button>
+            <button onClick={() => dispatch({ type: Inc })}>+</button>
+            <button onClick={() => dispatch({ type: Dec })}>-</button>
+            <button onClick={() => dispatch({ type: AsyncInc })}>async(+)</button>
             {counter.msg || counter.count}
         </div>
     );
@@ -411,7 +410,7 @@ setStoreContext({
 ```js
 
 import {State, Action} from 'ajwah-store';
-import {SEARCH_KEYSTROKE, SEARCH_RESULT} from './actions';
+import {SearchKey, SearchResult} from './actions';
 import {updateObject} from './util';
 
 @State({
@@ -420,12 +419,12 @@ import {updateObject} from './util';
 })
 class SearchState{
 
-  @Action(SEARCH_KEYSTROKE)
+  @Action(SearchKey)
   searchStart(state){
    return updateObject(state, {loading:true})
   }
 
-  @Action(SEARCH_RESULT)
+  @Action(SearchResult)
   searchResult(state, {payload}){
    return updateObject(state, {loading:false, res:payload})
   }
@@ -439,7 +438,7 @@ export default SearchState;
 
 import { Effect, Actions, ofType, Actions } from 'ajwah-store';
 import {debounceTime,switchMap,distinctUntilChanged,map, catchError,tap} from 'rxjs/operators';
-import { SEARCH_KEYSTROKE, SEARCH_RESULT } from './actions';
+import { SearchKey, SearchResult } from './actions';
 import { ajax } from 'rxjs/ajax';
 import { EMPTY } from 'rxjs';
 
@@ -449,13 +448,13 @@ class SearchEffects {
     @Effect()
     search(action$: Actions) {
         return action$.pipe(
-            ofType(SEARCH_KEYSTROKE),
+            ofType(SearchKey),
             debounceTime(700),
             distinctUntilChanged(),
             switchMap(action => {
                 return ajax.getJSON(`https://en.wikipedia.org/w/api.php?&origin=*&action=opensearch&search=${action.payload}&limit=5`).pipe(
                     tap(res => console.log(res)),
-                    map(data => ({ type: SEARCH_RESULT, payload: data[1] })),
+                    map(data => ({ type: SearchResult, payload: data[1] })),
                     catchError(err => EMPTY)
                 )
             })
@@ -496,7 +495,7 @@ import React, { useState, useEffect } from 'react';
 import Todos from "../components/Todos";
 import AddTodo from "../components/AddTodo";
 import { storeCtx } from 'ajwah-store';
-import { LOAD_TODOS } from '../states/actions'
+import { LoadTodos } from '../states/actions'
 
 function todoPage() {
     const store = getStore();
@@ -504,7 +503,7 @@ function todoPage() {
 
     useEffect(() => {
         const subscription = storeCtx().select('todo').subscribe(res => setTodo(res));
-        store.dispatch({ type: LOAD_TODOS });
+        store.dispatch({ type: LoadTodos });
         return () => subscription.unsubscribe();
     }, []);
 
@@ -526,7 +525,7 @@ export default todoPage;
 ```js
 
 import { State, Action, Effect, ofType } from 'ajwah-store';
-import { TODOS_DATA, ADD_TODO, UPDATE_TODO, REMOVE_TODO, LOAD_TODOS } from './actions';
+import { TodosData, AddTodo, UpdateTodo, RemoveTodo, LoadTodos } from './actions';
 import { updateObject } from '../utli';
 import { map, mergeMap, withLatestFrom, catchError } from 'rxjs/operators';
 import { ajax } from "rxjs/ajax";
@@ -539,12 +538,12 @@ import { of } from 'rxjs'
 })
 class TodoState {
 
-    @Action(TODOS_DATA)
+    @Action(TodosData)
     todosData(state, { payload }) {
         return updateObject(state, payload)
     }
 
-    @Action(LOAD_TODOS)
+    @Action(LoadTodos)
     loadTodos(state) {
         return updateObject(state, { message: ' - loading todos....', data: [] })
     }
@@ -552,18 +551,18 @@ class TodoState {
     @Effect()
     dataLoadingEffect(action$) {
         return action$.pipe(
-            ofType(LOAD_TODOS),
+            ofType(LoadTodos),
             mergeMap(() => ajax
                 .get('https://jsonplaceholder.typicode.com/todos?_limit=5')
                 .pipe(
                     map(data => {
-                        return { type: TODOS_DATA, payload: { message: '', data: data.response } };
+                        return { type: TodosData, payload: { message: '', data: data.response } };
                     })
                 )),
         );
     }
 
-    @Action(ADD_TODO)
+    @Action(AddTodo)
     addTodo(state) {
         return updateObject(state, { message: ' - Adding a new todo...' })
     }
@@ -571,7 +570,7 @@ class TodoState {
     @Effect()
     addTodoEffect(action$, store$) {
         return action$.pipe(
-            ofType(ADD_TODO),
+            ofType(AddTodo),
             withLatestFrom(store$.select('todo')),
             mergeMap(([action, todo]) => ajax.post('https://jsonplaceholder.typicode.com/todos', action.payload)
                 .pipe(
@@ -579,14 +578,14 @@ class TodoState {
                     map(newTodo => {
                         newTodo.completed = false;
                         const payload = { message: '', data: [newTodo, ...todo.data] };
-                        return { type: TODOS_DATA, payload };
+                        return { type: TodosData, payload };
                     })
                 )
             )
         )
     }
 
-    @Action(UPDATE_TODO)
+    @Action(UpdateTodo)
     updateTodo(state, { payload }) {
         return updateObject(state, { message: `- '${payload.title}' todo is updaeing...` })
     }
@@ -594,7 +593,7 @@ class TodoState {
     @Effect()
     updateTodoEffect(action$, store$) {
         return action$.pipe(
-            ofType(UPDATE_TODO),
+            ofType(UpdateTodo),
             withLatestFrom(store$.select('todo')),
             mergeMap(([action, todo]) => ajax.put(`https://jsonplaceholder.typicode.com/todos/${action.payload.id}`, action.payload)
                 .pipe(
@@ -604,15 +603,15 @@ class TodoState {
                         const index = todo.data.findIndex(item => item.id === action.payload.id);
                         todo.data.splice(index, 1, res);
                         const payload = { message: '', data: [...todo.data] }
-                        return { type: TODOS_DATA, payload }
+                        return { type: TodosData, payload }
                     }),
-                    catchError(err => of({ type: TODOS_DATA, payload: { message: err.message } }))
+                    catchError(err => of({ type: TodosData, payload: { message: err.message } }))
                 )
             )
         )
     }
 
-    @Action(REMOVE_TODO)
+    @Action(RemoveTodo)
     removeTodo(state, { payload }) {
         return updateObject(state, { message: `- '${payload.title}' todo is removing...` })
     }
@@ -620,14 +619,14 @@ class TodoState {
     @Effect()
     removeTodoEffect(action$, store$) {
         return action$.pipe(
-            ofType(REMOVE_TODO),
+            ofType(RemoveTodo),
             withLatestFrom(store$.select('todo')),
             mergeMap(([action, todo]) => ajax.delete(`https://jsonplaceholder.typicode.com/todos/${action.payload.id}`)
                 .pipe(
                     map(data => data.response),
                     map(res => {
                         const payload = { message: '', data: todo.data.filter(item => item.id !== action.payload.id) }
-                        return { type: TODOS_DATA, payload }
+                        return { type: TodosData, payload }
                     })
                 )
             )
@@ -641,7 +640,7 @@ export default TodoState;
 ```js
 import React from 'react';
 import { dispatch } from 'ajwah-store';
-import { ADD_TODO } from '../states/actions'
+import { AddTodo } from '../states/actions'
 
 function addItem(e) {
   e.preventDefault();
@@ -649,7 +648,7 @@ function addItem(e) {
     title: e.target.elements.title.value,
     completed: false
   }
-  dispatch({ type: ADD_TODO, payload: newTodo });
+  dispatch({ type: AddTodo, payload: newTodo });
   e.target.elements.title.value = '';
 }
 
@@ -684,15 +683,15 @@ export default todos;
 ```js
 import React from 'react';
 import { dispatch } from 'ajwah-store';
-import { REMOVE_TODO, UPDATE_TODO } from '../states/actions'
+import { RemoveTodo, UpdateTodo } from '../states/actions'
 
 function updateTodo(todo, e) {
   todo.completed = e.target.checked;
-  dispatch({ type: UPDATE_TODO, payload: todo })
+  dispatch({ type: UpdateTodo, payload: todo })
 }
 
 function removeTodo(todo) {
-  dispatch({ type: REMOVE_TODO, payload: todo })
+  dispatch({ type: RemoveTodo, payload: todo })
 }
 
 function todoItem(props) {

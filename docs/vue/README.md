@@ -189,7 +189,7 @@ module.exports = {
 
 ```js
 import { State, Action, Effect, ofType, Actions } from 'ajwah-react-store';
-import { INCREMENT, DECREMENT, ASYNC_INCREMENT } from './actions';
+import { Inc, Dec, AsyncInc } from './actions';
 import { updateObject } from './util';
 import { mapTo, debounceTime } from "rxjs/operators";
 
@@ -199,17 +199,17 @@ import { mapTo, debounceTime } from "rxjs/operators";
 })
 class CounterState {
 
-    @Action(INCREMENT)
+    @Action(Inc)
     increment(state, action) {
         return updateObject(state, { count: state.count + 1, msg: '' })
     }
 
-    @Action(DECREMENT)
+    @Action(Dec)
     decrement(state, action) {
         return updateObject(state, { count: state.count - 1, msg: '' })
     }
 
-    @Action(ASYNC_INCREMENT)
+    @Action(AsyncInc)
     asyncIncrement(state, action) {
         return updateObject(state, { msg: 'loading...' })
     }
@@ -232,7 +232,7 @@ export default CounterState;
 
 ```js
 import { Actions } from 'ajwah-store';
-import { INCREMENT } from "./actions";
+import { Inc } from "./actions";
 import { updateObject } from "../utli";
 import { debounceTime, mapTo } from 'rxjs/operators';
 
@@ -257,7 +257,7 @@ class CounterSate {
     effectForAsyncInc(actions:Actions) {
         return actions.pipe(
             debounceTime(450),
-            mapTo({ type: INCREMENT })
+            mapTo({ type: 'Inc' })
         )
     }
 }
@@ -280,7 +280,7 @@ export default CounterSate;
 </template>
 
 <script>
-import { INCREMENT, DECREMENT, ASYNC_INCREMENT } from "../states/actions";
+import { Inc, Dec, AsyncInc } from "../states/actions";
 export default {
   name: "Counter",
   subscriptions() {
@@ -291,13 +291,13 @@ export default {
 
   methods: {
     inc() {
-      this.storeCtx.dispatch({ type: INCREMENT });
+      this.storeCtx.dispatch({ type: Inc });
     },
     dec() {
-      this.storeCtx.dispatch({ type: DECREMENT });
+      this.storeCtx.dispatch({ type: Dec });
     },
-    async_inc() {
-      this.storeCtx.dispatch({ type: ASYNC_INCREMENT });
+    asyncInc() {
+      this.storeCtx.dispatch({ type: AsyncInc });
     }
   }
 };
@@ -369,7 +369,7 @@ Vue.use(AjwahStore, {
 ```js
 
 import {State, Action} from 'ajwah-vue-store';
-import {SEARCH_KEYSTROKE, SEARCH_RESULT} from './actions';
+import {SearchKey, SearchResult} from './actions';
 import {updateObject} from './util';
 
 @State({
@@ -378,12 +378,12 @@ import {updateObject} from './util';
 })
 class SearchState{
 
-  @Action(SEARCH_KEYSTROKE)
+  @Action(SearchKey)
   searchStart(state){
    return updateObject(state, {loading:true})
   }
 
-  @Action(SEARCH_RESULT)
+  @Action(SearchResult)
   searchResult(state, {payload}){
    return updateObject(state, {loading:false, res:payload})
   }
@@ -403,7 +403,7 @@ import {
     map, catchError,
     tap
 } from 'rxjs/operators';
-import { SEARCH_KEYSTROKE, SEARCH_RESULT } from './actions';
+import { SearchKey, SearchResult } from './actions';
 import { ajax } from 'rxjs/ajax';
 import { EMPTY } from 'rxjs';
 
@@ -413,13 +413,13 @@ class SearchEffects {
     @Effect()
     search(action$: Actions) {
         return action$.pipe(
-            ofType(SEARCH_KEYSTROKE),
+            ofType(SearchKey),
             debounceTime(700),
             distinctUntilChanged(),
             switchMap(action => {
                 return ajax.getJSON(`https://en.wikipedia.org/w/api.php?&origin=*&action=opensearch&search=${action.payload}&limit=5`).pipe(
                     tap(res => console.log(res)),
-                    map(data => ({ type: SEARCH_RESULT, payload: data[1] })),
+                    map(data => ({ type: SearchResult, payload: data[1] })),
                     catchError(err => EMPTY)
                 )
             })

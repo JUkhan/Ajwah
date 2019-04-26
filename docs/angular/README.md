@@ -225,7 +225,7 @@ class CounterSate {
     effectForAsyncInc(actions:Actions) {
         return actions.pipe(
             debounceTime(450),
-            mapTo({ type: INCREMENT })
+            mapTo({ type: 'Inc' })
         )
     }
 }
