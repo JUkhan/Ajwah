@@ -12,7 +12,7 @@ In Ajwah there are two different coding styles
 * Coding by Decorators
 * Coding by Convention
 
-Here is the samples of all decorators and it's corresponding coding by convention
+Here are the samples of all the decorators and it's corresponding coding by convention
 
 ### `@Action()`
 ```js
@@ -48,7 +48,7 @@ Here is the samples of all decorators and it's corresponding coding by conventio
             mapTo({type:'Inc'})
         )
     }
-    //@Effect(...) decoretor: you may mas `dispatch:flase` -  by default it's true. if you pass `false`, you effect should be disabled.
+    //@Effect(...) decoretor: you may pass `dispatch:flase` -  by default it's true. if you pass `false`, you effect should be disabled.
 
     @Effect({dispatch:flase})
     asyncIncrement(actions:Actions, store:StoreContext){
@@ -69,7 +69,9 @@ Here is the samples of all decorators and it's corresponding coding by conventio
         )
     }
 
-    // you may use `For` for getting rid of `ofType('...')` - [effect][For][actionName](...){...}. Use 'Or' for multiple actions name. ex: effectForAsyncIncOrDec(...)
+    // you may use `For` for getting rid of `ofType('...')` - [effect][For][actionName](...){...}. 
+    // Use 'Or' for multiple actions name. ex: effectForAsyncIncOrDec(...) 
+    // - [effect][For][actionName][Or][actionName][Or][actionName][...](){}
     effectForAsyncInc(actions:Actions, store:StoreContext){
         return actions.pipe(
             //ofType('AsyncInc'), now it's not necessary
@@ -99,10 +101,10 @@ Here is the samples of all decorators and it's corresponding coding by conventio
     //Convention:
 
     class CounterState{
-        constructor(){
-            this.name= 'counter';
-            this.initialState={ count: 5, msg: '' };
-        }
+        
+        name= 'counter';
+        initialState={ count: 5, msg: '' };
+        
     }
 
 ```
@@ -136,9 +138,7 @@ Here is the samples of all decorators and it's corresponding coding by conventio
     //Convention:
 
     class DynamicEffect{
-        constructor(){
-            this.effectKey=DYNAMIC_EFFECTS_KEY;
-        }
+        effectKey=DYNAMIC_EFFECTS_KEY;
     }
 
 ```
@@ -146,7 +146,6 @@ Here is the samples of all decorators and it's corresponding coding by conventio
 `Note: Please remember the starts with 'action' and 'effect'. This is by default. You may change whatever you want into the 'setStoreContext'` 
 
 ```js
-    //react
     setStoreContext({
         states: [CounterSate, TodoState],
         effects: [TodoEffects],
@@ -154,14 +153,6 @@ Here is the samples of all decorators and it's corresponding coding by conventio
         actionsMethodStartsWith: 'myAction', // default 'action'
         effectsMethodStartsWith:'myEffect'  // default 'effect'
     });
-
-    //vue
-    Vue.use(AjwahStore, {
-        states: [counterState],
-        devTools: devTools(),
-        actionsMethodStartsWith: 'myAction', // default 'action'
-        effectsMethodStartsWith:'myEffect'  // default 'effect'
-    })
 
     //Now your actions and  effects should be
 
@@ -185,7 +176,7 @@ Here is the samples of all decorators and it's corresponding coding by conventio
 
 ```js
 import { State, Action, Effect, ofType, Actions } from 'ajwah-store';
-import { INCREMENT, DECREMENT, ASYNC_INCREMENT } from './actions';
+import { Inc, Dec, AsyncInc } from './actions';
 import { updateObject } from './util';
 import { mapTo, debounceTime } from "rxjs/operators";
 
@@ -195,27 +186,27 @@ import { mapTo, debounceTime } from "rxjs/operators";
 })
 class CounterState {
 
-    @Action(INCREMENT)
+    @Action(Inc)
     increment(state, action) {
         return updateObject(state, { count: state.count + 1, msg: '' })
     }
 
-    @Action(DECREMENT)
+    @Action(Dec)
     decrement(state, action) {
         return updateObject(state, { count: state.count - 1, msg: '' })
     }
 
-    @Action(ASYNC_INCREMENT)
+    @Action(AsyncInc)
     asyncIncrement(state, action) {
         return updateObject(state, { msg: 'loading...' })
     }
 
     @Effect()
-    asyncIncrementEffect(action$: Actions) {
+    ofAsyncInc(action$: Actions) {
         return action$.pipe(
-            ofType(ASYNC_INCREMENT),
+            ofType(AsyncInc),
             debounceTime(1000),
-            mapTo({ type: INCREMENT })
+            mapTo({ type: Inc })
         )
 
     }
@@ -226,9 +217,9 @@ export default CounterState;
 ### `counterState using convention`
 ```js
 import { Actions } from 'ajwah-store';
-import { INCREMENT } from "./actions";
 import { updateObject } from "../utli";
 import { debounceTime, mapTo } from 'rxjs/operators';
+import { Inc } from "./actions";
 
 class CounterSate {
 
@@ -251,7 +242,7 @@ class CounterSate {
     effectForAsyncInc(actions:Actions) {
         return actions.pipe(
             debounceTime(450),
-            mapTo({ type: INCREMENT })
+            mapTo({ type: Inc })
         )
     }
 }
@@ -266,3 +257,4 @@ export default CounterSate;
 [Vue Doc](https://github.com/JUkhan/Ajwah/tree/master/docs/vue#ajwah)
 
 [Angular Doc](https://github.com/JUkhan/Ajwah/tree/master/docs/angular#ajwah)
+
