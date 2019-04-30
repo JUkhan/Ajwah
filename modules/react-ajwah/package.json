@@ -1,7 +1,7 @@
 {
-  "name": "ajwah-store",
-  "version": "0.2.8",
-  "description": "Rx based store library for React, Vue, Angular, Preact. Manage your application's states, effects, and actions easy way. It's easy to use in functional components with React hooks.",
+  "name": "react-ajwah",
+  "version": "0.1.0",
+  "description": "React bindings for ajwah",
   "main": "lib/cjs/index.js",
   "module": "lib/esm/index.js",
   "typings": "index.d.ts",
@@ -13,18 +13,22 @@
     "build:cjs": "babel src -d lib/cjs"
   },
   "devDependencies": {
+    "ajwah-store": "0.2.8",
+    "babel-cli": "^6.11.4",
     "babel-core": "^6.26.0",
     "babel-plugin-transform-object-rest-spread": "^6.8.0",
     "babel-preset-env": "^1.6.1",
-    "babel-cli": "^6.11.4",
     "babel-register": "^6.11.6",
     "gulp": "^3.9.1",
     "gulp-babel": "^6.1.2",
+    "react": "^16.8.4",
     "rimraf": "^2.5.4",
     "rxjs": "^6.4.0"
   },
   "peerDependencies": {
-    "rxjs": ">=6.0.0-beta.0 <7"
+    "rxjs": ">=6.0.0-beta.0 <7",
+    "react": ">=16.8.3 <18",
+    "ajwah-store": ">=0.2.8 <2"
   },
   "repository": {
     "type": "git",
@@ -47,6 +51,5 @@
   "bugs": {
     "url": "https://github.com/JUkhan/Ajwah/issues"
   },
-  "homepage": "https://github.com/JUkhan/Ajwah#readme",
-  "dependencies": {}
+  "homepage": "https://github.com/JUkhan/Ajwah#readme"
 }

@@ -15,20 +15,19 @@ export default {
   name: "Counter",
   subscriptions() {
     return {
-      counter: this.storeCtx.select("counter")
+      counter: storeCtx().select("counter")
     };
   },
 
   methods: {
     inc() {
-      //this.store.dispatch({ type: INCREMENT });
       dispatch(INCREMENT);
     },
     dec() {
-      this.storeCtx.dispatch({ type: DECREMENT });
+      dispatch({ type: DECREMENT });
     },
     async_inc() {
-      this.storeCtx.dispatch({ type: ASYNC_INCREMENT });
+      dispatch({ type: ASYNC_INCREMENT });
     }
   }
 };

@@ -1,6 +1,6 @@
-import { storeCtx } from '../storeContext';
+import { storeCtx } from 'ajwah-store';
 import { Subscription } from 'rxjs';
-import { CONNECT_METADATA_KEY } from '../tokens';
+export const CONNECT_METADATA_KEY = 'ajwah/connect';
 
 
 function mount() {

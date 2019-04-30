@@ -3,17 +3,16 @@ import App from './App.vue';
 import router from './router';
 
 import vueRx from 'vue-rx';
-import { AjwahStore, } from 'ajwah-store';
+import { setStoreContext } from 'ajwah-store';
 import { devTools } from 'ajwah-devtools';
 //import counterState from './states/counterState'
 import counterState from './states/counterState2'
 
 Vue.use(vueRx);
 
-Vue.use(AjwahStore, {
+setStoreContext({
   states: [counterState],
-  devTools: devTools(),
-  exposeStoreContext: true
+  devTools: devTools()
 })
 
 Vue.config.productionTip = false;

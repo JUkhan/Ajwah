@@ -6,6 +6,7 @@ Rx based store library for React, Vue, Angular, Preact. Manage your application'
 
 ```sh
 >> npm install ajwah-store
+>> npm install react-ajwah
 >> npm install ajwah-devtools
 ```
 In Ajwah there are two different coding styles
@@ -108,7 +109,7 @@ Here are the samples of all the decorators and it's corresponding coding by conv
     }
 
 ```
-### @Connect() 
+### @Connect() - from react-ajwah
 ```js
     @Connect({
         counter: state => state.counter
@@ -368,17 +369,15 @@ ReactDOM.render(<Counter />, document.getElementById('root'));
 ### Here is the same `counterComponent` using HOOKS:
 
 ```js
-import React, { useState, useEffect } from 'react'
-import { dispatch, subscriptions} from 'ajwah-store'
+import React from 'react'
+import { dispatch} from 'ajwah-store'
+import {useSubscriptions} from 'react-ajwah';
 import { Inc, Dec, AsyncInc } from './actions';
 
 
 function fxCounterComponent(props) {
     
-    const [counter, setCounterState] = useState({});
-
-    //in the subscriptions function 'counter' is the state name
-    useEffect(() => subscriptions({counter:setCounterState}), []);
+    const {counter} = useSubscriptions(['counter'])
 
     return (
         <div>

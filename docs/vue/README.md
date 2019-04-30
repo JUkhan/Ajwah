@@ -126,7 +126,7 @@ Here are the samples of all the decorators and it's corresponding coding by conv
 `Note: Please remember the starts with 'action' and 'effect'. This is by default. You may change whatever you want into the 'setStoreContext'` 
 
 ```js
-    Vue.use(AjwahStore, {
+    setStoreContext({
         states: [CounterSate, TodoState],
         effects: [TodoEffects],
         devTools: devTools({ maxAge: 10 }),
@@ -280,24 +280,25 @@ export default CounterSate;
 </template>
 
 <script>
+import { dispatch, storeCtx } from "ajwah-store";
 import { Inc, Dec, AsyncInc } from "../states/actions";
 export default {
   name: "Counter",
   subscriptions() {
     return {
-      counter: this.storeCtx.select('counter')
+      counter: storeCtx().select('counter')
     };
   },
 
   methods: {
     inc() {
-      this.storeCtx.dispatch({ type: Inc });
+      dispatch({ type: Inc });
     },
     dec() {
-      this.storeCtx.dispatch({ type: Dec });
+      dispatch({ type: Dec });
     },
     asyncInc() {
-      this.storeCtx.dispatch({ type: AsyncInc });
+      dispatch({ type: AsyncInc });
     }
   }
 };
@@ -333,13 +334,13 @@ import App from './App.vue';
 import router from './router';
 
 import vueRx from 'vue-rx';
-import { AjwahStore } from 'ajwah-vue-store';
+import { setStoreContext } from 'ajwahstore';
 import { devTools } from 'ajwah-devtools';
 import counterState from './states/counterState'
 
 Vue.use(vueRx);
 
-Vue.use(AjwahStore, {
+setStoreContext({
   states: [counterState],
   devTools: devTools()
 })
@@ -359,7 +360,7 @@ new Vue({
 There are several of ways to add effects in Ajwah. You can add effects in your state class that has been shown above in `counterState`. Also you can define separate effect classes and set them into `main` file like bellow:
 
 ```js
-Vue.use(AjwahStore, {
+setStoreContext({
     states: [CounterState, SearchState],
     effects: [SearchEffects]
 });
@@ -435,16 +436,16 @@ export default SearchEffects;
 ```js
 methods{
     addEffect() {
-        this.storeCtx.addEffects(DynamicEffect);
+        storeCtx().addEffects(DynamicEffect);
     }
     removeEffect() {
-        this.storeCtx.removeEffectsByKey(DYNAMIC_EFFECTS_KEY);
+        storeCtx().removeEffectsByKey(DYNAMIC_EFFECTS_KEY);
     }
     addState() {
-        this.storeCtx.addStates(TutorialState);
+        storeCtx().addStates(TutorialState);
     }
     removeState() {
-        this.storeCtx.removeStates('tutorials')
+        storeCtx().removeStates('tutorials')
     }
 }
 ```

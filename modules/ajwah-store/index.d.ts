@@ -43,16 +43,5 @@ export declare function EffectKey(key: string): any;
 export function dispatch(actionName: Action): StoreContext;
 export function dispatch(actionName: string): StoreContext;
 export function dispatch(actionName: string, payload?: any): StoreContext;
-export function subscriptions(mapState: { [key: string]: (state: any) => void }): () => void;
 
-export declare const AjwahStore: {
-    install(Vue: any, options: {
-        states: any[];
-        effects?: any[];
-        devTools?: any;
-        actionsMethodStartsWith?: string;
-        effectsMethodStartsWith?: string;
-        exposeStoreContext?: boolean;
-    }): void;
-};
 

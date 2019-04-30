@@ -1,7 +1,7 @@
 import React, { PureComponent } from 'react';
 import { INCREMENT, DECREMENT, ASYNC_INCREMENT } from "../states/actions";
 
-import { Connect } from 'ajwah-store';
+import { Connect } from 'react-ajwah';
 
 
 @Connect()

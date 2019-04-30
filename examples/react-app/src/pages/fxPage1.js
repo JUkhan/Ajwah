@@ -5,18 +5,17 @@ import Counter from "../components/counterComponent";
 //import TutorialList from "../components/fxTutotialListComponent";
 import Todos from "../components/Todos";
 import AddTodo from "../components/AddTodo";
-import { subscriptions, dispatch } from 'ajwah-store';
+import { dispatch } from 'ajwah-store';
+import { useSubscriptions } from 'react-ajwah';
 import { LOAD_TODOS } from '../states/actions'
 
 function page1() {
 
-    const [counter, setCounter] = useState({});
-    const [todo, setTodo] = useState({});
-
-
+    const { counter, todo } = useSubscriptions(['counter', 'todo'])
+    console.log(counter, todo);
     useEffect(() => {
         dispatch(LOAD_TODOS)
-        return subscriptions({ counter: setCounter, todo: setTodo })
+
     }, [])
 
 
