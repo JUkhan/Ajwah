@@ -7,21 +7,23 @@ import { storeCtx } from 'ajwah-store';
 import { DYNAMIC_EFFECTS_KEY } from '../states/actions'
 import CounterEffect from "../states/counterEffects";
 import TutorialState from "../states/tutoroalState";
+import { useSubscriptions } from 'react-ajwah'
 
 function page3() {
     const store = storeCtx();
     const [tutorials, setTutorial] = useState([]);
-    const [counter, setCounter] = useState({});
+    const { counter } = useSubscriptions(['counter']);
 
 
     useEffect(() => {
         //store.addStates(TutorialState);
         const subs = store.select('tutorials').subscribe(res => setTutorial(res));
-        subs.add(store.select('counter').subscribe(res => setCounter(res)));
+        //subs.add(store.select('counter').subscribe(res => setCounter(res)));
 
         return () => {
             subs.unsubscribe();
-            store.removeStates('tutorials');
+            console.log('unsubscribe....')
+            //store.removeStates('tutorials');
         }
     }, []);
 

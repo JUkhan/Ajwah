@@ -6,6 +6,7 @@ Rx based store library for React, Vue, Angular, Preact. Manage your application'
 
 ```sh
 >> npm install ajwah-store
+>> npm install react-ajwah
 >> npm install ajwah-devtools
 ```
 In Ajwah there are two different coding styles
@@ -108,7 +109,7 @@ Here are the samples of all the decorators and it's corresponding coding by conv
     }
 
 ```
-### @Connect() 
+### @Connect() - from react-ajwah
 ```js
     @Connect({
         counter: state => state.counter

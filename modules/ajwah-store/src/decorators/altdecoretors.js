@@ -32,7 +32,7 @@ export function setActionsAndEffects(target, includeStates = true) {
             }
         }
 
-        if (prop.startsWith(__effectKey)) {
+        if (prop.startsWith(__effectKey) && target[EFFECT_METADATA_KEY].effects.findIndex(_ => _.propertyName === prop) === -1) {
             const dispatch = !prop.endsWith('_ndispatch');
             target[EFFECT_METADATA_KEY].effects.push({ propertyName: prop, dispatch });
         }
