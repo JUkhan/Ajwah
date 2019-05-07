@@ -65,3 +65,5 @@ dist/
 modules/ajwah-react-devtools/lib/
 modules/ajwah-store/lib/
 modules/react-ajwah/lib/
+modules/react-ajwah/package-lock.json
+modules/ajwah-store/package-lock.json
