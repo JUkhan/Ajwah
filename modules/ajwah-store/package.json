@@ -6,20 +6,22 @@
   "module": "lib/esm/index.js",
   "typings": "index.d.ts",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "test": "jest test --watchAll",
     "build": "npm run build:esm && npm run build:cjs",
     "clean": "rimraf lib temp dist",
     "build:esm": "gulp build:esm",
     "build:cjs": "babel src -d lib/cjs"
   },
   "devDependencies": {
-    "babel-core": "^6.26.0",
-    "babel-plugin-transform-object-rest-spread": "^6.8.0",
-    "babel-preset-env": "^1.6.1",
-    "babel-cli": "^6.11.4",
-    "babel-register": "^6.11.6",
+    "@babel/cli": "^7.4.4",
+    "@babel/core": "^7.4.4",
+    "@babel/plugin-proposal-class-properties": "^7.4.4",
+    "@babel/plugin-proposal-object-rest-spread": "^7.4.4",
+    "@babel/preset-env": "^7.4.4",
+    "@babel/register": "^7.4.4",
     "gulp": "^3.9.1",
-    "gulp-babel": "^6.1.2",
+    "gulp-babel": "^8.0.0",
+    "jest": "^24.8.0",
     "rimraf": "^2.5.4",
     "rxjs": "^6.4.0"
   },
@@ -48,5 +50,7 @@
     "url": "https://github.com/JUkhan/Ajwah/issues"
   },
   "homepage": "https://github.com/JUkhan/Ajwah#readme",
-  "dependencies": {}
+  "dependencies": {
+    "@babel/runtime": "^7.4.4"
+  }
 }

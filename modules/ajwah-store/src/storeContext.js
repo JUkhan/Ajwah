@@ -138,13 +138,9 @@ export function setStoreContext(options) {
     __store = storeContextFactory(options);
 }
 export function getStoreContext(options) {
-    return storeContextFactory(options);
+    return __store = storeContextFactory(options);
 }
 
 export function storeCtx() {
-    if (__store === undefined) {
-        console.info(`usually storeCtx() function does not work in vue. You need to set the 'exposeStoreContext' boolean option 'true' to make it workable. ex: Vue.use(AjwahStore, {exposeStoreContext:true})`);
-        throw 'storeCtx undefined';
-    }
     return __store;
 }
