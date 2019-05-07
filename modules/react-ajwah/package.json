@@ -6,6 +6,7 @@
   "module": "lib/esm/index.js",
   "typings": "index.d.ts",
   "scripts": {
+    "babel-version": "babel --version",
     "test": "echo \"Error: no test specified\" && exit 1",
     "build": "npm run build:esm && npm run build:cjs",
     "clean": "rimraf lib temp dist",
@@ -13,14 +14,15 @@
     "build:cjs": "babel src -d lib/cjs"
   },
   "devDependencies": {
+    "@babel/cli": "^7.4.4",
+    "@babel/core": "^7.4.4",
+    "@babel/plugin-proposal-class-properties": "^7.4.4",
+    "@babel/plugin-proposal-object-rest-spread": "^7.4.4",
+    "@babel/preset-env": "^7.4.4",
+    "@babel/register": "^7.4.4",
     "ajwah-store": "0.2.8",
-    "babel-cli": "^6.11.4",
-    "babel-core": "^6.26.0",
-    "babel-plugin-transform-object-rest-spread": "^6.8.0",
-    "babel-preset-env": "^1.6.1",
-    "babel-register": "^6.11.6",
     "gulp": "^3.9.1",
-    "gulp-babel": "^6.1.2",
+    "gulp-babel": "^8.0.0",
     "react": "^16.8.4",
     "rimraf": "^2.5.4",
     "rxjs": "^6.4.0"
