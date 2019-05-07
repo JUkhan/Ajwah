@@ -252,6 +252,7 @@ export default CounterSate;
 ```
 `You can choose any style you like or any combination - ajwah support both together`
 
+[Please go throw this test file for more details. You may run the test and having some practical examples on it](https://github.com/JUkhan/Ajwah/blob/master/modules/ajwah-store/test/ajwah.test.js)
 
 [React Doc](https://github.com/JUkhan/Ajwah/tree/master/docs/react#ajwah)
 

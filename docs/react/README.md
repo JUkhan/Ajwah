@@ -144,6 +144,10 @@ Here are the samples of all the decorators and it's corresponding coding by conv
 
 ```
 
+
+[Please go throw this test file for more details. You may run the test and having some practical examples on it](https://github.com/JUkhan/Ajwah/blob/master/modules/ajwah-store/test/ajwah.test.js)
+
+
 `Note: Please remember the starts with 'action' and 'effect'. This is by default. You may change whatever you want into the 'setStoreContext'` 
 
 ```js
