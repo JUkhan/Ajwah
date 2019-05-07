@@ -154,7 +154,7 @@ describe('ajwah', () => {
         }, done, done)
     })
 
-    it('if we remove counter state then effects of this class \nshould be removed successfully. counter:{ count: -2, isLoading: false }', done => {
+    it('if we remove todo state then effects of this class \nshould be removed successfully. counter:{ count: -2, isLoading: false }', done => {
         store.removeStates('todo')
         store.dispatch('Dec')
         store.select('counter').pipe(take(1)).subscribe(res => {
@@ -162,7 +162,7 @@ describe('ajwah', () => {
         }, done, done)
     })
 
-    it('adding and removing todo state several of times: see its working properly.\ntodo:{data:[]}, counter:{ count: 1, isLoading: false }', done => {
+    it('adding and removing todo state several of times: its working properly.\ntodo:{data:[]}, counter:{ count: 1, isLoading: false }', done => {
         store.addStates(Todo)
         store.dispatch('Inc').dispatch('Inc').dispatch('Inc').dispatch('Dec')
         store.removeStates('todo')
