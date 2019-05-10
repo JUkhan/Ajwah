@@ -26,21 +26,17 @@ class StoreContext {
         return this;
     }
 
-    addStates(...stateClassTypes) {
-        for (let stateClass of stateClassTypes) {
-            setActionsAndEffects(stateClass);
-            const instance = new stateClass();
-            this.store.addState(instance);
-            const key = instance[STATE_METADATA_KEY].name;
-            this._addEffectsByKey(instance, key, this.actions);
-        }
+    addState(stateClassType) {
+        setActionsAndEffects(stateClassType);
+        const instance = new stateClassType();
+        this.store.addState(instance);
+        const key = instance[STATE_METADATA_KEY].name;
+        this._addEffectsByKey(instance, key, this.actions);
         return this;
     }
-    removeStates(...stateNames) {
-        for (let stateName of stateNames) {
-            this.store.removeState(stateName);
-            this.removeEffectsByKey(stateName);
-        }
+    removeState(stateName) {
+        this.store.removeState(stateName);
+        this.removeEffectsByKey(stateName);
         return this;
     }
     importState(state) {
@@ -68,24 +64,17 @@ class StoreContext {
         }
         return this;
     }
-    addEffects(...effectClassTypes) {
-        const instances = effectClassTypes.map(_ => {
-            setActionsAndEffects(_, false);
-            const inst = new _();
-            if (inst.effectKey) {
-                inst[EFFECT_METADATA_KEY].key = inst.effectKey;
-            }
-            return inst;
-        });
-
-        const globalEffects = instances.filter(ef => !ef[EFFECT_METADATA_KEY].key);
-        const keysEffects = instances.filter(ef => !!ef[EFFECT_METADATA_KEY].key);
-        globalEffects.length && this.effSubs.addEffects(globalEffects, this.actions);
-        if (keysEffects.length) {
-            keysEffects.forEach(instance => {
-                const key = instance[EFFECT_METADATA_KEY].key;
-                this._addEffectsByKey(instance, key, this.actions);
-            });
+    addEffects(effectClassType) {
+        setActionsAndEffects(effectClassType, false);
+        const instance = new effectClassType();
+        if (instance.effectKey) {
+            instance[EFFECT_METADATA_KEY].key = instance.effectKey;
+        }
+        const key = instance[EFFECT_METADATA_KEY].key;
+        if (key) {
+            this._addEffectsByKey(instance, key, this.actions);
+        } else {
+            this.effSubs.addEffects([instance], this.actions);
         }
         return this;
     }
@@ -128,8 +117,9 @@ function storeContextFactory({
     const ctx = new StoreContext(istates);
     __store = ctx;
     ctx.effSubs.addEffects(istates, ctx.actions);
-    ctx.addEffects(...effects);
-
+    for (let effect of effects) {
+        ctx.addEffects(effect);
+    }
     if (devTools && devTools.run) {
         ctx.devTools = devTools;
         devTools.run({ dispatcher: ctx.dispatcher, store: ctx.store, importState: IMPORT_STATE });

@@ -83,29 +83,25 @@ export class Store<S = any> extends BehaviorSubject<any> implements OnDestroy {
         Object.keys(this.subscriptionMap).forEach(this.removeEffectsByKey);
     }
 
-    addStates(...states: Type<any>[]): Store {
-        const instances = states.map(_ => {
-            setActionsAndEffects(_);
-            return this.injector.get(_);
-        });
-        instances.forEach((instance => {
-            const name = this.mapState(instance);
-            this.addEffectsByKey(instance, name);
-            this.next({ type: `add_state(${name})` });
-        }));
+    addState(stateClassType: Type<any>): Store {
+        setActionsAndEffects(stateClassType);
+        const instance = this.injector.get(stateClassType);
+        const name = this.mapState(instance);
+        this.addEffectsByKey(instance, name);
+        this.next({ type: `add_state(${name})` });
         return this;
     }
 
-    removeStates(...stateNames: string[]): Store {
-        for (let stateName of stateNames) {
-            if (!this.states[stateName]) {
-                console.error(`Unknown state name '${stateName}'`);
-                return this;
-            }
-            delete this.states[stateName];
-            this.removeEffectsByKey(stateName);
-            this.next({ type: `remove_state(${stateName})` });
+    removeState(stateName): Store {
+
+        if (!this.states[stateName]) {
+            console.error(`Unknown state name '${stateName}'`);
+            return this;
         }
+        delete this.states[stateName];
+        this.removeEffectsByKey(stateName);
+        this.next({ type: `remove_state(${stateName})` });
+
         return this;
     }
 
@@ -141,28 +137,18 @@ export class Store<S = any> extends BehaviorSubject<any> implements OnDestroy {
         );
     }
 
-    addEffects(...effects: Type<any>[]): Store {
-
-        const instances = effects.map(_ => {
-            setActionsAndEffects(_, false);
-            const inst = this.injector.get(_);
-            if (inst.effectKey) {
-                inst[EFFECT_METADATA_KEY].key = inst.effectKey;
-            }
-            return inst;
-        });
-
-        const globalEffects = instances.filter(ef => !ef[EFFECT_METADATA_KEY].key);
-
-        const keysEffects = instances.filter(ef => !!ef[EFFECT_METADATA_KEY].key);
-        globalEffects.length && this.effect.addEffects(globalEffects);
-        if (keysEffects.length) {
-            keysEffects.forEach((instance => {
-                const key = instance[EFFECT_METADATA_KEY].key;
-                this.addEffectsByKey(instance, key);
-            }));
+    addEffects(effectClassType: Type<any>): Store {
+        setActionsAndEffects(effectClassType, false);
+        const inst = this.injector.get(effectClassType);
+        if (inst.effectKey) {
+            inst[EFFECT_METADATA_KEY].key = inst.effectKey;
         }
-
+        const key = inst[EFFECT_METADATA_KEY].key;
+        if (key) {
+            this.addEffectsByKey(inst, key);
+        } else {
+            this.effect.addEffects([inst]);
+        }
         return this;
 
     }

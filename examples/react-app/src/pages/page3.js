@@ -60,10 +60,10 @@ function removeEffect() {
     storeCtx().removeEffectsByKey(DYNAMIC_EFFECTS_KEY);
 }
 function addState() {
-    storeCtx().addStates(TutorialState);
+    storeCtx().addState(TutorialState);
 }
 function removeState() {
-    storeCtx().removeStates('tutorials')
+    storeCtx().removeState('tutorials')
 }
 
 export default page3;

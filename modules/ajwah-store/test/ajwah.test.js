@@ -55,7 +55,7 @@ describe('ajwah', () => {
     })
 
     it('adding state on the fly(tutorial):{data:[]}', done => {
-        store.addStates(Tutorial)
+        store.addState(Tutorial)
         store.select('tutorial').pipe(take(1)).subscribe(res => {
             expect(res.data.length).toBe(0)
         }, done, done)
@@ -147,7 +147,7 @@ describe('ajwah', () => {
 
     })
     it('adding a todo state on the fly and this state has an effect on Dec action \nthat mutate counter state(Inc). counter:{ count: -1, isLoading: false }', done => {
-        store.addStates(Todo)
+        store.addState(Todo)
         store.dispatch('Dec')
         store.select('counter').pipe(take(1)).subscribe(res => {
             expect(res).toEqual({ count: -1, isLoading: false })
@@ -155,7 +155,7 @@ describe('ajwah', () => {
     })
 
     it('if we remove todo state then effects of this class \nshould be removed successfully. counter:{ count: -2, isLoading: false }', done => {
-        store.removeStates('todo')
+        store.removeState('todo')
         store.dispatch('Dec')
         store.select('counter').pipe(take(1)).subscribe(res => {
             expect(res).toEqual({ count: -2, isLoading: false })
@@ -163,13 +163,13 @@ describe('ajwah', () => {
     })
 
     it('adding and removing todo state several of times: its working properly.\ntodo:{data:[]}, counter:{ count: 1, isLoading: false }', done => {
-        store.addStates(Todo)
+        store.addState(Todo)
         store.dispatch('Inc').dispatch('Inc').dispatch('Inc').dispatch('Dec')
-        store.removeStates('todo')
-        store.addStates(Todo)
+        store.removeState('todo')
+        store.addState(Todo)
         store.dispatch('AddTodo', 'one').dispatch('AddTodo', 'two')
-        store.removeStates('todo')
-        store.addStates(Todo)
+        store.removeState('todo')
+        store.addState(Todo)
         store.select(state => ({ todo: state.todo, counter: state.counter })).pipe(take(1)).subscribe(res => {
             expect(res.todo.data.length).toBe(0)
             expect(res.counter).toEqual({ count: 1, isLoading: false })

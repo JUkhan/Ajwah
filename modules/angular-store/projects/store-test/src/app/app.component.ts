@@ -34,10 +34,10 @@ export class AppComponent implements OnDestroy, OnInit {
     this.store.removeEffectsByKey(DYNAMIC_EFFECTS_KEY);
   }
   addState() {
-    this.store.addStates(TutorialState);
+    this.store.addState(TutorialState);
   }
   removeState() {
-    this.store.removeStates('tutorial')
+    this.store.removeState('tutorial')
   }
 
   ngOnDestroy() {

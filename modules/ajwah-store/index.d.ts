@@ -17,19 +17,18 @@ export declare class StoreContext<S = any> {
     dispatch(actionName: IAction): StoreContext;
     dispatch(actionName: string): StoreContext;
     dispatch(actionName: string, payload?: any): StoreContext;
-    addStates(...stateClassTypes: any[]): StoreContext;
-    removeStates(...stateNames: string[]): StoreContext;
+    addState(stateClassType: any): StoreContext;
+    removeState(stateName: string): StoreContext;
     removeEffectsByKey(key: string): StoreContext;
     importState(state: any): StoreContext;
     exportState(): Observable<[IAction, S]>;
     select<R = any>(pathOrMapFn: ((state: S) => any) | string, ): Observable<R>;
     addEffect<T extends Actions<IAction>>(callback: (action$: Actions<IAction>, store$?: StoreContext) => Observable<IAction>, key?: string): StoreContext;
-    addEffects(...effectClassTypes: any[]): StoreContext;
+    addEffects(effectClassType: any): StoreContext;
     dispose(): void;
 }
 
 export declare function setStoreContext(options: { states: any[], effects?: any[], devTools?: any, actionsMethodStartsWith?: string, effectsMethodStartsWith?: string }): void;
-export declare function getStoreContext(options: { states: any[], effects?: any[], devTools?: any, actionsMethodStartsWith?: string, effectsMethodStartsWith?: string }): StoreContext;
 
 export declare function ofType<T extends IAction, R extends T = T, K extends R['type'] = R['type']>(...key: K[]): (source: Observable<T>) => Observable<R>;
 
