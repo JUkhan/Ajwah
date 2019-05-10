@@ -16,7 +16,6 @@ class StoreContext {
         this.actions = new Actions(this.dispatcher);
         this.store = new Store(states, this.dispatcher);
         this.effSubs = new EffectSubscription(this.store);
-        this.effSubs.addEffects(states, this.actions);
     }
     dispatch(actionName, payload) {
         if (typeof actionName === 'object') {
@@ -53,9 +52,9 @@ class StoreContext {
     }
     addEffect(callback, key) {
         if (key && typeof key === 'string') {
-            this._addEffectsByKey(callback(this.actions, this.store), key);
+            this._addEffectsByKey(callback(this.actions, this), key);
         } else {
-            this.effSubs.addEffect(callback(this.actions, this.store));
+            this.effSubs.addEffect(callback(this.actions, this));
         }
         return this;
     }
@@ -122,10 +121,13 @@ function storeContextFactory({
     effectsMethodStartsWith,
     devTools = undefined }) {
     setKeys(actionsMethodStartsWith, effectsMethodStartsWith);
-    const ctx = new StoreContext(states.map(_ => {
+    const istates = states.map(_ => {
         setActionsAndEffects(_);
         return new _()
-    }));
+    })
+    const ctx = new StoreContext(istates);
+    __store = ctx;
+    ctx.effSubs.addEffects(istates, ctx.actions);
     ctx.addEffects(...effects);
 
     if (devTools && devTools.run) {
@@ -135,10 +137,10 @@ function storeContextFactory({
     return ctx;
 }
 export function setStoreContext(options) {
-    __store = storeContextFactory(options);
+    storeContextFactory(options);
 }
 export function getStoreContext(options) {
-    return __store = storeContextFactory(options);
+    return storeContextFactory(options);
 }
 
 export function storeCtx() {

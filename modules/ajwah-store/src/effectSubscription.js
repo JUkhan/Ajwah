@@ -1,6 +1,6 @@
 import { Subscription, merge } from "rxjs";
 import { mergeEffects } from "./decorators/effect";
-
+import { storeCtx } from './storeContext';
 
 export class EffectSubscription extends Subscription {
     constructor(store) {
@@ -16,7 +16,7 @@ export class EffectSubscription extends Subscription {
     addEffects(effectInstances, action$) {
 
         const sources = effectInstances.reduce((arr, instance) => {
-            arr.push(mergeEffects(instance, action$, this.store));
+            arr.push(mergeEffects(instance, action$, storeCtx()));
             return arr;
         }, []);
         const merged = merge(...sources);
@@ -24,7 +24,7 @@ export class EffectSubscription extends Subscription {
 
     }
     addEffectsByKey(instance, action$, subscription) {
-        const merged = mergeEffects(instance, action$, this.store);
+        const merged = mergeEffects(instance, action$, storeCtx());
         subscription.add(merged.subscribe(this.store));
 
     }

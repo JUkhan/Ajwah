@@ -1,3 +1,3 @@
-export function updateObject(state, params = {}) {
-    return { ...state, ...params };
+export function updateObject<S = any>(state: S, props?: S): S {
+    return { ...state, ...(props || {}) };
 }

@@ -7,6 +7,7 @@ import { Component, OnDestroy, OnInit } from '@angular/core';
 import { Store } from 'ajwah-angular-store';
 import { DynamicEffect } from './store/effects';
 import { DYNAMIC_EFFECTS_KEY } from './store/actions';
+import { AppState } from './store/model';
 
 @Component({
   selector: 'app-root',
@@ -16,7 +17,7 @@ import { DYNAMIC_EFFECTS_KEY } from './store/actions';
 })
 export class AppComponent implements OnDestroy, OnInit {
   subscription: Subscription
-  constructor(private store: Store) {
+  constructor(private store: Store<AppState>) {
     this.subscription = this.store.select('counter').subscribe(res => this.counter = res);
     this.subscription.add(this.store.select('tutorial').subscribe(res => this.tutorial = res));
     this.subscription.add(this.store.select('todo').subscribe(res => this.todo = res));

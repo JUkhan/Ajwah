@@ -1,5 +1,5 @@
 import { updateObject } from "./utils";
-import { mapTo, debounce, debounceTime } from "rxjs/operators";
+import { mapTo, debounce, debounceTime, map, tap } from "rxjs/operators";
 
 
 export class Counter {
@@ -15,9 +15,11 @@ export class Counter {
     actionAsyncInc(state) {
         return updateObject(state, { isLoading: true })
     }
-    effectForAsyncInc(action$) {
+    effectForAsyncInc(action$, store$) {
+
         return action$.pipe(
             debounceTime(1),
+            //map(a => store$.dispatch('Dec1')),
             mapTo({ type: 'Inc' })
         )
     }

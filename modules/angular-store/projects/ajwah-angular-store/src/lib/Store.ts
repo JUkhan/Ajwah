@@ -7,11 +7,11 @@ import { Injectable, Inject, Injector, Type, OnDestroy } from '@angular/core';
 import { ROOT_STATES, ROOT_EFFECTS, STATE_METADATA_KEY, EFFECT_METADATA_KEY, IMPORT_STATE } from './tokens';
 import { EffectsSubscription } from './effectsSubscription';
 import { setActionsAndEffects } from './decorators/altdecoretors';
-import { Action } from './model'
+import { IAction } from './model'
 import { copyObj } from './utils';
 
 @Injectable()
-export class Store extends BehaviorSubject<any> implements OnDestroy {
+export class Store<S = any> extends BehaviorSubject<any> implements OnDestroy {
     private subscriptionMap;
     private states;
     private storeSubscription: Subscription;
@@ -37,10 +37,10 @@ export class Store extends BehaviorSubject<any> implements OnDestroy {
         if (initEffects.length)
             this.effect.addEffects(initEffects);
     }
-    dispatch(actionName: Action): void;
+    dispatch(actionName: IAction): void;
     dispatch(actionName: string): void;
     dispatch(actionName: string, payload?: any): void;
-    dispatch(actionName: string | Action, payload?: any): void {
+    dispatch(actionName: string | IAction, payload?: any): void {
         if (typeof actionName === 'object') {
             this.dispatcher.next(actionName);
             return;
@@ -49,7 +49,7 @@ export class Store extends BehaviorSubject<any> implements OnDestroy {
     }
 
 
-    select<T = any>(pathOrMapFn: ((state: T) => any) | string): Observable<any> {
+    select<T = any>(pathOrMapFn: ((state: S) => any) | string): Observable<T> {
 
         let mapped$;
         if (typeof pathOrMapFn === 'string') {
@@ -65,7 +65,7 @@ export class Store extends BehaviorSubject<any> implements OnDestroy {
         return mapped$.pipe(distinctUntilChanged());
     }
 
-    next(action: Action) {
+    next(action: IAction) {
         this.dispatcher.next(action);
     }
 
@@ -131,7 +131,7 @@ export class Store extends BehaviorSubject<any> implements OnDestroy {
         });
         this.next({ type: IMPORT_STATE as any, payload: state });
     }
-    exportState(): Observable<any[]> {
+    exportState(): Observable<[IAction, S]> {
         return this.dispatcher.pipe(
             withLatestFrom(this),
             map(arr => {

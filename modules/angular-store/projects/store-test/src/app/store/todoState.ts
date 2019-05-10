@@ -5,6 +5,7 @@ import { updateObject } from './util';
 import { map, mergeMap, withLatestFrom, catchError } from 'rxjs/operators';
 import { of } from 'rxjs'
 import { TodoService } from '../services/todoService';
+import { ITodoState } from './model';
 
 
 @State({
@@ -46,7 +47,7 @@ export class TodoState {
     addTodoEffect(actions: Actions, store: Store) {
         return actions.pipe(
             ofType(ADD_TODO),
-            withLatestFrom(store.select('todo')),
+            withLatestFrom(store.select<ITodoState>('todo')),
             mergeMap(([action, todo]) => this.todoService.addTodo(action.payload)
                 .pipe(
                     map((newTodo: any) => {
@@ -69,7 +70,7 @@ export class TodoState {
     updateTodoEffect(actions: Actions, store: Store) {
         return actions.pipe(
             ofType(UPDATE_TODO),
-            withLatestFrom(store.select('todo')),
+            withLatestFrom(store.select<ITodoState>('todo')),
             mergeMap(([action, todo]) => this.todoService.updateTodo(action.payload)
                 .pipe(
                     map((res: any) => {
@@ -94,7 +95,7 @@ export class TodoState {
     removeTodoEffect(actions: Actions, store: Store) {
         return actions.pipe(
             ofType(REMOVE_TODO),
-            withLatestFrom(store.select('todo')),
+            withLatestFrom(store.select<ITodoState>('todo')),
             mergeMap(([action, todo]) => this.todoService.deleteTodo(action.payload.id)
                 .pipe(
                     map(res => {
