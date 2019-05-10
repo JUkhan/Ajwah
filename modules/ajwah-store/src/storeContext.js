@@ -139,9 +139,6 @@ function storeContextFactory({
 export function setStoreContext(options) {
     storeContextFactory(options);
 }
-export function getStoreContext(options) {
-    return storeContextFactory(options);
-}
 
 export function storeCtx() {
     return __store;
