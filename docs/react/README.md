@@ -144,10 +144,6 @@ Here are the samples of all the decorators and it's corresponding coding by conv
 
 ```
 
-
-[Please go throw this test file for more details. You may run the test and having some practical examples on it](https://github.com/JUkhan/Ajwah/blob/master/modules/ajwah-store/test/ajwah.test.js)
-
-
 `Note: Please remember the starts with 'action' and 'effect'. This is by default. You may change whatever you want into the 'setStoreContext'` 
 
 ```js
@@ -330,18 +326,18 @@ export default CounterComponent;
 
 ### Here is the `StoreContext API`
 ```js
-export declare class StoreContext {
-    dispatch(actionName: Action): StoreContext;
+export declare class StoreContext<S = any> {
+    dispatch(actionName: IAction): StoreContext;
     dispatch(actionName: string): StoreContext;
     dispatch(actionName: string, payload?: any): StoreContext;
-    addStates(...stateClassTypes: any[]): StoreContext;
-    removeStates(...stateNames: string[]): StoreContext;
+    addState(stateClassType: any): StoreContext;
+    removeState(stateName: string): StoreContext;
     removeEffectsByKey(key: string): StoreContext;
     importState(state: any): StoreContext;
-    exportState(): Observable<any[]>;
-    select<T = any>(pathOrMapFn: ((state: T) => any) | string, ): Observable<any>;
-    addEffect<T extends Actions<Action>>(callback: (action$: Actions<Action>, store$?: StoreContext) => Observable<Action>, key?: string): StoreContext;
-    addEffects(...effectClassTypes: any[]): StoreContext;
+    exportState(): Observable<[IAction, S]>;
+    select<R = any>(pathOrMapFn: ((state: S) => any) | string, ): Observable<R>;
+    addEffect<T extends Actions<IAction>>(callback: (action$: Actions<IAction>, store$?: StoreContext) => Observable<IAction>, key?: string): StoreContext;
+    addEffects(effectClassType: any): StoreContext;
     dispose(): void;
 }
 ```
@@ -479,10 +475,10 @@ removeEffect() {
     this.storeCtx.removeEffectsByKey(DYNAMIC_EFFECTS_KEY);
 }
 addState() {
-    this.storeCtx.addStates(TutorialState);
+    this.storeCtx.addState(TutorialState);
 }
 removeState() {
-    this.storeCtx.removeStates('tutorials')
+    this.storeCtx.removeState('tutorials')
 }
 ```
  [Dynamic states and effects - Live](https://stackblitz.com/edit/ajwah-effect?file=Effects.ts)
@@ -493,6 +489,10 @@ In this app all the todo effects has been defined into the `todoState` class. It
 
 [TodoList app - Live](https://stackblitz.com/edit/ajwah-state-manage?file=pages%2Fpage2.tsx)
 
+
+[Please go throw this test file for more details. You may run the test and having some practical examples on it](https://github.com/JUkhan/Ajwah/blob/master/modules/ajwah-store/test/ajwah.test.js)
+
+
 ### todoPage
 ```js
 import React, { useState, useEffect } from 'react';
@@ -502,16 +502,9 @@ import { storeCtx } from 'ajwah-store';
 import { LoadTodos } from '../states/actions'
 
 function todoPage() {
-    const store = getStore();
-    const [todo, setTodo] = useState({});
 
-    useEffect(() => {
-        const subscription = storeCtx().select('todo').subscribe(res => setTodo(res));
-        store.dispatch({ type: LoadTodos });
-        return () => subscription.unsubscribe();
-    }, []);
-
-
+    const {todo}= useSubscriptions(['todo'])
+    
     return <div>
         <header className="header">Todo List <b>{todo.message}</b></header>
         <AddTodo />

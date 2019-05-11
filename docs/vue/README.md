@@ -313,18 +313,18 @@ export default {
 
 ### Here is the `StoreContext API`
 ```js
-export declare class StoreContext {
-    dispatch(actionName: Action): StoreContext;
+export declare class StoreContext<S = any> {
+    dispatch(actionName: IAction): StoreContext;
     dispatch(actionName: string): StoreContext;
     dispatch(actionName: string, payload?: any): StoreContext;
-    addStates(...stateClassTypes: any[]): StoreContext;
-    removeStates(...stateNames: string[]): StoreContext;
+    addState(stateClassType: any): StoreContext;
+    removeState(stateName: string): StoreContext;
     removeEffectsByKey(key: string): StoreContext;
     importState(state: any): StoreContext;
-    exportState(): Observable<any[]>;
-    select<T = any>(pathOrMapFn: ((state: T) => any) | string, ): Observable<any>;
-    addEffect<T extends Actions<Action>>(callback: (action$: Actions<Action>, store$?: StoreContext) => Observable<Action>, key?: string): StoreContext;
-    addEffects(...effectClassTypes: any[]): StoreContext;
+    exportState(): Observable<[IAction, S]>;
+    select<R = any>(pathOrMapFn: ((state: S) => any) | string, ): Observable<R>;
+    addEffect<T extends Actions<IAction>>(callback: (action$: Actions<IAction>, store$?: StoreContext) => Observable<IAction>, key?: string): StoreContext;
+    addEffects(effectClassType: any): StoreContext;
     dispose(): void;
 }
 ```
@@ -445,10 +445,10 @@ methods{
         storeCtx().removeEffectsByKey(DYNAMIC_EFFECTS_KEY);
     }
     addState() {
-        storeCtx().addStates(TutorialState);
+        storeCtx().addState(TutorialState);
     }
     removeState() {
-        storeCtx().removeStates('tutorials')
+        storeCtx().removeState('tutorials')
     }
 }
 ```
