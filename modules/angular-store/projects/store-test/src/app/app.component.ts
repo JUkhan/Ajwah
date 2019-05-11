@@ -1,13 +1,13 @@
 import { LOAD_TODOS } from './store/actions';
-import { Subscription } from 'rxjs';
+import { Subscription, Observable } from 'rxjs';
 //import { TutorialState } from './store/tutorialState';
 import { TutorialState } from './store.convention/tutorialState';
 
 import { Component, OnDestroy, OnInit } from '@angular/core';
-import { Store } from 'ajwah-angular-store';
+import { Store, Select } from 'ajwah-angular-store';
 import { DynamicEffect } from './store/effects';
 import { DYNAMIC_EFFECTS_KEY } from './store/actions';
-import { AppState } from './store/model';
+import { AppState, ICounterState, ITodoState } from './store/model';
 
 @Component({
   selector: 'app-root',
@@ -22,6 +22,8 @@ export class AppComponent implements OnDestroy, OnInit {
     this.subscription.add(this.store.select('tutorial').subscribe(res => this.tutorial = res));
     this.subscription.add(this.store.select('todo').subscribe(res => this.todo = res));
     this.store.dispatch({ type: LOAD_TODOS });
+
+    this.jac.subscribe(res => console.log(res))
   }
 
   counter: any;
@@ -48,6 +50,13 @@ export class AppComponent implements OnDestroy, OnInit {
       state.todo = undefined;
       console.log(action, state);
     })
+
   }
+
+  @Select<AppState>(state => state.counter)
+  mac: Observable<ICounterState>;
+
+  @Select('todo')
+  jac: Observable<ITodoState>;
 
 }

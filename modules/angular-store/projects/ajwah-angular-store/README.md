@@ -106,26 +106,7 @@ Here is the samples of all decorators and it's corresponding coding by conventio
     }
 
 ```
-### @Connect() 
-```js
-    @Connect({
-        counter: state => state.counter
-    })
-    class CounterComponent extends PureComponent {
 
-
-    }
-
-    //Convention:
-
-    class CounterComponent extends PureComponent {
-        constructor(){
-            super()
-            Connect({counter: state => state.counter}, this);
-        }
-    }
-
-```
 ### @EffectKey() 
 ```js
     @EffectKey(DYNAMIC_EFFECTS_KEY)
@@ -140,6 +121,20 @@ Here is the samples of all decorators and it's corresponding coding by conventio
             this.effectKey=DYNAMIC_EFFECTS_KEY;
         }
     }
+
+```
+### @Select() 
+```js
+    @Select('todo') 
+    todo:Obserbable<ITodoState>
+
+    @Select<AppState>(state=>state.counter) 
+    counter:Obserbable<ICounterState>
+
+    //Convention:
+
+    this.store.select<ITodoState>('todo')
+    this.store.select<ICounterState>(state=>state.counter)
 
 ```
 

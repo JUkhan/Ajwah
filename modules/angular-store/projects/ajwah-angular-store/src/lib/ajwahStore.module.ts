@@ -48,12 +48,16 @@ export class AjwahStoreModule {
     }
 }
 
-
+var __store = undefined;
+export function getStore() {
+    return __store;
+}
 export function _storeFactory(states, dispatcher, effect, injector, effects) {
     const store = new Store(states, dispatcher, effect, injector, effects);
     if (__devTools && __devTools.run) {
         runDevTools({ store, dispatcher, importState: IMPORT_STATE });
     }
+    __store = store;
     return store;
 }
 

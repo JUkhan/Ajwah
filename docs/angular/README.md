@@ -88,24 +88,6 @@ Here are the samples of all the decorators and it's corresponding coding by conv
     }
 
 ```
-### @State() 
-```js
-    @State({
-        name: 'counter',
-        initialState: { count: 5, msg: '' }
-    })
-    class CounterState{
-
-    }
-
-    //Convention:
-
-    class CounterState{
-        name= 'counter';
-        initialState={ count: 5, msg: '' };
-    }
-
-```
 
 ### @EffectKey() 
 ```js
@@ -121,6 +103,20 @@ Here are the samples of all the decorators and it's corresponding coding by conv
         effectKey=DYNAMIC_EFFECTS_KEY;
        
     }
+
+```
+### @Select() 
+```js
+    @Select('todo') 
+    todo:Obserbable<ITodoState>
+
+    @Select<AppState>(state=>state.counter) 
+    counter:Obserbable<ICounterState>
+
+    //Convention:
+
+    this.store.select<ITodoState>('todo')
+    this.store.select<ICounterState>(state=>state.counter)
 
 ```
 

@@ -1,6 +1,6 @@
 <!--The content below is only a placeholder and can be replaced.-->
-
-<counter [counter]="counter"></counter>
+<h1>{{(mac|async).count}}</h1>
+<counter [counter]="mac|async"></counter>
 <div *ngIf="tutorial">
   <addTutorial></addTutorial>
   <tutorialList [tutorials]="tutorial.data" [counter]="counter"></tutorialList>
@@ -24,3 +24,4 @@
   <addTodo></addTodo>
   <todos [todos]="todo.data"></todos>
 </div>
+<h1>{{(mac|async).count}}</h1>
