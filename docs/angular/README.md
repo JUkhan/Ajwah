@@ -444,7 +444,7 @@ export class AppComponent  {
     this.store.removeEffectsByKey(DYNAMIC_EFFECTS_KEY);
   }
   addState() {
-    this.store.addStates(TutorialState);
+    this.store.addState(TutorialState);
   }
   removeState() {
     this.store.removeState('tutorial')
