@@ -13,13 +13,13 @@ class Counter extends PureComponent {
     }
 
     increment = () => {
-        this.storeCtx.dispatch({ type: INCREMENT });
+        this.store.dispatch({ type: INCREMENT });
     }
     decrement = () => {
-        this.storeCtx.dispatch({ type: DECREMENT });
+        this.store.dispatch({ type: DECREMENT });
     }
     asyncIncrement = () => {
-        this.storeCtx.dispatch({ type: ASYNC_INCREMENT });
+        this.store.dispatch({ type: ASYNC_INCREMENT });
     }
     render() {
         const { counter } = this.props;

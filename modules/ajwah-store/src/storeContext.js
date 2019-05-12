@@ -126,10 +126,10 @@ function storeContextFactory({
     }
     return ctx;
 }
-export function setStoreContext(options) {
+export function bootstrap(options) {
     storeContextFactory(options);
 }
 
-export function storeCtx() {
+export function store() {
     return __store;
 }

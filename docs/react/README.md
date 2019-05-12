@@ -144,10 +144,10 @@ Here are the samples of all the decorators and it's corresponding coding by conv
 
 ```
 
-`Note: Please remember the starts with 'action' and 'effect'. This is by default. You may change whatever you want into the 'setStoreContext'` 
+`Note: Please remember the starts with 'action' and 'effect'. This is by default. You may change whatever you want into the 'bootstrap'` 
 
 ```js
-    setStoreContext({
+    bootstrap({
         states: [CounterSate, TodoState],
         effects: [TodoEffects],
         devTools: devTools({ maxAge: 10 }),
@@ -296,16 +296,16 @@ import { Inc, AsyncInc, Dec } from './actions';
 })
 class CounterComponent extends PureComponent {
 
-    storeCtx:StoreContext;
+    store:StoreContext;
 
     inc = () => {
-        this.storeCtx.dispatch({ type: Inc })
+        this.store.dispatch({ type: Inc })
     }
     dec = () => {
-        this.storeCtx.dispatch({ type: Dec })
+        this.store.dispatch({ type: Dec })
     }
     asyncInc = () => {
-        this.storeCtx.dispatch({ type: AsyncInc })
+        this.store.dispatch({ type: AsyncInc })
     }
     render() {
         const { counter } = this.state;
@@ -322,11 +322,11 @@ class CounterComponent extends PureComponent {
 export default CounterComponent;
 
 ```
-### `Connect decorator` takes a single object literal type param (key value pairs). Key should be any name and value should be a function that must return a part of your application's states. You can define as many pairs as you want. All keys and its corresponding states should be available as component state. Your component should be re-render if any key corresponding state is updated from anywhere in the application. And your component should have a `StoreContext` property as the name of `storeCtx`.
+### `Connect decorator` takes a single object literal type param (key value pairs). Key should be any name and value should be a function that must return a part of your application's states. You can define as many pairs as you want. All keys and its corresponding states should be available as component state. Your component should be re-render if any key corresponding state is updated from anywhere in the application. And your component should have a `Store` reference by a property named `store`. You can find as this.store inside your component.
 
-### Here is the `StoreContext API`
+### Here is the `Store API`
 ```js
-export declare class StoreContext<S = any> {
+export declare class Store<S = any> {
     dispatch(actionName: IAction): StoreContext;
     dispatch(actionName: string): StoreContext;
     dispatch(actionName: string, payload?: any): StoreContext;
@@ -342,19 +342,19 @@ export declare class StoreContext<S = any> {
 }
 ```
 
-### And finally call the `setStoreContext` function into the `index` file like bellow:
+### And finally call the `bootstrap` function into the `index` file like bellow:
 
 ```js
 import React from 'react';
 import ReactDOM from 'react-dom';
-import { setStoreContext } from 'ajwah-store';
+import { bootstrap } from 'ajwah-store';
 
 import CounterState from './CounterState';
 import Counter from './CounterComponent';
 import { devTools } from 'ajwah-devtools';
 
 
-setStoreContext({
+bootstrap({
     states: [CounterState],
     devTools: devTools()
 });
@@ -397,10 +397,10 @@ export default fxCounterComponent;
 
 ### Effects
 
-There are several of ways to add effects in Ajwah. You can add effects in your state class that has been shown above in `counterState`. Also you can define separate effect classes and set them into `setStoreContext` function like bellow:
+There are several of ways to add effects in Ajwah. You can add effects in your state class that has been shown above in `counterState`. Also you can define separate effect classes and set them into `bootstrap` function like bellow:
 
 ```js
-setStoreContext({
+bootstrap({
     states: [CounterState, SearchState],
     effects: [SearchEffects]
 });
@@ -469,16 +469,16 @@ export default SearchEffects;
 
 ```js
 addEffect() {
-    this.storeCtx.addEffects(DynamicEffect);
+    this.store.addEffects(DynamicEffect);
 }
 removeEffect() {
-    this.storeCtx.removeEffectsByKey(DYNAMIC_EFFECTS_KEY);
+    this.store.removeEffectsByKey(DYNAMIC_EFFECTS_KEY);
 }
 addState() {
-    this.storeCtx.addState(TutorialState);
+    this.store.addState(TutorialState);
 }
 removeState() {
-    this.storeCtx.removeState('tutorials')
+    this.store.removeState('tutorials')
 }
 ```
  [Dynamic states and effects - Live](https://stackblitz.com/edit/ajwah-effect?file=Effects.ts)
@@ -498,7 +498,7 @@ In this app all the todo effects has been defined into the `todoState` class. It
 import React, { useState, useEffect } from 'react';
 import Todos from "../components/Todos";
 import AddTodo from "../components/AddTodo";
-import { storeCtx } from 'ajwah-store';
+import { store } from 'ajwah-store';
 import { LoadTodos } from '../states/actions'
 
 function todoPage() {

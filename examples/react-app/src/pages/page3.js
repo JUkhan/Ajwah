@@ -3,21 +3,21 @@ import React, { useState, useEffect } from 'react';
 import Counter from "../components/fxCounterComponent";
 import AddTutorial from "../components/fxAddTutorialComponent";
 import TutorialList from "../components/fxTutotialListComponent";
-import { storeCtx } from 'ajwah-store';
+import { store } from 'ajwah-store';
 import { DYNAMIC_EFFECTS_KEY } from '../states/actions'
 import CounterEffect from "../states/counterEffects";
 import TutorialState from "../states/tutoroalState";
 import { useSubscriptions } from 'react-ajwah'
 
 function page3() {
-    const store = storeCtx();
+    //const store = store();
     const [tutorials, setTutorial] = useState([]);
     const { counter } = useSubscriptions(['counter']);
 
 
     useEffect(() => {
         //store.addStates(TutorialState);
-        const subs = store.select('tutorials').subscribe(res => setTutorial(res));
+        const subs = store().select('tutorials').subscribe(res => setTutorial(res));
         //subs.add(store.select('counter').subscribe(res => setCounter(res)));
 
         return () => {
@@ -54,16 +54,16 @@ function page3() {
 
 }
 function addEffect() {
-    storeCtx().addEffects(CounterEffect);
+    store().addEffects(CounterEffect);
 }
 function removeEffect() {
-    storeCtx().removeEffectsByKey(DYNAMIC_EFFECTS_KEY);
+    store().removeEffectsByKey(DYNAMIC_EFFECTS_KEY);
 }
 function addState() {
-    storeCtx().addState(TutorialState);
+    store().addState(TutorialState);
 }
 function removeState() {
-    storeCtx().removeState('tutorials')
+    store().removeState('tutorials')
 }
 
 export default page3;

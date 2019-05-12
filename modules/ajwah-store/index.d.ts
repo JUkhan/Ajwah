@@ -13,26 +13,26 @@ export declare class Actions<T = IAction> extends Observable<T>{
     ofType<R extends T = T>(...key: string[]): Actions<R>;
 }
 
-export declare class StoreContext<S = any> {
-    dispatch(actionName: IAction): StoreContext;
-    dispatch(actionName: string): StoreContext;
-    dispatch(actionName: string, payload?: any): StoreContext;
-    addState(stateClassType: any): StoreContext;
-    removeState(stateName: string): StoreContext;
-    removeEffectsByKey(key: string): StoreContext;
-    importState(state: any): StoreContext;
+export declare class Store<S = any> {
+    dispatch(actionName: IAction): Store;
+    dispatch(actionName: string): Store;
+    dispatch(actionName: string, payload?: any): Store;
+    addState(stateClassType: any): Store;
+    removeState(stateName: string): Store;
+    removeEffectsByKey(key: string): Store;
+    importState(state: any): Store;
     exportState(): Observable<[IAction, S]>;
     select<R = any>(pathOrMapFn: ((state: S) => any) | string, ): Observable<R>;
-    addEffect<T extends Actions<IAction>>(callback: (action$: Actions<IAction>, store$?: StoreContext) => Observable<IAction>, key?: string): StoreContext;
-    addEffects(effectClassType: any): StoreContext;
+    addEffect<T extends Actions<IAction>>(callback: (action$: Actions<IAction>, store$?: Store) => Observable<IAction>, key?: string): Store;
+    addEffects(effectClassType: any): Store;
     dispose(): void;
 }
 
-export declare function setStoreContext(options: { states: any[], effects?: any[], devTools?: any, actionsMethodStartsWith?: string, effectsMethodStartsWith?: string }): void;
+export declare function bootstrap(options: { states: any[], effects?: any[], devTools?: any, actionsMethodStartsWith?: string, effectsMethodStartsWith?: string }): void;
 
 export declare function ofType<T extends IAction, R extends T = T, K extends R['type'] = R['type']>(...key: K[]): (source: Observable<T>) => Observable<R>;
 
-export declare function storeCtx<S = any>(): StoreContext<S>;
+export declare function store<S = any>(): Store<S>;
 export declare function Action(actionType: string): any;
 export declare function State(options: { name: string, initialState: any }): any;
 
@@ -40,8 +40,8 @@ export declare function Connect(splitedState?: { [key: string]: (state: any) => 
 export declare function Effect(options?: { dispatch: boolean }): any;
 export declare function EffectKey(key: string): any;
 
-export function dispatch(actionName: IAction): StoreContext;
-export function dispatch(actionName: string): StoreContext;
-export function dispatch(actionName: string, payload?: any): StoreContext;
+export function dispatch(actionName: IAction): Store;
+export function dispatch(actionName: string): Store;
+export function dispatch(actionName: string, payload?: any): Store;
 
 

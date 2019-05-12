@@ -1,4 +1,4 @@
-import { storeCtx } from 'ajwah-store';
+import { store } from 'ajwah-store';
 import { Subscription } from 'rxjs';
 export const CONNECT_METADATA_KEY = 'ajwah/connect';
 
@@ -8,7 +8,7 @@ function mount() {
     meta.mount.call(this);
     Object.keys(meta.mapState).forEach(key => {
         meta.subscription.add(
-            this.storeCtx.select(meta.mapState[key])
+            this.store.select(meta.mapState[key])
                 .subscribe(res => { this.setState({ [key]: res }); }));
     });
 }
@@ -18,7 +18,7 @@ function unmount() {
     meta.subscription.unsubscribe()
 }
 function subscriber(mapState, componentInstance) {
-    componentInstance.storeCtx = storeCtx();
+    componentInstance.store = store();
     const mapKeys = Object.keys(mapState);
     if (mapKeys.length === 0) return;
 
@@ -48,8 +48,8 @@ export function Connect(mapState = {}, component) {
     return function (target) {
         target = target.prototype;
 
-        Object.defineProperty(target, 'storeCtx', {
-            get() { return storeCtx(); },
+        Object.defineProperty(target, 'store', {
+            get() { return store(); },
             enumerable: true,
             configurable: true
         });

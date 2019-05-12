@@ -1,5 +1,5 @@
 import React from 'react';
-import { storeCtx } from "ajwah-store";
+import { store } from "ajwah-store";
 import { ADD_TODO } from '../states/actions'
 
 function addItem(e) {
@@ -8,7 +8,7 @@ function addItem(e) {
     title: e.target.elements.title.value,
     completed: false
   }
-  storeCtx().dispatch({ type: ADD_TODO, payload: newTodo });
+  store().dispatch({ type: ADD_TODO, payload: newTodo });
   e.target.elements.title.value = '';
 }
 

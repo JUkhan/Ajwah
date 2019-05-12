@@ -234,7 +234,7 @@ export default CounterSate;
 
 ```js
 import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
-import {Store} from 'ajwah-angular-store';
+import {Select, Store} from 'ajwah-angular-store';
 import {Observable} from 'rxjs';
 import {INCREMENT, DECREMENT,ASYNC_INCREMENT} from './actions';
 
@@ -251,24 +251,22 @@ import {INCREMENT, DECREMENT,ASYNC_INCREMENT} from './actions';
 })
 export class CounterComponent implements OnInit  {
  
+  @Select('counter')
   counter$:Observable<any>;
+
   constructor(public store:Store){ }
   
-  ngOnInit(){
-    this.counter$=this.store.select('counter');
-  }
-  
   inc(){
-    this.store.dispatch({type:INCREMENT});
+    this.store.dispatch(INCREMENT);
   }
   dec(){
-    this.store.dispatch({type:DECREMENT});
+    this.store.dispatch(DECREMENT);
   }
   async_inc(){
-    this.store.dispatch({type:ASYNC_INCREMENT});
+    this.store.dispatch(ASYNC_INCREMENT);
   }
+  
 }
-
 
 ```
 

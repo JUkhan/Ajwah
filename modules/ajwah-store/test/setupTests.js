@@ -1,9 +1,9 @@
-import { setStoreContext, storeCtx } from '../src/storeContext'
+import { bootstrap, store } from '../src/storeContext'
 import { Counter } from './store/states'
 
-setStoreContext({
+bootstrap({
     states: [Counter],
     //effects: []
 })
-global.store = storeCtx()
+global.store = store()
 

@@ -1,6 +1,6 @@
 {
   "name": "react-ajwah",
-  "version": "0.1.1",
+  "version": "0.2.0",
   "description": "React bindings for ajwah",
   "main": "lib/cjs/index.js",
   "module": "lib/esm/index.js",
@@ -20,7 +20,7 @@
     "@babel/plugin-proposal-object-rest-spread": "^7.4.4",
     "@babel/preset-env": "^7.4.4",
     "@babel/register": "^7.4.4",
-    "ajwah-store": "0.2.8",
+    "ajwah-store": "^0.3.4",
     "gulp": "^3.9.1",
     "gulp-babel": "^8.0.0",
     "react": "^16.8.4",
@@ -30,7 +30,7 @@
   "peerDependencies": {
     "rxjs": ">=6.0.0-beta.0 <7",
     "react": ">=16.8.3 <18",
-    "ajwah-store": ">=0.2.8 <2"
+    "ajwah-store": ">=0.3.4 <2"
   },
   "repository": {
     "type": "git",

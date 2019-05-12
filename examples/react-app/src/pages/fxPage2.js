@@ -3,14 +3,14 @@ import UserState from '../states/userState';
 import { ajax } from 'rxjs/ajax';
 import { take, map } from 'rxjs/operators';
 import { LOAD_USER } from '../states/actions';
-import { storeCtx } from 'ajwah-store';
+import { store } from 'ajwah-store';
 
 
 function loadData() {
     ajax.getJSON('https://jsonplaceholder.typicode.com/users').pipe(
         map(data => ({ type: LOAD_USER, payload: data })),
         take(1),
-    ).subscribe(action => storeCtx().dispatch(action));
+    ).subscribe(action => store().dispatch(action));
 }
 
 function page2(props) {
@@ -18,11 +18,11 @@ function page2(props) {
     const [user, setUser] = useState({});
 
     useEffect(() => {
-        storeCtx().addState(UserState);
-        const subs = storeCtx().select('user').subscribe(res => setUser(res));
+        store().addState(UserState);
+        const subs = store().select('user').subscribe(res => setUser(res));
         loadData();
         return () => {
-            storeCtx().removeState('user');
+            store().removeState('user');
             subs.unsubscribe();
             console.log('page2-cleanup')
         }
