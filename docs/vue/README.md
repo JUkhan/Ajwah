@@ -30,8 +30,8 @@ Here are the samples of all the decorators and it's corresponding coding by conv
 ### `@Effect()`
 ```js
     @Effect()
-    asyncIncrement(actions:Actions, store:StoreContext){
-        return actions.pipe(
+    asyncIncrement(action$:Actions, store$:Store){
+        return action$.pipe(
             ofType('AsyncInc'),
             debounceTime(500),
             mapTo({type:'Inc'})
@@ -40,8 +40,8 @@ Here are the samples of all the decorators and it's corresponding coding by conv
 
     // Convention: function name starts with `effect` followed by anything - [effect][any](...){...}
 
-    effectAsyncInc(actions:Actions, store:StoreContext){
-        return actions.pipe(
+    effectAsyncInc(action$:Actions, store$:Store){
+        return action$.pipe(
             ofType('AsyncInc'),
             debounceTime(500),
             mapTo({type:'Inc'})
@@ -50,8 +50,8 @@ Here are the samples of all the decorators and it's corresponding coding by conv
     //@Effect(...) decoretor: you may pass `dispatch:flase` -  by default it's true. if you pass `false`, you effect should be disabled.
 
     @Effect({dispatch:flase})
-    asyncIncrement(actions:Actions, store:StoreContext){
-        return actions.pipe(
+    asyncIncrement(action$:Actions, store$:Store){
+        return action$.pipe(
             ofType('AsyncInc'),
             debounceTime(500),
             mapTo({type:'Inc'})
@@ -60,8 +60,8 @@ Here are the samples of all the decorators and it's corresponding coding by conv
 
     //Convention: for `dispatch:false` - just function name ends with `_ndispatch`
 
-    effectAsyncInc_ndispatch(actions:Actions, store:StoreContext){
-        return actions.pipe(
+    effectAsyncInc_ndispatch(action$:Actions, store$:Store){
+        return action$.pipe(
             ofType('AsyncInc'),
             debounceTime(500),
             mapTo({type:'Inc'})
@@ -71,16 +71,16 @@ Here are the samples of all the decorators and it's corresponding coding by conv
     // you may use `For` for getting rid of `ofType('...')` - [effect][For][actionName](...){...}. 
     // Use 'Or' for multiple actions name. ex: effectForAsyncIncOrDec(...) 
     // - [effect][For][actionName][Or][actionName][Or][actionName][...](){}
-    effectForAsyncInc(actions:Actions, store:StoreContext){
-        return actions.pipe(
+    effectForAsyncInc(action$:Actions, store$:Store){
+        return action$.pipe(
             //ofType('AsyncInc'), now it's not necessary
             debounceTime(500),
             mapTo({type:'Inc'})
         )
     }
     // '_ndispatch' with `For` ex: effectForAsyncInc_ndispatch()
-    effectForAsyncInc_ndispatch(actions:Actions, store:StoreContext){
-        return actions.pipe(
+    effectForAsyncInc_ndispatch(action$:Actions, store$:Store){
+        return action$.pipe(
             debounceTime(500),
             mapTo({type:'Inc'})
         )
@@ -126,10 +126,10 @@ Here are the samples of all the decorators and it's corresponding coding by conv
 
 [Please go throw this test file for more details. You may run the test and having some practical examples on it](https://github.com/JUkhan/Ajwah/blob/master/modules/ajwah-store/test/ajwah.test.js)
 
-`Note: Please remember the starts with 'action' and 'effect'. This is by default. You may change whatever you want into the 'setStoreContext'` 
+`Note: Please remember the starts with 'action' and 'effect'. This is by default. You may change whatever you want into the 'bootstrap'` 
 
 ```js
-    setStoreContext({
+    bootstrap({
         states: [CounterSate, TodoState],
         effects: [TodoEffects],
         devTools: devTools({ maxAge: 10 }),
@@ -143,8 +143,8 @@ Here are the samples of all the decorators and it's corresponding coding by conv
         return updateObject(state, { count: state.count + 1, msg: '' })
     }
 
-    myEffectAsyncInc(actions:Actions, store:StoreContext){
-        return actions.pipe(
+    myEffectAsyncInc(action$:Actions, store$:Store){
+        return action$.pipe(
             ofType('AsyncInc'),
             debounceTime(500),
             mapTo({type:'Inc'})
@@ -257,8 +257,8 @@ class CounterSate {
         return updateObject(state, { msg: 'loading...' })
     }
 
-    effectForAsyncInc(actions:Actions) {
-        return actions.pipe(
+    effectForAsyncInc(action$:Actions) {
+        return action$.pipe(
             debounceTime(450),
             mapTo({ type: Inc })
         )
@@ -283,13 +283,13 @@ export default CounterSate;
 </template>
 
 <script>
-import { dispatch, storeCtx } from "ajwah-store";
+import { dispatch, store } from "ajwah-store";
 import { Inc, Dec, AsyncInc } from "../states/actions";
 export default {
   name: "Counter",
   subscriptions() {
     return {
-      counter: storeCtx().select('counter')
+      counter: store().select('counter')
     };
   },
 
@@ -311,25 +311,25 @@ export default {
 ```
 
 
-### Here is the `StoreContext API`
+### Here is the `Store API`
 ```js
-export declare class StoreContext<S = any> {
-    dispatch(actionName: IAction): StoreContext;
-    dispatch(actionName: string): StoreContext;
-    dispatch(actionName: string, payload?: any): StoreContext;
-    addState(stateClassType: any): StoreContext;
-    removeState(stateName: string): StoreContext;
-    removeEffectsByKey(key: string): StoreContext;
-    importState(state: any): StoreContext;
+export declare class Store<S = any> {
+    dispatch(actionName: IAction): Store;
+    dispatch(actionName: string): Store;
+    dispatch(actionName: string, payload?: any): Store;
+    addState(stateClassType: any): Store;
+    removeState(stateName: string): Store;
+    removeEffectsByKey(key: string): Store;
+    importState(state: any): Store;
     exportState(): Observable<[IAction, S]>;
     select<R = any>(pathOrMapFn: ((state: S) => any) | string, ): Observable<R>;
-    addEffect<T extends Actions<IAction>>(callback: (action$: Actions<IAction>, store$?: StoreContext) => Observable<IAction>, key?: string): StoreContext;
-    addEffects(effectClassType: any): StoreContext;
+    addEffect<T extends Actions<IAction>>(callback: (action$: Actions<IAction>, store$?: Store) => Observable<IAction>, key?: string): Store;
+    addEffects(effectClassType: any): Store;
     dispose(): void;
 }
 ```
 
-### using `AjwahStore` in main file
+### using `bootstrap` in main file
 
 ```js
 import Vue from 'vue';
@@ -337,13 +337,13 @@ import App from './App.vue';
 import router from './router';
 
 import vueRx from 'vue-rx';
-import { setStoreContext } from 'ajwahstore';
+import { bootstrap } from 'ajwah-store';
 import { devTools } from 'ajwah-devtools';
 import counterState from './states/counterState'
 
 Vue.use(vueRx);
 
-setStoreContext({
+bootstrap({
   states: [counterState],
   devTools: devTools()
 })
@@ -363,7 +363,7 @@ new Vue({
 There are several of ways to add effects in Ajwah. You can add effects in your state class that has been shown above in `counterState`. Also you can define separate effect classes and set them into `main` file like bellow:
 
 ```js
-setStoreContext({
+bootstrap({
     states: [CounterState, SearchState],
     effects: [SearchEffects]
 });
@@ -439,16 +439,16 @@ export default SearchEffects;
 ```js
 methods{
     addEffect() {
-        storeCtx().addEffects(DynamicEffect);
+        store().addEffects(DynamicEffect);
     }
     removeEffect() {
-        storeCtx().removeEffectsByKey(DYNAMIC_EFFECTS_KEY);
+        store().removeEffectsByKey(DYNAMIC_EFFECTS_KEY);
     }
     addState() {
-        storeCtx().addState(TutorialState);
+        store().addState(TutorialState);
     }
     removeState() {
-        storeCtx().removeState('tutorials')
+        store().removeState('tutorials')
     }
 }
 ```

@@ -32,8 +32,8 @@ Here are the samples of all the decorators and it's corresponding coding by conv
 ### `@Effect()`
 ```js
     @Effect()
-    asyncIncrement(actions:Actions, store:StoreContext){
-        return actions.pipe(
+    asyncIncrement(action$:Actions, store$:Store){
+        return action$:pipe(
             ofType('AsyncInc'),
             debounceTime(500),
             mapTo({type:'Inc'})
@@ -42,8 +42,8 @@ Here are the samples of all the decorators and it's corresponding coding by conv
 
     // Convention: function name starts with `effect` followed by anything - [effect][any](...){...}
 
-    effectAsyncInc(actions:Actions, store:StoreContext){
-        return actions.pipe(
+    effectAsyncInc(action$:Actions, store$:Store){
+        return action$:pipe(
             ofType('AsyncInc'),
             debounceTime(500),
             mapTo({type:'Inc'})
@@ -52,8 +52,8 @@ Here are the samples of all the decorators and it's corresponding coding by conv
     //@Effect(...) decoretor: you may pass `dispatch:flase` -  by default it's true. if you pass `false`, you effect should be disabled.
 
     @Effect({dispatch:flase})
-    asyncIncrement(actions:Actions, store:StoreContext){
-        return actions.pipe(
+    asyncIncrement(action$:Actions, store$:Store){
+        return action$:pipe(
             ofType('AsyncInc'),
             debounceTime(500),
             mapTo({type:'Inc'})
@@ -62,8 +62,8 @@ Here are the samples of all the decorators and it's corresponding coding by conv
 
     //Convention: for `dispatch:false` - just function name ends with `_ndispatch`
 
-    effectAsyncInc_ndispatch(actions:Actions, store:StoreContext){
-        return actions.pipe(
+    effectAsyncInc_ndispatch(action$:Actions, store$:Store){
+        return action$:pipe(
             ofType('AsyncInc'),
             debounceTime(500),
             mapTo({type:'Inc'})
@@ -73,16 +73,16 @@ Here are the samples of all the decorators and it's corresponding coding by conv
     // you may use `For` for getting rid of `ofType('...')` - [effect][For][actionName](...){...}. 
     // Use 'Or' for multiple actions name. ex: effectForAsyncIncOrDec(...) 
     // - [effect][For][actionName][Or][actionName][Or][actionName][...](){}
-    effectForAsyncInc(actions:Actions, store:StoreContext){
-        return actions.pipe(
+    effectForAsyncInc(action$:Actions, store$:Store){
+        return action$:pipe(
             //ofType('AsyncInc'), now it's not necessary
             debounceTime(500),
             mapTo({type:'Inc'})
         )
     }
     // '_ndispatch' with `For` ex: effectForAsyncInc_ndispatch()
-    effectForAsyncInc_ndispatch(actions:Actions, store:StoreContext){
-        return actions.pipe(
+    effectForAsyncInc_ndispatch(action$:Actions, store$:Store){
+        return action$:pipe(
             debounceTime(500),
             mapTo({type:'Inc'})
         )
@@ -161,8 +161,8 @@ Here are the samples of all the decorators and it's corresponding coding by conv
         return updateObject(state, { count: state.count + 1, msg: '' })
     }
 
-    myEffectAsyncInc(actions:Actions, store:StoreContext){
-        return actions.pipe(
+    myEffectAsyncInc(action$:Actions, store$:Store){
+        return action$:pipe(
             ofType('AsyncInc'),
             debounceTime(500),
             mapTo({type:'Inc'})
@@ -272,8 +272,8 @@ class CounterSate {
         return updateObject(state, { msg: 'loading...' })
     }
 
-    effectForAsyncInc(actions:Actions) {
-        return actions.pipe(
+    effectForAsyncInc(action$:Actions) {
+        return action$:pipe(
             debounceTime(450),
             mapTo({ type: Inc })
         )
@@ -288,7 +288,7 @@ export default CounterSate;
 ```js
 
 import React, { PureComponent } from 'react';
-import { Connect, StoreContext } from 'ajwah-store';
+import { Connect, Store } from 'ajwah-store';
 import { Inc, AsyncInc, Dec } from './actions';
 
 @Connect({
@@ -296,7 +296,7 @@ import { Inc, AsyncInc, Dec } from './actions';
 })
 class CounterComponent extends PureComponent {
 
-    store:StoreContext;
+    store$:Store;
 
     inc = () => {
         this.store.dispatch({ type: Inc })
@@ -327,17 +327,17 @@ export default CounterComponent;
 ### Here is the `Store API`
 ```js
 export declare class Store<S = any> {
-    dispatch(actionName: IAction): StoreContext;
-    dispatch(actionName: string): StoreContext;
-    dispatch(actionName: string, payload?: any): StoreContext;
-    addState(stateClassType: any): StoreContext;
-    removeState(stateName: string): StoreContext;
-    removeEffectsByKey(key: string): StoreContext;
-    importState(state: any): StoreContext;
+    dispatch(actionName: IAction): Store;
+    dispatch(actionName: string): Store;
+    dispatch(actionName: string, payload?: any): Store;
+    addState(stateClassType: any): Store;
+    removeState(stateName: string): Store;
+    removeEffectsByKey(key: string): Store;
+    importState(state: any): Store;
     exportState(): Observable<[IAction, S]>;
     select<R = any>(pathOrMapFn: ((state: S) => any) | string, ): Observable<R>;
-    addEffect<T extends Actions<IAction>>(callback: (action$: Actions<IAction>, store$?: StoreContext) => Observable<IAction>, key?: string): StoreContext;
-    addEffects(effectClassType: any): StoreContext;
+    addEffect<T extends Actions<IAction>>(callback: (action$: Actions<IAction>, store$?: Store) => Observable<IAction>, key?: string): Store;
+    addEffects(effectClassType: any): Store;
     dispose(): void;
 }
 ```
