@@ -31,7 +31,11 @@ class StoreContext {
         const instance = new stateClassType();
         this.store.addState(instance);
         const key = instance[STATE_METADATA_KEY].name;
-        this._addEffectsByKey(instance, key, this.actions);
+        const hasEffect = instance[EFFECT_METADATA_KEY];
+        if (hasEffect && hasEffect.effects.length > 0) {
+            this.removeEffectsByKey(key);
+            this._addEffectsByKey(instance, key, this.actions);
+        }
         return this;
     }
     removeState(stateName) {
@@ -47,20 +51,14 @@ class StoreContext {
         return this.store.select(pathOrMapFn);
     }
     addEffect(callback, key) {
-        if (key && typeof key === 'string') {
-            this._addEffectsByKey(callback(this.actions, this), key);
-        } else {
-            this.effSubs.addEffect(callback(this.actions, this));
-        }
+        this.removeEffectsByKey(key);
+        this._addEffectsByKey(callback(this.actions, this), key);
         return this;
     }
     removeEffectsByKey(key) {
         if (this.subs[key]) {
-            this.subs[key].unsubscribe && this.subs[key].unsubscribe();
+            this.subs[key].unsubscribe();
             this.subs[key] = undefined;
-        }
-        else {
-            throw `Unknown effect key '${key}'`;
         }
         return this;
     }
@@ -72,6 +70,7 @@ class StoreContext {
         }
         const key = instance[EFFECT_METADATA_KEY].key;
         if (key) {
+            this.removeEffectsByKey(key);
             this._addEffectsByKey(instance, key, this.actions);
         } else {
             this.effSubs.addEffects([instance], this.actions);
@@ -98,7 +97,7 @@ class StoreContext {
         this.dispatcher.dispose();
         this.store.dispose();
         this.effSubs.dispose();
-        this.devTools.dispose();
+        this.devTools && this.devTools.dispose();
     }
 }
 var __store = undefined;
@@ -126,8 +125,8 @@ function storeContextFactory({
     }
     return ctx;
 }
-export function bootstrap(options) {
-    storeContextFactory(options);
+export function createStore(options) {
+    return storeContextFactory(options);
 }
 
 export function store() {

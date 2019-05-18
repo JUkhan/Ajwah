@@ -93,15 +93,11 @@ export class Store<S = any> extends BehaviorSubject<any> implements OnDestroy {
     }
 
     removeState(stateName): Store {
-
-        if (!this.states[stateName]) {
-            console.error(`Unknown state name '${stateName}'`);
-            return this;
+        if (this.states[stateName]) {
+            delete this.states[stateName];
+            this.removeEffectsByKey(stateName);
+            this.next({ type: `remove_state(${stateName})` });
         }
-        delete this.states[stateName];
-        this.removeEffectsByKey(stateName);
-        this.next({ type: `remove_state(${stateName})` });
-
         return this;
     }
 
@@ -138,13 +134,17 @@ export class Store<S = any> extends BehaviorSubject<any> implements OnDestroy {
     }
 
     addEffects(effectClassType: Type<any>): Store {
+
         setActionsAndEffects(effectClassType, false);
         const inst = this.injector.get(effectClassType);
+
         if (inst.effectKey) {
             inst[EFFECT_METADATA_KEY].key = inst.effectKey;
         }
         const key = inst[EFFECT_METADATA_KEY].key;
+
         if (key) {
+            this.removeEffectsByKey(key);
             this.addEffectsByKey(inst, key);
         } else {
             this.effect.addEffects([inst]);
@@ -153,13 +153,12 @@ export class Store<S = any> extends BehaviorSubject<any> implements OnDestroy {
 
     }
 
-    removeEffectsByKey(key: string) {
+    removeEffectsByKey(key: string): Store {
         if (this.subscriptionMap[key]) {
-            this.subscriptionMap[key].unsubscribe && this.subscriptionMap[key].unsubscribe();
+            this.subscriptionMap[key].unsubscribe();
             this.subscriptionMap[key] = undefined;
-        } else {
-            throw `Unknown effect key '${key}'`;
         }
+        return this;
     }
 
     private addEffectsByKey(instance, key) {

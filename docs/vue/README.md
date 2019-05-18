@@ -126,10 +126,10 @@ Here are the samples of all the decorators and it's corresponding coding by conv
 
 [Please go throw this test file for more details. You may run the test and having some practical examples on it](https://github.com/JUkhan/Ajwah/blob/master/modules/ajwah-store/test/ajwah.test.js)
 
-`Note: Please remember the starts with 'action' and 'effect'. This is by default. You may change whatever you want into the 'bootstrap'` 
+`Note: Please remember the starts with 'action' and 'effect'. This is by default. You may change whatever you want into the 'createStore'` 
 
 ```js
-    bootstrap({
+    createStore({
         states: [CounterSate, TodoState],
         effects: [TodoEffects],
         devTools: devTools({ maxAge: 10 }),
@@ -329,7 +329,7 @@ export declare class Store<S = any> {
 }
 ```
 
-### using `bootstrap` in main file
+### using `createStore` in main file
 
 ```js
 import Vue from 'vue';
@@ -337,13 +337,13 @@ import App from './App.vue';
 import router from './router';
 
 import vueRx from 'vue-rx';
-import { bootstrap } from 'ajwah-store';
+import { createStore } from 'ajwah-store';
 import { devTools } from 'ajwah-devtools';
 import counterState from './states/counterState'
 
 Vue.use(vueRx);
 
-bootstrap({
+createStore({
   states: [counterState],
   devTools: devTools()
 })
@@ -363,7 +363,7 @@ new Vue({
 There are several of ways to add effects in Ajwah. You can add effects in your state class that has been shown above in `counterState`. Also you can define separate effect classes and set them into `main` file like bellow:
 
 ```js
-bootstrap({
+createStore({
     states: [CounterState, SearchState],
     effects: [SearchEffects]
 });

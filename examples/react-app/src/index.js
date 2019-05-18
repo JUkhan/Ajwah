@@ -4,7 +4,7 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import './index.css';
 import App from './App';
 import * as serviceWorker from './serviceWorker';
-import { bootstrap } from 'ajwah-store'
+import { createStore } from 'ajwah-store'
 //import CounterEffect from "./states/counterEffects";
 //import TutorialState from "./states/tutoroalState";
 import TodoState from "./states/todoState";
@@ -12,7 +12,7 @@ import CounterSate from "./states/counterState";
 import { devTools } from 'ajwah-devtools';
 
 
-bootstrap({
+createStore({
     states: [CounterSate, TodoState],
     effects: [],
     devTools: devTools({ maxAge: 10 }),

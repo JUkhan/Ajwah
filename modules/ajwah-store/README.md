@@ -144,10 +144,10 @@ Here are the samples of all the decorators and it's corresponding coding by conv
 
 ```
 
-`Note: Please remember the starts with 'action' and 'effect'. This is by default. You may change whatever you want into the 'bootstrap'` 
+`Note: Please remember the starts with 'action' and 'effect'. This is by default. You may change whatever you want into the 'createStore'` 
 
 ```js
-    bootstrap({
+    createStore({
         states: [CounterSate, TodoState],
         effects: [TodoEffects],
         devTools: devTools({ maxAge: 10 }),

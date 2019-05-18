@@ -23,12 +23,12 @@ export declare class Store<S = any> {
     importState(state: any): Store;
     exportState(): Observable<[IAction, S]>;
     select<R = any>(pathOrMapFn: ((state: S) => any) | string, ): Observable<R>;
-    addEffect<T extends Actions<IAction>>(callback: (action$: Actions<IAction>, store$?: Store) => Observable<IAction>, key?: string): Store;
+    addEffect<T extends Actions<IAction>>(callback: (action$: Actions<IAction>, store$?: Store) => Observable<IAction>, effectKey: string): Store;
     addEffects(effectClassType: any): Store;
     dispose(): void;
 }
 
-export declare function bootstrap(options: { states: any[], effects?: any[], devTools?: any, actionsMethodStartsWith?: string, effectsMethodStartsWith?: string }): void;
+export declare function createStore(options: { states: any[], effects?: any[], devTools?: any, actionsMethodStartsWith?: string, effectsMethodStartsWith?: string }): Store;
 
 export declare function ofType<T extends IAction, R extends T = T, K extends R['type'] = R['type']>(...key: K[]): (source: Observable<T>) => Observable<R>;
 

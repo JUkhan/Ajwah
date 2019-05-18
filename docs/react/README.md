@@ -144,10 +144,10 @@ Here are the samples of all the decorators and it's corresponding coding by conv
 
 ```
 
-`Note: Please remember the starts with 'action' and 'effect'. This is by default. You may change whatever you want into the 'bootstrap'` 
+`Note: Please remember the starts with 'action' and 'effect'. This is by default. You may change whatever you want into the 'createStore'` 
 
 ```js
-    bootstrap({
+    createStore({
         states: [CounterSate, TodoState],
         effects: [TodoEffects],
         devTools: devTools({ maxAge: 10 }),
@@ -342,19 +342,19 @@ export declare class Store<S = any> {
 }
 ```
 
-### And finally call the `bootstrap` function into the `index` file like bellow:
+### And finally call the `createStore` function into the `index` file like bellow:
 
 ```js
 import React from 'react';
 import ReactDOM from 'react-dom';
-import { bootstrap } from 'ajwah-store';
+import { createStore } from 'ajwah-store';
 
 import CounterState from './CounterState';
 import Counter from './CounterComponent';
 import { devTools } from 'ajwah-devtools';
 
 
-bootstrap({
+createStore({
     states: [CounterState],
     devTools: devTools()
 });
@@ -397,10 +397,10 @@ export default fxCounterComponent;
 
 ### Effects
 
-There are several of ways to add effects in Ajwah. You can add effects in your state class that has been shown above in `counterState`. Also you can define separate effect classes and set them into `bootstrap` function like bellow:
+There are several of ways to add effects in Ajwah. You can add effects in your state class that has been shown above in `counterState`. Also you can define separate effect classes and set them into `createStore` function like bellow:
 
 ```js
-bootstrap({
+createStore({
     states: [CounterState, SearchState],
     effects: [SearchEffects]
 });
