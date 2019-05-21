@@ -1,14 +1,15 @@
 
-//export const STATE_METADATA_KEY = 'ajwah/state';
 import { STATE_METADATA_KEY } from '../tokens';
 export function State({ name, initialState = {} }) {
     return function (target) {
         target = target.prototype;
+
         if (!target.hasOwnProperty(STATE_METADATA_KEY)) {
             Object.defineProperty(target, STATE_METADATA_KEY, { value: { name, initialState, actions: {} } })
         }
         target[STATE_METADATA_KEY].name = name;
         target[STATE_METADATA_KEY].initialState = initialState;
+
     }
 }
 

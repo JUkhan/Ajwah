@@ -1,49 +1,65 @@
 
-import { Actions, Store } from 'ajwah-angular-store';
-import { TODOS_DATA } from './actions';
-import { updateObject } from './util';
+import { State, Action, Effect, ofType, Actions, Store } from 'ajwah-angular-store';
+import { TODOS_DATA, ADD_TODO, UPDATE_TODO, REMOVE_TODO, LOAD_TODOS } from '../../../store/actions';
+import { updateObject } from '../../../store/util';
 import { map, mergeMap, withLatestFrom, catchError } from 'rxjs/operators';
 import { of } from 'rxjs'
-import { TodoService } from '../services/todoService';
+import { JTodoService } from '../services/jtodoService';
+import { ITodoState } from '../../../store/model';
 import { Injectable } from '@angular/core';
 
 @Injectable()
-export class TodoState {
+@State({
+    name: 'jtodo',
+    initialState: { message: '', data: [] }
+})
+export class JTodoState {
 
-    name = 'todo';
-    initialState = { message: '', data: [] };
-
-    constructor(private todoService: TodoService) {
-        // console.log(action$);
+    constructor(private todoService: JTodoService,
+        private action$: Actions,
+        private store$: Store, ) {
+        // console.log('DDD', todoService, action, store);
     }
 
-    actionTodosData(state, { payload }) {
+    @Action(TODOS_DATA)
+    todosData(state, { payload }) {
         return updateObject(state, payload)
     }
 
-
-    actionLoadTodos(state) {
+    @Action(LOAD_TODOS)
+    loadTodos(state) {
         return updateObject(state, { message: ' - loading todos....', data: [] })
     }
 
-
-    effectForLoadTodos(actions: Actions) {
-        return actions.pipe(
+    @Effect()
+    todo$ = this.action$.pipe(
+        ofType(LOAD_TODOS),
+        mergeMap(() => this.todoService.getTodos()
+            .pipe(
+                map(data => ({ type: TODOS_DATA, payload: { message: '', data } }))
+            ))
+    );
+    /*dataLoadingEffect() {
+        return this.action$.pipe(
+            ofType(LOAD_TODOS),
             mergeMap(() => this.todoService.getTodos()
                 .pipe(
                     map(data => ({ type: TODOS_DATA, payload: { message: '', data } }))
                 )),
         );
-    }
+    }*/
 
 
-    actionAddTodo(state) {
+    @Action(ADD_TODO)
+    addTodo(state) {
         return updateObject(state, { message: ' - Adding a new todo...' })
     }
 
-    effectForAddTodo(actions: Actions, store: Store) {
-        return actions.pipe(
-            withLatestFrom(store.select('todo')),
+    @Effect()
+    addTodoEffect() {
+        return this.action$.pipe(
+            ofType(ADD_TODO),
+            withLatestFrom(this.store$.select<ITodoState>('jtodo')),
             mergeMap(([action, todo]) => this.todoService.addTodo(action.payload)
                 .pipe(
                     map((newTodo: any) => {
@@ -56,13 +72,17 @@ export class TodoState {
         );
     }
 
-    actionUpdateTodo(state, { payload }) {
+
+    @Action(UPDATE_TODO)
+    updateTodo(state, { payload }) {
         return updateObject(state, { message: `- '${payload.title}' todo is updaeing...` })
     }
 
-    effectForUpdateTodo(actions: Actions, store: Store) {
-        return actions.pipe(
-            withLatestFrom(store.select('todo')),
+    @Effect()
+    updateTodoEffect() {
+        return this.action$.pipe(
+            ofType(UPDATE_TODO),
+            withLatestFrom(this.store$.select<ITodoState>('jtodo')),
             mergeMap(([action, todo]) => this.todoService.updateTodo(action.payload)
                 .pipe(
                     map((res: any) => {
@@ -77,13 +97,17 @@ export class TodoState {
         );
     }
 
-    actionRemoveTodo(state, { payload }) {
+
+    @Action(REMOVE_TODO)
+    removeTodo(state, { payload }) {
         return updateObject(state, { message: `- '${payload.title}' todo is removing...` })
     }
 
-    effectForRemoveTodo(actions: Actions, store: Store) {
-        return actions.pipe(
-            withLatestFrom(store.select('todo')),
+    @Effect()
+    removeTodoEffect() {
+        return this.action$.pipe(
+            ofType(REMOVE_TODO),
+            withLatestFrom(this.store$.select<ITodoState>('jtodo')),
             mergeMap(([action, todo]) => this.todoService.deleteTodo(action.payload.id)
                 .pipe(
                     map(res => {

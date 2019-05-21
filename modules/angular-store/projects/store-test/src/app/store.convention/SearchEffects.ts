@@ -1,5 +1,5 @@
 
-import { Actions } from 'ajwah-angular-store';
+import { Actions, Store } from 'ajwah-angular-store';
 import {
     debounceTime,
     switchMap,
@@ -10,9 +10,15 @@ import {
 import { SEARCH_RESULT } from './actions';
 import { ajax } from 'rxjs/ajax';
 import { EMPTY } from 'rxjs';
+import { Injectable } from '@angular/core';
 
-
+@Injectable()
 export class SearchEffects {
+    constructor(store: Store) {
+        console.log(store);
+        console.log('---SearchEffects---')
+        //console.log(this.todoService);
+    }
 
     effectForSearch(action$: Actions) {
         return action$.pipe(

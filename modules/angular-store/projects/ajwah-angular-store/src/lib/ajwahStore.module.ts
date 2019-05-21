@@ -1,31 +1,96 @@
 
 import { Dispatcher } from './dispatcher';
-import { NgModule, Injector, Type, ModuleWithProviders } from '@angular/core';
-import { ROOT_STATES, ROOT_EFFECTS, IMPORT_STATE } from './tokens';
+import { NgModule, Type, ModuleWithProviders, Inject, OnDestroy } from '@angular/core';
+import { ROOT_STATES, ROOT_EFFECTS, IMPORT_STATE, FEATURE_STATES, FEATURE_EFFECTS } from './tokens';
 import { Store } from './store';
 import { Actions } from './actions';
 import { EffectsSubscription } from './effectsSubscription';
-import { setActionsAndEffects, setKeys } from './decorators/altdecoretors'
+
+
 
 let __devTools = undefined;
 
 @NgModule({})
+export class StoreRootModule {
+    constructor(
+        store: Store<any>,
+        dispatcher: Dispatcher,
+        @Inject(ROOT_STATES) initStates,
+        @Inject(ROOT_EFFECTS) initEffects
+    ) {
+        store.__init__(initStates, initEffects);
+        if (__devTools && __devTools.run) {
+            runDevTools({ store, dispatcher, importState: IMPORT_STATE });
+        }
+        __store = store;
+    }
+}
+
+@NgModule({})
+export class StoreFeatureModule implements OnDestroy {
+    ngOnDestroy(): void {
+        this.store.removeFeatureStates(this.flat(this.featureStates));
+        this.store.removeFeatureEffects(this.flat(this.featureEffects));
+    }
+    constructor(
+        private store: Store<any>,
+        @Inject(FEATURE_STATES) private featureStates: any[],
+        @Inject(FEATURE_EFFECTS) private featureEffects: any[]) {
+
+        this.store.addFeatureStates(this.flat(featureStates));
+        if (featureEffects.length) {
+            this.store.addFeatureEffects(this.flat(featureEffects));
+        }
+    }
+    flat(arr: any[]) {
+        return [].concat.apply([], arr);
+    }
+
+}
+
+@NgModule({})
 export class AjwahStoreModule {
-    static bootstrap(options: {
-        states: Type<any>[];
-        effects?: Type<any>[];
-        devTools?: any;
-        actionsMethodStartsWith?: string;
-        effectsMethodStartsWith?: string;
-    }): ModuleWithProviders<AjwahStoreModule> {
-        const rootStates = options.states || [];
-        const rootEffects = options.effects || [];
-        __devTools = options.devTools;
-        setKeys(options.actionsMethodStartsWith, options.effectsMethodStartsWith);
-        rootStates.forEach(state => { setActionsAndEffects(state); })
-        rootEffects.forEach(effect => { setActionsAndEffects(effect, false); })
+
+    static forFeature(options: {
+        featureStates: Type<any>[];
+        featureEffects?: Type<any>[];
+    }): ModuleWithProviders<StoreFeatureModule> {
+        const featureStates = options.featureStates || [];
+        const featureEffects = options.featureEffects || [];
+
         return {
-            ngModule: AjwahStoreModule,
+            ngModule: StoreFeatureModule,
+            providers: [
+                featureStates,
+                {
+                    provide: FEATURE_STATES,
+                    deps: featureStates,
+                    multi: true,
+                    useFactory: createSourceInstances,
+                },
+                featureEffects,
+                {
+                    provide: FEATURE_EFFECTS,
+                    deps: featureEffects,
+                    multi: true,
+                    useFactory: createSourceInstances,
+                }
+            ]
+        };
+    }
+
+    static forRoot(options: {
+        rootStates: Type<any>[];
+        rootEffects?: Type<any>[];
+        devTools?: any;
+
+    }): ModuleWithProviders<StoreRootModule> {
+        const rootStates = options.rootStates || [];
+        const rootEffects = options.rootEffects || [];
+        __devTools = options.devTools;
+
+        return {
+            ngModule: StoreRootModule,
             providers: [
                 Dispatcher,
                 Actions,
@@ -42,7 +107,7 @@ export class AjwahStoreModule {
                     deps: rootEffects,
                     useFactory: createSourceInstances,
                 },
-                { provide: Store, useFactory: _storeFactory, deps: [ROOT_STATES, Dispatcher, EffectsSubscription, Injector, ROOT_EFFECTS] }
+                Store
             ]
         };
     }
@@ -51,14 +116,6 @@ export class AjwahStoreModule {
 var __store = undefined;
 export function getStore() {
     return __store;
-}
-export function _storeFactory(states, dispatcher, effect, injector, effects) {
-    const store = new Store(states, dispatcher, effect, injector, effects);
-    if (__devTools && __devTools.run) {
-        runDevTools({ store, dispatcher, importState: IMPORT_STATE });
-    }
-    __store = store;
-    return store;
 }
 
 export function createSourceInstances(...instances) {

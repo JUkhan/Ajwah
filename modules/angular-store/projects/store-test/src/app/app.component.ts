@@ -18,12 +18,12 @@ import { AppState, ICounterState, ITodoState } from './store/model';
 export class AppComponent implements OnDestroy, OnInit {
   subscription: Subscription
   constructor(private store: Store<AppState>) {
-    this.subscription = this.store.select('counter').subscribe(res => this.counter = res);
-    this.subscription.add(this.store.select('tutorial').subscribe(res => this.tutorial = res));
-    this.subscription.add(this.store.select('todo').subscribe(res => this.todo = res));
-    this.store.dispatch({ type: LOAD_TODOS });
+    // this.subscription = this.store.select('counter').subscribe(res => this.counter = res);
+    // this.subscription.add(this.store.select('tutorial').subscribe(res => this.tutorial = res));
+    // this.subscription.add(this.store.select('todo').subscribe(res => this.todo = res));
+    // this.store.dispatch({ type: LOAD_TODOS });
 
-    this.jac.subscribe(res => console.log(res))
+    // this.jac.subscribe(res => console.log(res))
   }
 
   counter: any;

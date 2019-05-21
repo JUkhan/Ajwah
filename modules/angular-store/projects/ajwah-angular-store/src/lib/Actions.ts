@@ -18,10 +18,4 @@ export class Actions<V = IAction> extends Observable<V> {
         return observable as any;
     }
 
-    /*ofType(...actionTypes: string[]) {
-        return this.pipe(
-            filter((action: Action) => actionTypes.some(type => type === action.type))
-        )
-        return ofType(...actionTypes)(this);
-    }*/
 }

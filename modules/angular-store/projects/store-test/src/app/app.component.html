@@ -1,5 +1,9 @@
 <!--The content below is only a placeholder and can be replaced.-->
-<h1>{{(mac|async).count}}</h1>
+<a [routerLink]="'/'">Home</a>
+<a [routerLink]="'/jtodo'">Todo</a>
+<a [routerLink]="'/tutorial'">Tutorial</a>
+<router-outlet></router-outlet>
+<!-- <h1>{{(mac|async).count}}</h1>
 <counter [counter]="mac|async"></counter>
 <div *ngIf="tutorial">
   <addTutorial></addTutorial>
@@ -24,4 +28,4 @@
   <addTodo></addTodo>
   <todos [todos]="todo.data"></todos>
 </div>
-<h1>{{(mac|async).count}}</h1>
+<h1>{{(mac|async).count}}</h1> -->

@@ -14,7 +14,7 @@ export declare class Actions<T = IAction> extends Observable<T>{
 }
 
 export declare class Store<S = any> {
-    dispatch(actionName: IAction): Store;
+    dispatch<V extends IAction = IAction>(actionName: V): Store;
     dispatch(actionName: string): Store;
     dispatch(actionName: string, payload?: any): Store;
     addState(stateClassType: any): Store;

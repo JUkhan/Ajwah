@@ -1,0 +1,7 @@
+<div *ngIf="todo$|async as todo">
+  <header class="header">Todo List <b>{{todo.message}}</b></header>
+  <mac-addTodo></mac-addTodo>
+  <mac-todos [todos]="todo.data"></mac-todos>
+</div>
+<p>asdadas dasd as da</p>
+<tutorial-container></tutorial-container>

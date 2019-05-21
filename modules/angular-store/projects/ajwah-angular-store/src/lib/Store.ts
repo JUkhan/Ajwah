@@ -3,10 +3,10 @@ import { BehaviorSubject, Subscription, Observable, queueScheduler } from 'rxjs'
 import { map, scan, distinctUntilChanged, pluck, subscribeOn, withLatestFrom } from 'rxjs/operators';
 import { combineStates } from './combineStates';
 import { Dispatcher } from './dispatcher';
-import { Injectable, Inject, Injector, Type, OnDestroy } from '@angular/core';
-import { ROOT_STATES, ROOT_EFFECTS, STATE_METADATA_KEY, EFFECT_METADATA_KEY, IMPORT_STATE } from './tokens';
+import { Injectable, Injector, Type, OnDestroy } from '@angular/core';
+import { STATE_METADATA_KEY, EFFECT_METADATA_KEY, IMPORT_STATE } from './tokens';
 import { EffectsSubscription } from './effectsSubscription';
-import { setActionsAndEffects } from './decorators/altdecoretors';
+
 import { IAction } from './model'
 import { copyObj } from './utils';
 
@@ -16,14 +16,16 @@ export class Store<S = any> extends BehaviorSubject<any> implements OnDestroy {
     private states;
     private storeSubscription: Subscription;
     constructor(
-        @Inject(ROOT_STATES) initStates,
         private dispatcher: Dispatcher,
         private effect: EffectsSubscription,
-        private injector: Injector,
-        @Inject(ROOT_EFFECTS) initEffects) {
+        private injector: Injector
+    ) {
         super({});
         this.subscriptionMap = {};
         this.states = {};
+    }
+
+    __init__(initStates: any, initEffects: any) {
         for (let state of initStates) {
             this.mapState(state);
         }
@@ -32,20 +34,22 @@ export class Store<S = any> extends BehaviorSubject<any> implements OnDestroy {
             scan(((state, action: any) => action.type === IMPORT_STATE ? action.payload : combineStates(state, action, this.states)), {}))
             .subscribe((newState => { super.next(newState); }));
 
-        this.effect.store = this;
         this.effect.addEffects(initStates);
         if (initEffects.length)
             this.effect.addEffects(initEffects);
+
     }
-    dispatch(actionName: IAction): void;
-    dispatch(actionName: string): void;
-    dispatch(actionName: string, payload?: any): void;
-    dispatch(actionName: string | IAction, payload?: any): void {
+
+    dispatch<V extends IAction = IAction>(actionName: V): Store;
+    dispatch(actionName: string): Store;
+    dispatch(actionName: string, payload?: any): Store;
+    dispatch(actionName: string | IAction, payload?: any): Store {
         if (typeof actionName === 'object') {
             this.dispatcher.next(actionName);
             return;
         }
         this.dispatcher.next({ type: actionName, payload });
+        return this;
     }
 
 
@@ -84,7 +88,6 @@ export class Store<S = any> extends BehaviorSubject<any> implements OnDestroy {
     }
 
     addState(stateClassType: Type<any>): Store {
-        setActionsAndEffects(stateClassType);
         const instance = this.injector.get(stateClassType);
         const name = this.mapState(instance);
         this.addEffectsByKey(instance, name);
@@ -103,12 +106,6 @@ export class Store<S = any> extends BehaviorSubject<any> implements OnDestroy {
 
     private mapState(instance) {
         const meta = instance[STATE_METADATA_KEY];
-        if (!meta.name) {
-            meta.name = instance.name;
-        }
-        if (!meta.initialState) {
-            meta.initialState = instance.initialState;
-        }
         this.states[meta.name] = instance;
         return meta.name;
     }
@@ -134,15 +131,8 @@ export class Store<S = any> extends BehaviorSubject<any> implements OnDestroy {
     }
 
     addEffects(effectClassType: Type<any>): Store {
-
-        setActionsAndEffects(effectClassType, false);
         const inst = this.injector.get(effectClassType);
-
-        if (inst.effectKey) {
-            inst[EFFECT_METADATA_KEY].key = inst.effectKey;
-        }
         const key = inst[EFFECT_METADATA_KEY].key;
-
         if (key) {
             this.removeEffectsByKey(key);
             this.addEffectsByKey(inst, key);
@@ -163,5 +153,39 @@ export class Store<S = any> extends BehaviorSubject<any> implements OnDestroy {
 
     private addEffectsByKey(instance, key) {
         this.effect.addEffectsByKey(instance, this.subscriptionMap[key] || (this.subscriptionMap[key] = new Subscription()));
+    }
+    addFeatureEffects(effects: any[]) {
+        for (let instance of effects) {
+            const key = instance[EFFECT_METADATA_KEY].key;
+            if (key) {
+                this.removeEffectsByKey(key);
+                this.addEffectsByKey(instance, key);
+            }
+            else {
+                this.effect.addEffects([instance]);
+            }
+        }
+    }
+    removeFeatureEffects(effects: any[]) {
+        for (let instance of effects) {
+            const key = instance[EFFECT_METADATA_KEY].key;
+            if (key) {
+                this.removeEffectsByKey(key);
+            }
+        }
+    }
+    addFeatureStates(featureStates: any[]) {
+        for (let state of featureStates) {
+            const name = this.mapState(state);
+            this.removeEffectsByKey(name);
+            this.addEffectsByKey(state, name);
+            this.next({ type: `add_state(${name})` });
+        }
+    }
+    removeFeatureStates(featureStates: any[]) {
+        for (let state of featureStates) {
+            this.removeState(state.name);
+            this.next({ type: `remove_state(${state.name})` });
+        }
     }
 }

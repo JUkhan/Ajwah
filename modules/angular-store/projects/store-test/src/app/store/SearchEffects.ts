@@ -1,5 +1,5 @@
 
-import { Effect, Actions, ofType } from 'ajwah-angular-store';
+import { Effect, Actions, ofType, Store } from 'ajwah-angular-store';
 import {
     debounceTime,
     switchMap,
@@ -13,10 +13,15 @@ import { EMPTY } from 'rxjs';
 
 
 export class SearchEffects {
+    constructor(private store: Store, private action$: Actions) {
+        console.log(this.store);
+        console.log(this.action$);
+    }
 
     @Effect()
     search(action$: Actions) {
-        return action$.pipe(
+        console.log('search......');
+        return this.action$.pipe(
             ofType(SEARCH_KEYSTROKE),
             debounceTime(700),
             distinctUntilChanged(),

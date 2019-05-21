@@ -1,3 +1,4 @@
+import { HomeComponent } from './components/home.components';
 import { AddTodoComponent } from './components/addTodo';
 import { SearchComponent } from './components/searchComponent';
 import { AddTutorial } from './components/addTutorial';
@@ -21,18 +22,19 @@ import { TodoItemComponent } from './components/todoItem';
 import { TodosComponent } from './components/todos';
 import { HttpClientModule } from '@angular/common/http';
 import { TodoService } from './services/todoService';
+import { AppRoutingModule } from './app.routing.module';
 
 
 @NgModule({
   declarations: [
     AppComponent, TutorialList, AddTutorial, Counter, SearchComponent,
-    AddTodoComponent, TodoItemComponent, TodosComponent
+    AddTodoComponent, TodoItemComponent, TodosComponent, HomeComponent
   ],
   imports: [
-    BrowserModule, FormsModule, HttpClientModule,
-    AjwahStoreModule.bootstrap({
-      states: [counterState, SearchState, TodoState],
-      effects: [SearchEffects],
+    BrowserModule, FormsModule, HttpClientModule, AppRoutingModule,
+    AjwahStoreModule.forRoot({
+      rootStates: [counterState, /*SearchState, TodoState*/],
+      //effects: [SearchEffects],
       devTools: devTools(),
       //actionsMethodStartsWith: 'myAction',
       //effectsMethodStartsWith: 'myEffect'
