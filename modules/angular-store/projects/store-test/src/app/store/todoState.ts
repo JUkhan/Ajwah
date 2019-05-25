@@ -8,7 +8,7 @@ import { TodoService } from '../services/todoService';
 import { ITodoState } from './model';
 
 
-@State({
+@State<ITodoState>({
     name: 'todo',
     initialState: { message: '', data: [] }
 })

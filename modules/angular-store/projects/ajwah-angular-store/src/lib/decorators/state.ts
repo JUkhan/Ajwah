@@ -1,6 +1,8 @@
 
 import { STATE_METADATA_KEY } from '../tokens';
-export function State({ name, initialState = {} }) {
+export function State<S = any>(options: { name: string, initialState?: S }) {
+    const name = options.name;
+    const initialState = options.initialState || {};
     return function (target) {
         target = target.prototype;
 

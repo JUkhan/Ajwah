@@ -67,3 +67,4 @@ modules/ajwah-store/lib/
 modules/react-ajwah/lib/
 modules/react-ajwah/package-lock.json
 modules/ajwah-store/package-lock.json
+examples/vue-app-ts/package-lock.json
