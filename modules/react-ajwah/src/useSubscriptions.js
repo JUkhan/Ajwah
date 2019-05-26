@@ -10,12 +10,30 @@ export function useSubscriptions(states) {
     useEffect(() => cleanupSubscriptions(dispatch, states), []);
     return state;
 }
+export function useSubscriptions2(states) {
+    const [state, dispatch] = useReducer((state, action) => {
+        return action.type ? { ...state, [action.type]: action.payload } : state
+    }, {});
+    useEffect(() => cleanupSubscriptions2(dispatch, states), []);
+    return state;
+}
 
 function cleanupSubscriptions(dispatch, states) {
     var subs = new Subscription();
     states.forEach(stateName => {
         subs.add(store().select(stateName).subscribe(data => {
             dispatch({ type: stateName, payload: data })
+        }));
+    });
+    return function () {
+        subs.unsubscribe();
+    };
+}
+function cleanupSubscriptions2(dispatch, states) {
+    var subs = new Subscription();
+    Object.keys(states).forEach(key => {
+        subs.add(states[key].subscribe(data => {
+            dispatch({ type: key, payload: data })
         }));
     });
     return function () {

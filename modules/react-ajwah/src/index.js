@@ -1,2 +1,2 @@
 export { Connect } from './connect';
-export { useSubscriptions } from './useSubscriptions';
+export { useSubscriptions, useSubscriptions2 } from './useSubscriptions';
