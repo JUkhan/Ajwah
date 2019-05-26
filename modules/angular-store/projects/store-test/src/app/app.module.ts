@@ -36,8 +36,9 @@ import { AppRoutingModule } from './app.routing.module';
       rootStates: [counterState, /*SearchState, TodoState*/],
       //effects: [SearchEffects],
       devTools: devTools(),
-      //actionsMethodStartsWith: 'myAction',
-      //effectsMethodStartsWith: 'myEffect'
+      //actionsMethodStartsWith: 'on',
+      //effectsMethodStartsWith: 'myEffect',
+      enableCodingByConvention: true
     })
   ],
   providers: [

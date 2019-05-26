@@ -5,10 +5,11 @@ import { ROOT_STATES, ROOT_EFFECTS, IMPORT_STATE, FEATURE_STATES, FEATURE_EFFECT
 import { Store } from './store';
 import { Actions } from './actions';
 import { EffectsSubscription } from './effectsSubscription';
-
+import { setActionsAndEffects, setKeys } from './decorators/altdecoretors';
 
 
 let __devTools = undefined;
+let __enableCodingByConvention = false;
 
 @NgModule({})
 export class StoreRootModule {
@@ -47,7 +48,42 @@ export class StoreFeatureModule implements OnDestroy {
     }
 
 }
-
+/**
+ * Ajwah is a Rx based state management library for React, Vue, Angular, Flutter, Preact and others.
+ * Manage your application's states, effects, and actions easy way.
+ * It's easy to use in functional components with React hooks.
+ * 
+ * 
+ * AjwahStoreModule.forRoot(...) is the entry function. 
+ * 
+ * for feature module you can use AjwahStoreModule.forFeature(...)
+ * 
+ * ###Example
+ * 
+ * ```typescript
+ * 
+ *import { AjwahStoreModule } from 'ajwah-angular-store';
+ * 
+ * @NgModule({
+ *   declarations: [],
+ *   imports: [
+ *     BrowserModule, FormsModule, HttpClientModule, AppRoutingModule,
+ *   AjwahStoreModule.forRoot({
+ *      rootStates: [counterState],
+ *       //effects: [SearchEffects],
+ *       //devTools: devTools(),
+ *       //actionsMethodStartsWith: 'on',
+ *       //effectsMethodStartsWith: 'myEffect',
+ *       enableCodingByConvention: true
+ *     })
+ *  ],
+ *  
+ *   bootstrap: [AppComponent]
+ * })
+ * export class AppModule { }
+ * 
+ * ```
+ */
 @NgModule({})
 export class AjwahStoreModule {
 
@@ -57,7 +93,10 @@ export class AjwahStoreModule {
     }): ModuleWithProviders<StoreFeatureModule> {
         const featureStates = options.featureStates || [];
         const featureEffects = options.featureEffects || [];
-
+        if (__enableCodingByConvention) {
+            featureStates.forEach(item => { setActionsAndEffects(item); });
+            featureEffects.forEach(item => { setActionsAndEffects(item, false); });
+        }
         return {
             ngModule: StoreFeatureModule,
             providers: [
@@ -83,12 +122,19 @@ export class AjwahStoreModule {
         rootStates: Type<any>[];
         rootEffects?: Type<any>[];
         devTools?: any;
-
+        enableCodingByConvention?: boolean
+        actionsMethodStartsWith?: string
+        effectsMethodStartsWith?: string
     }): ModuleWithProviders<StoreRootModule> {
         const rootStates = options.rootStates || [];
         const rootEffects = options.rootEffects || [];
         __devTools = options.devTools;
-
+        __enableCodingByConvention = options.enableCodingByConvention;
+        setKeys(options.actionsMethodStartsWith, options.effectsMethodStartsWith);
+        if (__enableCodingByConvention) {
+            rootStates.forEach(item => { setActionsAndEffects(item); });
+            rootEffects.forEach(item => { setActionsAndEffects(item, false); });
+        }
         return {
             ngModule: StoreRootModule,
             providers: [

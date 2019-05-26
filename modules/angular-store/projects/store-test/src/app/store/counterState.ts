@@ -3,37 +3,40 @@ import { INCREMENT, DECREMENT, ASYNC_INCREMENT } from './actions';
 import { debounceTime, mapTo } from 'rxjs/operators';
 import { updateObject } from './util';
 import { Injectable } from '@angular/core';
-import { State } from 'projects/ajwah-angular-store/src/public-api';
+
 
 @Injectable()
-@State({
-    name: 'counter',
-    initialState: { count: 101, msg: '' }
-})
+// @State({
+//     name: 'counter',
+//     initialState: { count: 101, msg: '' }
+// })
 class CounterState {
+    name = 'counter'
+    initialState = { count: 12, msg: '' }
 
     constructor(private action$: Actions) {
 
     }
-    @Action(INCREMENT)
-    actionInc(state) {
+    //@Action(INCREMENT)
+    onInc(state) {
         return updateObject(state, { count: state.count + 1, msg: '' })
     }
-    @Action(DECREMENT)
-    actionDec(state) {
+    //@Action(DECREMENT)
+    onDec(state) {
         return updateObject(state, { count: state.count - 1, msg: '' })
     }
-    @Action(ASYNC_INCREMENT)
-    actionAsyncInc(state) {
+    //@Action(ASYNC_INCREMENT)
+    onAsyncInc(state) {
         return updateObject(state, { msg: 'loading...' })
     }
 
-    @Effect()
-    asd$ = this.action$.pipe(
-        ofType(ASYNC_INCREMENT, DECREMENT),
-        debounceTime(450),
-        mapTo({ type: INCREMENT })
-    )
+
+    effectForAsyncIncOrDec(action$: Actions) {
+        return action$.pipe(
+            //ofType(ASYNC_INCREMENT, DECREMENT),
+            debounceTime(450),
+            mapTo({ type: INCREMENT }))
+    }
 
 
 

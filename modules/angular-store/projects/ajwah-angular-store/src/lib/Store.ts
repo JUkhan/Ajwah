@@ -106,6 +106,16 @@ export class Store<S = any> extends BehaviorSubject<any> implements OnDestroy {
 
     private mapState(instance) {
         const meta = instance[STATE_METADATA_KEY];
+        if (instance.name) {
+            if (!meta) {
+                throw 'State name is undefined.\nMay be you forgot to enable some options like bellow:\nAjwahStoreModule.forRoot({enableCodingByConvention:true})';
+            }
+            meta.name = instance.name;
+            meta.initialState = instance.initialState || {};
+        }
+        if (!meta.name) {
+            throw 'State name is undefined.';
+        }
         this.states[meta.name] = instance;
         return meta.name;
     }
@@ -132,6 +142,9 @@ export class Store<S = any> extends BehaviorSubject<any> implements OnDestroy {
 
     addEffects(effectClassType: Type<any>): Store {
         const inst = this.injector.get(effectClassType);
+        if (inst.effectKey) {
+            inst[EFFECT_METADATA_KEY].key = inst.effectKey;
+        }
         const key = inst[EFFECT_METADATA_KEY].key;
         if (key) {
             this.removeEffectsByKey(key);
@@ -154,6 +167,10 @@ export class Store<S = any> extends BehaviorSubject<any> implements OnDestroy {
     private addEffectsByKey(instance, key) {
         this.effect.addEffectsByKey(instance, this.subscriptionMap[key] || (this.subscriptionMap[key] = new Subscription()));
     }
+    /**
+     * Do not use this function. use: addEffects()
+     * @param effects 
+     */
     addFeatureEffects(effects: any[]) {
         for (let instance of effects) {
             const key = instance[EFFECT_METADATA_KEY].key;
@@ -162,10 +179,14 @@ export class Store<S = any> extends BehaviorSubject<any> implements OnDestroy {
                 this.addEffectsByKey(instance, key);
             }
             else {
-                this.effect.addEffects([instance]);
+                this.effect.addEffect(instance);
             }
         }
     }
+    /**
+     * Do not use this function. use: removeEffectsByKey()
+     * @param effects 
+     */
     removeFeatureEffects(effects: any[]) {
         for (let instance of effects) {
             const key = instance[EFFECT_METADATA_KEY].key;
@@ -174,6 +195,10 @@ export class Store<S = any> extends BehaviorSubject<any> implements OnDestroy {
             }
         }
     }
+    /**
+     * Do not use this function. use: addState()
+     * @param featureStates 
+     */
     addFeatureStates(featureStates: any[]) {
         for (let state of featureStates) {
             const name = this.mapState(state);
@@ -182,6 +207,10 @@ export class Store<S = any> extends BehaviorSubject<any> implements OnDestroy {
             this.next({ type: `add_state(${name})` });
         }
     }
+    /**
+     * Do not use this function. use:removeState()
+     * @param featureStates 
+     */
     removeFeatureStates(featureStates: any[]) {
         for (let state of featureStates) {
             this.removeState(state.name);
