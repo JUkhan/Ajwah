@@ -168,7 +168,7 @@ export class Store<S = any> extends BehaviorSubject<any> implements OnDestroy {
         this.effect.addEffectsByKey(instance, this.subscriptionMap[key] || (this.subscriptionMap[key] = new Subscription()));
     }
     /**
-     * Do not use this function. use: addEffects()
+     * 
      * @param effects 
      */
     addFeatureEffects(effects: any[]) {
@@ -184,7 +184,7 @@ export class Store<S = any> extends BehaviorSubject<any> implements OnDestroy {
         }
     }
     /**
-     * Do not use this function. use: removeEffectsByKey()
+     * 
      * @param effects 
      */
     removeFeatureEffects(effects: any[]) {
@@ -196,7 +196,7 @@ export class Store<S = any> extends BehaviorSubject<any> implements OnDestroy {
         }
     }
     /**
-     * Do not use this function. use: addState()
+     * 
      * @param featureStates 
      */
     addFeatureStates(featureStates: any[]) {
@@ -207,8 +207,9 @@ export class Store<S = any> extends BehaviorSubject<any> implements OnDestroy {
             this.next({ type: `add_state(${name})` });
         }
     }
+
     /**
-     * Do not use this function. use:removeState()
+     * 
      * @param featureStates 
      */
     removeFeatureStates(featureStates: any[]) {

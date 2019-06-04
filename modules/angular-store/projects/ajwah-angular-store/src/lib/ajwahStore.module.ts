@@ -1,4 +1,3 @@
-
 import { Dispatcher } from './dispatcher';
 import { NgModule, Type, ModuleWithProviders, Inject, OnDestroy } from '@angular/core';
 import { ROOT_STATES, ROOT_EFFECTS, IMPORT_STATE, FEATURE_STATES, FEATURE_EFFECTS } from './tokens';
@@ -6,7 +5,7 @@ import { Store } from './store';
 import { Actions } from './actions';
 import { EffectsSubscription } from './effectsSubscription';
 import { setActionsAndEffects, setKeys } from './decorators/altdecoretors';
-
+import { flatMap } from './utils';
 
 let __devTools = undefined;
 let __enableCodingByConvention = false;
@@ -30,20 +29,20 @@ export class StoreRootModule {
 @NgModule({})
 export class StoreFeatureModule implements OnDestroy {
     ngOnDestroy(): void {
-        this.store.removeFeatureStates(this.flat(this.featureStates));
-        this.store.removeFeatureEffects(this.flat(this.featureEffects));
+        this.store.removeFeatureStates(flatMap(this.featureStates));
+        this.store.removeFeatureEffects(flatMap(this.featureEffects));
     }
     constructor(
         private store: Store<any>,
         @Inject(FEATURE_STATES) private featureStates: any[],
         @Inject(FEATURE_EFFECTS) private featureEffects: any[]) {
 
-        this.store.addFeatureStates(this.flat(featureStates));
+        this.store.addFeatureStates(flatMap(featureStates));
         if (featureEffects.length) {
-            this.store.addFeatureEffects(this.flat(featureEffects));
+            this.store.addFeatureEffects(flatMap(featureEffects));
         }
     }
-    flat(arr: any[]) {
+    xflat(arr: any[]) {
         return [].concat.apply([], arr);
     }
 

@@ -21,7 +21,7 @@ export class TutorialContainer {
   @Select('counter') counter$
 
   constructor(public store: Store) {
-
+    console.log('TutorialContainer....')
   }
 
 

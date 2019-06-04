@@ -7,6 +7,7 @@ import { of } from 'rxjs'
 import { JTodoService } from '../services/jtodoService';
 import { ITodoState } from '../../../store/model';
 import { Injectable } from '@angular/core';
+import { TodoModule } from '../todo.module';
 
 @Injectable()
 @State({
