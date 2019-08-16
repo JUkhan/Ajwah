@@ -17,14 +17,16 @@ export class Store extends BehaviorSubject {
 
         this.subscription = this.dispatcher.pipe(
             observeOn(queueScheduler),
-            scan((state, action) => action.type === IMPORT_STATE ? action.payload : combineStates(state, action, this.states), {})
+            scan((state, action) => action.type === IMPORT_STATE ? action.payload : combineStates(state, action, this), {})
         ).subscribe(newState => { super.next(newState); });
 
     }
     dispatch(action) {
         this.dispatcher.next(action);
     }
-
+    stateChange(state) {
+        super.next(state);
+    }
     select(pathOrMapFn) {
 
         let mapped$;

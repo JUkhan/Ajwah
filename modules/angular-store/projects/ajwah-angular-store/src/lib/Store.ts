@@ -1,6 +1,6 @@
 
 import { BehaviorSubject, Subscription, Observable, queueScheduler } from 'rxjs';
-import { map, scan, distinctUntilChanged, pluck, subscribeOn, withLatestFrom } from 'rxjs/operators';
+import { map, scan, distinctUntilChanged, pluck, subscribeOn, withLatestFrom, distinct, tap } from 'rxjs/operators';
 import { combineStates } from './combineStates';
 import { Dispatcher } from './dispatcher';
 import { Injectable, Injector, Type, OnDestroy } from '@angular/core';
@@ -31,7 +31,7 @@ export class Store<S = any> extends BehaviorSubject<any> implements OnDestroy {
         }
         this.storeSubscription = this.dispatcher.pipe(
             subscribeOn(queueScheduler),
-            scan(((state, action: any) => action.type === IMPORT_STATE ? action.payload : combineStates(state, action, this.states)), {}))
+            scan(((state, action: any) => action.type === IMPORT_STATE ? action.payload : combineStates(state, action, this)), {}))
             .subscribe((newState => { super.next(newState); }));
 
         this.effect.addEffects(initStates);
@@ -39,7 +39,9 @@ export class Store<S = any> extends BehaviorSubject<any> implements OnDestroy {
             this.effect.addEffects(initEffects);
 
     }
-
+    stateChange(state) {
+        super.next(state);
+    }
     dispatch<V extends IAction = IAction>(actionName: V): Store;
     dispatch(actionName: string): Store;
     dispatch(actionName: string, payload?: any): Store;

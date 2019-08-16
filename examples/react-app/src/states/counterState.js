@@ -2,6 +2,7 @@
 import { INCREMENT } from "./actions";
 import { updateObject } from "../utli";
 import { debounceTime, mapTo } from 'rxjs/operators';
+import { timer } from 'rxjs'
 
 class CounterSate {
 
@@ -17,13 +18,16 @@ class CounterSate {
         return updateObject(state, { count: state.count - 1, msg: '' })
     }
 
-    actionAsyncInc(state) {
-        return updateObject(state, { msg: 'loading...' })
+    *actionAsyncInc(state) {
+
+        yield updateObject(state, { msg: 'loading.......' })
+
+        yield timer(450).pipe(mapTo({ count: state.count + 1, msg: '' })).toPromise()
     }
 
     effectForAsyncIncOrDec_ndispatch(actions) {
         return actions.pipe(
-            debounceTime(450),
+            debounceTime(1000),
             mapTo({ type: INCREMENT })
         )
     }
