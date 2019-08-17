@@ -1,5 +1,5 @@
 # Ajwah
-Rx based state managements library for React, Vue, Angular, Preact, Flutter. Manage your application's states, effects, and actions easy way. It's easy to use in functional components with React hooks.
+Rx based state managements library for React, Vue, Angular, Preact, Flutter. Manage your application's states, effects, and actions easy way.
 
 
 ### Installation
@@ -130,7 +130,7 @@ Here are the samples of all the decorators and it's corresponding coding by conv
 
 ```
 
-`Note: Please remember the starts with 'on' and 'effect'. This is by default. You may change whatever you want into the 'createStore'` 
+`Note: Please remember the starts with 'on' and 'effect'. This is by default. You may change whatever you want into the 'forRoot'` method.
 
 ```js
     AjwahStoreModule.forRoot({
@@ -235,7 +235,44 @@ class CounterState {
 }
 export default CounterState;
 ```
+### Also there is third choice writting `async` operation in `onXXX(state, action)` or `@Action(XXX)` decorated methods. This is the great opportunities to make effects such a great easy way.
 
+## Example
+```js
+class CounterState {
+    name = 'counter'
+    initialState = { count: 12, msg: '' }
+
+    constructor(private store: Store) {
+
+    }
+    
+    onInc(state) {
+        return { count: state.count + 1, msg: '' }
+    }
+    
+    async onDec(state) {
+        return await this.getData();
+    }
+    
+    *onAsyncInc(state) {
+        yield { msg: 'loading...', count: state.count }
+        yield this.getData(state.count);
+    }
+
+    getData(num) {
+        return new Promise(resolve => {
+            setTimeout(() => {
+                resolve({ count: num+1, msg: '' })
+            }, 1000);
+        });
+    }
+
+}
+
+export default CounterState;
+
+```
 
 ## counterComponent.ts
 ```js

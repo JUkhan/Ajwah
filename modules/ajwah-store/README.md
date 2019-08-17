@@ -250,7 +250,45 @@ class CounterSate {
 export default CounterSate;
 
 ```
-`You can choose any style you like or any combination - ajwah support both together`
+### Also there is third choice writting `async` operation in `onXXX(state, action)` or `@Action(XXX)` decorated methods. This is the great opportunities to make effects such a great easy way.
+
+## Example
+```js
+class CounterState {
+    name = 'counter'
+    initialState = { count: 12, msg: '' }
+
+    constructor(private store: Store) {
+
+    }
+    
+    onInc(state) {
+        return { count: state.count + 1, msg: '' }
+    }
+    
+    async onDec(state) {
+        return await this.getData(5);
+    }
+    
+    *onAsyncInc(state) {
+        yield { msg: 'loading...', count: state.count }
+        yield this.getData(state.count);
+    }
+
+    getData(num) {
+        return new Promise(resolve => {
+            setTimeout(() => {
+                resolve({ count: num+1, msg: '' })
+            }, 1000);
+        });
+    }
+
+}
+
+export default CounterState;
+
+```
+`You can choose any style you like or any combination.`
 
 [Please go throw this test file for more details. You may run the test and having some practical examples on it](https://github.com/JUkhan/Ajwah/blob/master/modules/ajwah-store/test/ajwah.test.js)
 
