@@ -20,7 +20,7 @@ class CounterSate {
 
     *actionAsyncInc(state) {
 
-        yield updateObject(state, { msg: 'loading.......' })
+        yield updateObject(state, { msg: 'loading...xxxx....' })
 
         yield timer(450).pipe(mapTo({ count: state.count + 1, msg: '' })).toPromise()
     }
