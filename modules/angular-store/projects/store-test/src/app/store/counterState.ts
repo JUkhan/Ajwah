@@ -24,30 +24,26 @@ class CounterState {
         return { count: state.count + 1, msg: '' }
     }
     //@Action(DECREMENT)
-    async onDec(state) {
+    onDec(state) {
         //return updateObject(state, { count: state.count - 1, msg: '' })
-        return await this.getData()
+        return { count: state.count - 1, msg: '' }
 
+    }
+    onLoading(state) {
+        return { count: state.count, msg: 'loading......' }
     }
     //@Action(ASYNC_INCREMENT)
-    *onAsyncInc(state) {
-        //return updateObject(state, { msg: 'loading...' })
+    onAsyncInc(state) {
+        this.store.dispatch({ type: 'Loading' });
 
-        yield { msg: 'loading...', count: state.count }
-        console.log('first')
-        yield this.getData();
+        return this.getData(state.count);
 
-        //yield { msg: 'second loading...', count: state.count }
-        console.log('second')
-        this.store.dispatch(INCREMENT);
-        yield this.getData();
-        console.log('third')
     }
 
-    async getData() {
-        return await new Promise(resolve => {
+    getData(num: number) {
+        return new Promise(resolve => {
             setTimeout(() => {
-                resolve({ count: 20, msg: '' })
+                resolve({ count: num + 1, msg: '' })
             }, 1000);
         });
     }

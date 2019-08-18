@@ -250,7 +250,7 @@ class CounterSate {
 export default CounterSate;
 
 ```
-### Also there is third choice writting `async` operation in `onXXX(state, action)` or `@Action(XXX)` decorated methods. This is the great opportunities to make effects such a great easy way.
+### Also `onXXX(state, action)` or `@Action(XXX)` decorated methods allow to make async operations.
 
 ## Example
 ```js
@@ -266,13 +266,15 @@ class CounterState {
         return { count: state.count + 1, msg: '' }
     }
     
-    async onDec(state) {
-        return await this.getData(5);
+    onDec(state) {
+        return { count: state.count - 1, msg: '' }
     }
-    
-    *onAsyncInc(state) {
-        yield { msg: 'loading...', count: state.count }
-        yield this.getData(state.count);
+    onLoading(state){
+        return { count: state.count , msg: 'loading...' }
+    }
+    onAsyncInc(state) {
+        dispatch('loading');
+        return this.getData(state.count);
     }
 
     getData(num) {
