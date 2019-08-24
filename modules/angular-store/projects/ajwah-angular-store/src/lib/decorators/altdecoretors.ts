@@ -14,6 +14,11 @@ export function setKeys(actionKey, effectKey) {
 
 export function setActionsAndEffects(target, includeStates = true) {
     target = target.prototype;
+    if (target['__ajwah_convension']) {
+        return;
+    }
+    target['__ajwah_convension'] = true;
+
     if (includeStates) {
         if (!target.hasOwnProperty(STATE_METADATA_KEY)) {
             Object.defineProperty(target, STATE_METADATA_KEY, { value: { actions: {} } })
@@ -32,7 +37,7 @@ export function setActionsAndEffects(target, includeStates = true) {
             }
         }
 
-        if (prop.startsWith(__effectKey) && target[EFFECT_METADATA_KEY].effects.findIndex(_ => _.propertyName === prop) === -1) {
+        if (prop.startsWith(__effectKey) /*&& target[EFFECT_METADATA_KEY].effects.findIndex(_ => _.propertyName === prop) === -1*/) {
             const dispatch = !prop.endsWith('_ndispatch');
             target[EFFECT_METADATA_KEY].effects.push({ propertyName: prop, dispatch });
         }

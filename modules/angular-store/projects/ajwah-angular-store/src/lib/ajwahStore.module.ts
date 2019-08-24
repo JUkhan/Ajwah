@@ -1,6 +1,8 @@
 import { Dispatcher } from './dispatcher';
 import { NgModule, Type, ModuleWithProviders, Inject, OnDestroy } from '@angular/core';
-import { ROOT_STATES, ROOT_EFFECTS, IMPORT_STATE, FEATURE_STATES, FEATURE_EFFECTS } from './tokens';
+import {
+    ROOT_STATES, ROOT_EFFECTS, IMPORT_STATE, FEATURE_STATES, FEATURE_EFFECTS, STORE_OPTIONS, STORE_FEATURE_OPTIONS
+} from './tokens';
 import { Store } from './store';
 import { Actions } from './actions';
 import { EffectsSubscription } from './effectsSubscription';
@@ -16,8 +18,10 @@ export class StoreRootModule {
         store: Store<any>,
         dispatcher: Dispatcher,
         @Inject(ROOT_STATES) initStates,
-        @Inject(ROOT_EFFECTS) initEffects
+        @Inject(ROOT_EFFECTS) initEffects,
+        @Inject(STORE_OPTIONS) options,
     ) {
+        _initMetaFx(options);
         store.__init__(initStates, initEffects);
         if (__devTools && __devTools.run) {
             runDevTools({ store, dispatcher, importState: IMPORT_STATE });
@@ -35,8 +39,9 @@ export class StoreFeatureModule implements OnDestroy {
     constructor(
         private store: Store<any>,
         @Inject(FEATURE_STATES) private featureStates: any[],
-        @Inject(FEATURE_EFFECTS) private featureEffects: any[]) {
-
+        @Inject(FEATURE_EFFECTS) private featureEffects: any[],
+        @Inject(STORE_FEATURE_OPTIONS) private options: any) {
+        _initFeatureMetaFx(options);
         this.store.addFeatureStates(flatMap(featureStates));
         if (featureEffects.length) {
             this.store.addFeatureEffects(flatMap(featureEffects));
@@ -90,26 +95,21 @@ export class AjwahStoreModule {
         featureStates: Type<any>[];
         featureEffects?: Type<any>[];
     }): ModuleWithProviders<StoreFeatureModule> {
-        const featureStates = options.featureStates || [];
-        const featureEffects = options.featureEffects || [];
-        if (__enableCodingByConvention) {
-            featureStates.forEach(item => { setActionsAndEffects(item); });
-            featureEffects.forEach(item => { setActionsAndEffects(item, false); });
-        }
         return {
             ngModule: StoreFeatureModule,
             providers: [
-                featureStates,
+                { provide: STORE_FEATURE_OPTIONS, multi: true, useValue: options },
+                options.featureStates,
                 {
                     provide: FEATURE_STATES,
-                    deps: featureStates,
+                    deps: options.featureStates,
                     multi: true,
                     useFactory: createSourceInstances,
                 },
-                featureEffects,
+                options.featureEffects || [],
                 {
                     provide: FEATURE_EFFECTS,
-                    deps: featureEffects,
+                    deps: options.featureEffects || [],
                     multi: true,
                     useFactory: createSourceInstances,
                 }
@@ -125,31 +125,23 @@ export class AjwahStoreModule {
         actionsMethodStartsWith?: string
         effectsMethodStartsWith?: string
     }): ModuleWithProviders<StoreRootModule> {
-        const rootStates = options.rootStates || [];
-        const rootEffects = options.rootEffects || [];
-        __devTools = options.devTools;
-        __enableCodingByConvention = options.enableCodingByConvention;
-        setKeys(options.actionsMethodStartsWith, options.effectsMethodStartsWith);
-        if (__enableCodingByConvention) {
-            rootStates.forEach(item => { setActionsAndEffects(item); });
-            rootEffects.forEach(item => { setActionsAndEffects(item, false); });
-        }
         return {
             ngModule: StoreRootModule,
             providers: [
                 Dispatcher,
                 Actions,
                 EffectsSubscription,
-                rootStates,
+                { provide: STORE_OPTIONS, useValue: options },
+                options.rootStates,
                 {
                     provide: ROOT_STATES,
-                    deps: rootStates,
+                    deps: options.rootStates,
                     useFactory: createSourceInstances,
                 },
-                rootEffects,
+                options.rootEffects || [],
                 {
                     provide: ROOT_EFFECTS,
-                    deps: rootEffects,
+                    deps: options.rootEffects || [],
                     useFactory: createSourceInstances,
                 },
                 Store
@@ -164,9 +156,32 @@ export function getStore() {
 }
 
 export function createSourceInstances(...instances) {
-    return instances;
+    return instances || [];
 }
 
 function runDevTools(config: any) {
     __devTools.run(config);
+}
+
+function _initMetaFx(options: any) {
+    const rootStates = options.rootStates || [];
+    const rootEffects = options.rootEffects || [];
+    __devTools = options.devTools;
+    __enableCodingByConvention = options.enableCodingByConvention;
+    setKeys(options.actionsMethodStartsWith, options.effectsMethodStartsWith);
+    if (__enableCodingByConvention) {
+        rootStates.forEach(item => { setActionsAndEffects(item); });
+        rootEffects.forEach(item => { setActionsAndEffects(item, false); });
+    }
+}
+
+function _initFeatureMetaFx(options: any[]) {
+    if (__enableCodingByConvention) {
+        options.forEach(option => {
+            const featureStates = option.featureStates || [];
+            const featureEffects = option.featureEffects || [];
+            featureStates.forEach(item => { setActionsAndEffects(item); });
+            featureEffects.forEach(item => { setActionsAndEffects(item, false); });
+        });
+    }
 }
