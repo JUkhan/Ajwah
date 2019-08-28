@@ -33,10 +33,10 @@ class CounterState {
         return { count: state.count, msg: 'loading......' }
     }
     //@Action(ASYNC_INCREMENT)
-    onAsyncInc(state) {
-        this.store.dispatch({ type: 'Loading' });
-
-        return this.getData(state.count);
+    *onAsyncInc(state) {
+        //this.store.dispatch({ type: 'Loading' });
+        yield { count: state.count, msg: 'loading by generator function......' }
+        yield this.getData(state.count);
 
     }
 

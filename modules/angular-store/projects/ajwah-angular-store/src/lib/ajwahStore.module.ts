@@ -47,9 +47,6 @@ export class StoreFeatureModule implements OnDestroy {
             this.store.addFeatureEffects(flatMap(featureEffects));
         }
     }
-    xflat(arr: any[]) {
-        return [].concat.apply([], arr);
-    }
 
 }
 /**
