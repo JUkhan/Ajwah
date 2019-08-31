@@ -10,7 +10,7 @@ import { Subscription } from 'rxjs';
   templateUrl: './marger.component.html',
   styleUrls: ['./marger.component.css']
 })
-export class MargerComponent implements OnInit, OnDestroy {
+export class MergerComponent implements OnInit, OnDestroy {
 
   @Input('form') formComponentType: any;
   @Input('grid') gridComponentType: any;

@@ -23,16 +23,16 @@ import { TodosComponent } from './components/todos';
 import { HttpClientModule } from '@angular/common/http';
 import { TodoService } from './services/todoService';
 import { AppRoutingModule } from './app.routing.module';
-import { MargerComponent } from './marger/marger.component';
-import { FormDirective, GridDirective } from './marger/anchors';
-import { MargerState } from './marger/margerState';
+import { MergerComponent } from './merger/marger.component';
+import { FormDirective, GridDirective } from './merger/anchors';
+import { MargerState } from './merger/margerState';
 import { TodoModule } from './features/todo/todo.module';
 import { TutorialModule } from './features/tutorial/tutorial.module';
 
 @NgModule({
   declarations: [
     AppComponent, TutorialList, AddTutorial, Counter, SearchComponent,
-    AddTodoComponent, TodoItemComponent, HomeComponent, MargerComponent, FormDirective, GridDirective
+    AddTodoComponent, TodoItemComponent, HomeComponent, MergerComponent, FormDirective, GridDirective
   ],
 
   imports: [
