@@ -1,5 +1,5 @@
 
-import { withLatestFrom, filter } from 'rxjs/operators';
+import { withLatestFrom } from 'rxjs/operators';
 import { parse } from 'jsan';
 
 export function devTools({
@@ -7,24 +7,56 @@ export function devTools({
     name
 } = { maxAge: 8, name: 'Ajwah DevTools' }) {
     const withDevtools = typeof window === 'object' && typeof window['__REDUX_DEVTOOLS_EXTENSION__'] !== 'undefined';
-    return withDevtools ? new _DevTools({ name, maxAge }) : null
+    return withDevtools ? new _DevTools({ name, maxAge }) : new Logger()
+}
+class Logger {
+
+    run(ctx) {
+        ctx.store.pipe(
+            withLatestFrom(ctx.dispatcher)
+        ).subscribe(([state, action]) => {
+            if (action.type !== ctx.importState) {
+                console.group(action.type);
+                console.info('payload: ', action.payload);
+                console.info({ ...state });
+                console.groupEnd();
+            }
+        });
+    }
 }
 
 class _DevTools {
     constructor(config) {
         this.config = config;
+        this.ignoreAction = false;
     }
     run(ctx) {
         this.ctx = ctx;
 
         this.devTools = window.__REDUX_DEVTOOLS_EXTENSION__.connect(this.config);
         this.unsubscribe = this.devTools.subscribe((message) => this.dispatchMonitorAction(message));
-        ctx.dispatcher.pipe(
-            filter(action => action.type !== ctx.importState),
-            withLatestFrom(ctx.store)
-        ).subscribe(([action, state]) => {
-            this.devTools.send(action, state);
+        // ctx.dispatcher.pipe(
+        //     filter(action => action.type !== ctx.importState),
+        //     withLatestFrom(ctx.store)
+        // ).subscribe(([action, state]) => {
+        //     this.devTools.send(action, state);
+        // })
+
+        ctx.store.pipe(
+            withLatestFrom(ctx.dispatcher)
+        ).subscribe(([state, action]) => {
+            if (action.type !== ctx.importState && this.ignoreAction == false) {
+                this.devTools.send(action, { ...state });
+                console.group(action.type);
+                console.info('payload: ', action.payload);
+                console.info(this.copyObj(state));
+                console.groupEnd();
+            }
+
+            this.ignoreAction = false;
+
         })
+
     }
     dispose() {
         this.unsubscribe();
@@ -42,7 +74,7 @@ class _DevTools {
     }
 
     dispatchMonitorAction(message) {
-
+        this.ignoreAction = false;
         if (message.type === 'DISPATCH') {
             let state;
             switch (message.payload.type) {
@@ -78,10 +110,12 @@ class _DevTools {
                     break;
                 case 'JUMP_TO_STATE':
                 case 'JUMP_TO_ACTION':
+                    this.ignoreAction = true;
                     this.setAppState(parse(message.state));
                     break;
                 case 'TOGGLE_ACTION':
-                    this.toggleAction(message.payload.id, message.state);
+                    //this.ignoreAction = true;
+                    //this.toggleAction(message.payload.id, message.state);
                     break;
                 case 'IMPORT_STATE': {
                     const { nextLiftedState } = message.payload;

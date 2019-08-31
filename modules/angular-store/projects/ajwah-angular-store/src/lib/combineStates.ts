@@ -13,13 +13,16 @@ export function combineStates(state, action, store) {
         if (actionProp) {
             const gen = states[key][actionProp](currentSubState, action);
             if (gen.next && gen.throw && gen.return) {
-                for (var nextVal of gen) {
-                    const newSubState = await Promise.resolve(nextVal);
-                    if (newSubState !== state[key]) {
-                        state[key] = newSubState;
+                let newSubState: { hasState?: boolean, state?: any } = {};
+                let obj: { done: boolean, value: any };
+                do {
+                    obj = gen.next(newSubState);
+                    newSubState = await Promise.resolve(obj.value);
+                    if (newSubState && newSubState.hasState && newSubState.state !== state[key]) {
+                        state[key] = newSubState.state;
                         store.stateChange(state);
                     }
-                }
+                } while (!obj.done);
             } else {
                 Promise.resolve(gen).then(function (newSubState) {
                     if (newSubState !== currentSubState) {

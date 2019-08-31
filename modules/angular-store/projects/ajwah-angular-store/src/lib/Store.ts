@@ -31,7 +31,9 @@ export class Store<S = any> extends BehaviorSubject<any> implements OnDestroy {
         }
         this.storeSubscription = this.dispatcher.pipe(
             subscribeOn(queueScheduler),
-            scan(((state, action: any) => action.type === IMPORT_STATE ? action.payload : combineStates(state, action, this)), {}))
+            scan(((state, action: any) => action.type === IMPORT_STATE ? action.payload : combineStates(state, action, this)), {}),
+            distinct()
+        )
             .subscribe((newState => { super.next(newState); }));
 
         this.effect.addEffects(initStates);
@@ -132,11 +134,11 @@ export class Store<S = any> extends BehaviorSubject<any> implements OnDestroy {
         });
         this.next({ type: IMPORT_STATE as any, payload: state });
     }
-    exportState(): Observable<[IAction, S]> {
-        return this.dispatcher.pipe(
-            withLatestFrom(this),
+    exportState(): Observable<[S, IAction]> {
+        return this.pipe(
+            withLatestFrom(this.dispatcher),
             map(arr => {
-                arr[1] = copyObj(arr[1]);
+                arr[0] = copyObj(arr[0]);
                 return arr;
             })
         );

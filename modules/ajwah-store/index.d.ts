@@ -43,5 +43,5 @@ export declare function EffectKey(key: string): any;
 export function dispatch(actionName: IAction): Store;
 export function dispatch(actionName: string): Store;
 export function dispatch(actionName: string, payload?: any): Store;
-
+export function mapState(state: any): any;
 

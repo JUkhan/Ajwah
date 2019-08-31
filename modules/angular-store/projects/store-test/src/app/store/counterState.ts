@@ -1,4 +1,4 @@
-import { Actions, Effect, ofType, Action, Store } from 'ajwah-angular-store';
+import { Actions, Effect, ofType, Action, Store, mapState } from 'ajwah-angular-store';
 import { INCREMENT, DECREMENT, ASYNC_INCREMENT } from './actions';
 import { debounceTime, mapTo, map } from 'rxjs/operators';
 import { updateObject } from './util';
@@ -33,11 +33,25 @@ class CounterState {
         return { count: state.count, msg: 'loading......' }
     }
     //@Action(ASYNC_INCREMENT)
-    *onAsyncInc(state) {
+    *onAsyncInc(state, action) {
         //this.store.dispatch({ type: 'Loading' });
-        yield { count: state.count, msg: 'loading by generator function......' }
-        yield this.getData(state.count);
 
+        try {
+            yield mapState({ count: state.count, msg: 'loading by generator function......' });
+            //console.log(allState.counter);
+            const nstate = yield this.getData(state.count);
+            //console.log(nstate, 'sssss');
+            //throw Error('ssssssss')
+            yield mapState(nstate);
+            //console.log(allState.counter);
+            const xstare = yield this.getData(nstate.count)
+            yield mapState(xstare)
+            //console.log(allState.counter);
+            //state.count = 101
+
+        } catch (err) {
+            yield mapState({ ...state, msg: err.message })
+        }
     }
 
     getData(num: number) {

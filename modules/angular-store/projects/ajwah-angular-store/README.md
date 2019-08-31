@@ -239,6 +239,8 @@ export default CounterState;
 
 ## Example
 ```js
+import { mapState } from 'ajwah-angular-store';
+
 class CounterState {
     name = 'counter'
     initialState = { count: 12, msg: '' }
@@ -261,7 +263,18 @@ class CounterState {
         this.store.dispatch({type:'loading'});
         return this.getData(state.count);
     }
-
+    //or
+    *onAsyncInc(state, action) {
+        try {
+            yield mapState({ count: state.count, msg: 'loading by generator function......' });
+            const nstate = yield this.getData(state.count);
+            yield mapState(nstate);
+            const xstare = yield this.getData(nstate.count);
+            yield mapState(xstare);
+        } catch (err) {
+            yield mapState({ ...state, msg: err.message });
+        }
+    }
     getData(num) {
         return new Promise(resolve => {
             setTimeout(() => {

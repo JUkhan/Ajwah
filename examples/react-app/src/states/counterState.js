@@ -3,7 +3,7 @@ import { INCREMENT } from "./actions";
 import { updateObject } from "../utli";
 import { debounceTime, mapTo } from 'rxjs/operators';
 import { timer } from 'rxjs'
-
+import { mapState } from 'ajwah-store'
 class CounterSate {
 
     name = 'counter'
@@ -20,9 +20,10 @@ class CounterSate {
 
     *actionAsyncInc(state) {
 
-        yield updateObject(state, { msg: 'loading...xxxx....' })
+        yield mapState(updateObject(state, { msg: 'loading...xxxx....' }))
 
-        yield timer(450).pipe(mapTo({ count: state.count + 1, msg: '' })).toPromise()
+        const nstate = yield timer(450).pipe(mapTo({ count: state.count + 1, msg: '' })).toPromise();
+        yield mapState(nstate)
     }
 
     effectForAsyncIncOrDec_ndispatch(actions) {

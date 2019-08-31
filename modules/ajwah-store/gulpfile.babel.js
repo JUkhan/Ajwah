@@ -11,7 +11,9 @@ gulp.task('build:esm', () => {
             ],
             plugins: [
                 '@babel/plugin-proposal-object-rest-spread',
-                '@babel/plugin-proposal-class-properties'
+                '@babel/plugin-proposal-class-properties',
+                '@babel/plugin-transform-async-to-generator',
+                '@babel/plugin-transform-runtime'
             ]
         }))
         .pipe(gulp.dest('lib/esm'));
