@@ -36,5 +36,11 @@ export class ContainerComponent implements OnInit, OnDestroy {
     this.store.removeState('jtodo');
     console.log('remove state-todos...')
   }
+  showForm() {
 
+    this.store.dispatch('ShowForm');
+  }
+  hideForm() {
+    this.store.dispatch('HideForm');
+  }
 }

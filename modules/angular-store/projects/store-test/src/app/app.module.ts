@@ -23,23 +23,30 @@ import { TodosComponent } from './components/todos';
 import { HttpClientModule } from '@angular/common/http';
 import { TodoService } from './services/todoService';
 import { AppRoutingModule } from './app.routing.module';
-
+import { MargerComponent } from './marger/marger.component';
+import { FormDirective, GridDirective } from './marger/anchors';
+import { MargerState } from './marger/margerState';
+import { TodoModule } from './features/todo/todo.module';
+import { TutorialModule } from './features/tutorial/tutorial.module';
 
 @NgModule({
   declarations: [
     AppComponent, TutorialList, AddTutorial, Counter, SearchComponent,
-    AddTodoComponent, TodoItemComponent, TodosComponent, HomeComponent
+    AddTodoComponent, TodoItemComponent, HomeComponent, MargerComponent, FormDirective, GridDirective
   ],
+
   imports: [
     BrowserModule, FormsModule, HttpClientModule, AppRoutingModule,
     AjwahStoreModule.forRoot({
-      rootStates: [counterState, /*SearchState, TodoState*/],
+      rootStates: [counterState, MargerState,/*SearchState, TodoState*/],
       //effects: [SearchEffects],
       devTools: devTools(),
       //actionsMethodStartsWith: 'on',
       //effectsMethodStartsWith: 'myEffect',
       enableCodingByConvention: true
-    })
+    }),
+    TodoModule,
+    TutorialModule
   ],
   providers: [
     TodoService
