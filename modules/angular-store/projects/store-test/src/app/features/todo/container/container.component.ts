@@ -4,6 +4,7 @@ import { Observable } from 'rxjs';
 import { ITodoState, AppState } from '../../../store/model';
 
 import { JTodoState } from '../store/jtodoState';
+import { fade } from '../../../animations';
 /*
 import { LoadTodos } from 'src/app/store/actionTypes';
 import { TodoState } from 'src/app/store/todo/todoState';
@@ -13,7 +14,8 @@ import { TodoService } from 'src/app/services/todo.service';*/
 @Component({
   selector: 'app-container',
   templateUrl: './container.component.html',
-  styleUrls: ['./container.component.css']
+  styleUrls: ['./container.component.css'],
+  animations: [fade]
 })
 export class ContainerComponent implements OnInit, OnDestroy {
 

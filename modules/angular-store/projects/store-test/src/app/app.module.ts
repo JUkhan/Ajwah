@@ -28,6 +28,7 @@ import { FormDirective, GridDirective } from './merger/anchors';
 import { MargerState } from './merger/margerState';
 import { TodoModule } from './features/todo/todo.module';
 import { TutorialModule } from './features/tutorial/tutorial.module';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations'
 
 @NgModule({
   declarations: [
@@ -46,7 +47,8 @@ import { TutorialModule } from './features/tutorial/tutorial.module';
       enableCodingByConvention: true
     }),
     TodoModule,
-    TutorialModule
+    TutorialModule,
+    BrowserAnimationsModule
   ],
   providers: [
     TodoService

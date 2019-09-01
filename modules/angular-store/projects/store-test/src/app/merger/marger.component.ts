@@ -5,6 +5,7 @@ import { filter } from 'rxjs/operators';
 import { Subscription } from 'rxjs';
 
 
+
 @Component({
   selector: 'marger-com',
   templateUrl: './marger.component.html',
@@ -22,7 +23,7 @@ export class MergerComponent implements OnInit, OnDestroy {
 
   sub: Subscription;
 
-  gridCss: any = { 'col-12': true };
+  gridCss: any = {};
   formCss: any = {};
 
   constructor(private componentFactoryResolver: ComponentFactoryResolver, private store: Store) {
@@ -36,27 +37,39 @@ export class MergerComponent implements OnInit, OnDestroy {
     this.loadGridComponent();
   }
   loadComponent(showForm: boolean) {
-    if (this.ratio === '12/12') this.loadSingle(showForm);
+    if (this.ratio === '12/12') {
+      this.loadSingle(showForm);
+      return;
+    }
     const [gcol, fcol] = this.ratio.split('/').map(it => 'col-' + it);
 
     if (showForm) {
       this.gridCss = { [gcol]: true, 'col-12': false };
-      this.formCss = { [fcol]: true }
+      if (this.formCss.animated) {
+        this.formCss = { [fcol]: true }
+        setTimeout(() => {
+          this.formCss = { [fcol]: true, animated: true, bounceInRight: true }
+        });
+      } else
+        this.formCss = { [fcol]: true, animated: true, bounceInRight: true }
       this.loadFormComponent();
     } else {
-      this.gridCss = { [gcol]: false, 'col-12': true };
+
+      this.gridCss = { [gcol]: false, 'col-12': true, animated: true, slideInLeft: true };
       this.formCss = { [fcol]: false }
       this.clearFormComponent();
+
+
     }
   }
   loadSingle(showForm: boolean) {
     if (showForm) {
       this.gridCss = { 'col-12': false };
-      this.formCss = { 'col-12': true }
+      this.formCss = { 'col-12': true, animated: true, slideInLeft: true }
       this.clearGridComponent();
       this.loadFormComponent();
     } else {
-      this.gridCss = { 'col-12': true };
+      this.gridCss = { 'col-12': true, animated: true, slideInLeft: true };
       this.formCss = { 'col-12': false }
       this.clearFormComponent();
       this.loadGridComponent();
