@@ -15,6 +15,7 @@ export class MergerComponent implements OnInit, OnDestroy {
   @Input('form') formComponentType: any;
   @Input('grid') gridComponentType: any;
   @Input('id') id: string = '';
+  @Input('ratio') ratio = '6/6'
 
   @ViewChild(FormDirective) formHost: FormDirective;
   @ViewChild(GridDirective) gridHost: GridDirective;
@@ -35,15 +36,30 @@ export class MergerComponent implements OnInit, OnDestroy {
     this.loadGridComponent();
   }
   loadComponent(showForm: boolean) {
+    if (this.ratio === '12/12') this.loadSingle(showForm);
+    const [gcol, fcol] = this.ratio.split('/').map(it => 'col-' + it);
 
     if (showForm) {
-      this.gridCss = { 'col-6': true, 'col-12': false };
-      this.formCss = { 'col-6': true }
+      this.gridCss = { [gcol]: true, 'col-12': false };
+      this.formCss = { [fcol]: true }
       this.loadFormComponent();
     } else {
-      this.gridCss = { 'col-6': false, 'col-12': true };
-      this.formCss = { 'col-6': false }
+      this.gridCss = { [gcol]: false, 'col-12': true };
+      this.formCss = { [fcol]: false }
       this.clearFormComponent();
+    }
+  }
+  loadSingle(showForm: boolean) {
+    if (showForm) {
+      this.gridCss = { 'col-12': false };
+      this.formCss = { 'col-12': true }
+      this.clearGridComponent();
+      this.loadFormComponent();
+    } else {
+      this.gridCss = { 'col-12': true };
+      this.formCss = { 'col-12': false }
+      this.clearFormComponent();
+      this.loadGridComponent();
     }
   }
   loadFormComponent() {
@@ -57,6 +73,9 @@ export class MergerComponent implements OnInit, OnDestroy {
   }
   clearFormComponent() {
     this.formHost.viewContainerRef.clear();
+  }
+  clearGridComponent() {
+    this.gridHost.viewContainerRef.clear();
   }
   loadGridComponent() {
     if (!this.gridComponentType) return;
