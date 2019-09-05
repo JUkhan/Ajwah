@@ -1,6 +1,6 @@
 
-import { BehaviorSubject, Subscription, Observable, queueScheduler } from 'rxjs';
-import { map, scan, distinctUntilChanged, pluck, subscribeOn, withLatestFrom, distinct, tap } from 'rxjs/operators';
+import { BehaviorSubject, Subscription, Observable, queueScheduler, Subject } from 'rxjs';
+import { map, scan, distinctUntilChanged, pluck, subscribeOn, distinct } from 'rxjs/operators';
 import { combineStates } from './combineStates';
 import { Dispatcher } from './dispatcher';
 import { Injectable, Injector, Type, OnDestroy } from '@angular/core';
@@ -41,8 +41,10 @@ export class Store<S = any> extends BehaviorSubject<any> implements OnDestroy {
             this.effect.addEffects(initEffects);
 
     }
-    stateChange(state) {
+    _actionHelper: Subject<any> = new Subject();
+    stateChange(state, action) {
         super.next(state);
+        this._actionHelper.next([action, state]);
     }
     dispatch<V extends IAction = IAction>(actionName: V): Store;
     dispatch(actionName: string): Store;
@@ -96,6 +98,7 @@ export class Store<S = any> extends BehaviorSubject<any> implements OnDestroy {
         const name = this.mapState(instance);
         this.addEffectsByKey(instance, name);
         this.next({ type: `add_state(${name})` });
+        this.stateChange(this.getValue(), { type: `add_state(${name})` });
         return this;
     }
 
@@ -103,7 +106,10 @@ export class Store<S = any> extends BehaviorSubject<any> implements OnDestroy {
         if (this.states[stateName]) {
             delete this.states[stateName];
             this.removeEffectsByKey(stateName);
+            const state = this.getValue();
+            delete state[stateName];
             this.next({ type: `remove_state(${stateName})` });
+            this.stateChange(state, { type: `remove_state(${stateName})` });
         }
         return this;
     }
@@ -134,11 +140,10 @@ export class Store<S = any> extends BehaviorSubject<any> implements OnDestroy {
         });
         this.next({ type: IMPORT_STATE as any, payload: state });
     }
-    exportState(): Observable<[S, IAction]> {
-        return this.pipe(
-            withLatestFrom(this.dispatcher),
+    exportState(): Observable<[IAction, S]> {
+        return this._actionHelper.pipe(
             map(arr => {
-                arr[0] = copyObj(arr[0]);
+                arr[1] = copyObj(arr[1]);
                 return arr;
             })
         );
@@ -209,6 +214,7 @@ export class Store<S = any> extends BehaviorSubject<any> implements OnDestroy {
             this.removeEffectsByKey(name);
             this.addEffectsByKey(state, name);
             this.next({ type: `add_state(${name})` });
+            this.stateChange(this.getValue(), { type: `add_state(${name})` });
         }
     }
 
@@ -218,8 +224,7 @@ export class Store<S = any> extends BehaviorSubject<any> implements OnDestroy {
      */
     removeFeatureStates(featureStates: any[]) {
         for (let state of featureStates) {
-            this.removeState(state.name);
-            this.next({ type: `remove_state(${state.name})` });
+            this.removeState(state[STATE_METADATA_KEY].name);
         }
     }
 }

@@ -37,10 +37,10 @@ var Logger = function () {
     _createClass(Logger, [{
         key: 'run',
         value: function run(ctx) {
-            ctx.store.pipe((0, _operators.withLatestFrom)(ctx.dispatcher)).subscribe(function (_ref2) {
+            ctx.store._actionHelper.pipe().subscribe(function (_ref2) {
                 var _ref3 = _slicedToArray(_ref2, 2),
-                    state = _ref3[0],
-                    action = _ref3[1];
+                    action = _ref3[0],
+                    state = _ref3[1];
 
                 if (action.type !== ctx.importState) {
                     console.group(action.type);
@@ -60,7 +60,6 @@ var _DevTools = function () {
         _classCallCheck(this, _DevTools);
 
         this.config = config;
-        this.ignoreAction = false;
     }
 
     _createClass(_DevTools, [{
@@ -74,27 +73,20 @@ var _DevTools = function () {
             this.unsubscribe = this.devTools.subscribe(function (message) {
                 return _this.dispatchMonitorAction(message);
             });
-            // ctx.dispatcher.pipe(
-            //     filter(action => action.type !== ctx.importState),
-            //     withLatestFrom(ctx.store)
-            // ).subscribe(([action, state]) => {
-            //     this.devTools.send(action, state);
-            // })
 
-            ctx.store.pipe((0, _operators.withLatestFrom)(ctx.dispatcher)).subscribe(function (_ref4) {
+            this.devTools.send({ type: '@@INIT' }, ctx.store.getValue());
+            ctx.store._actionHelper.pipe((0, _operators.filter)(function (arr) {
+                return arr[0].type !== ctx.importState;
+            })).subscribe(function (_ref4) {
                 var _ref5 = _slicedToArray(_ref4, 2),
-                    state = _ref5[0],
-                    action = _ref5[1];
+                    action = _ref5[0],
+                    state = _ref5[1];
 
-                if (action.type !== ctx.importState && _this.ignoreAction == false) {
-                    _this.devTools.send(action, _extends({}, state));
-                    console.group(action.type);
-                    console.info('payload: ', action.payload);
-                    console.info(_this.copyObj(state));
-                    console.groupEnd();
-                }
-
-                _this.ignoreAction = false;
+                _this.devTools.send(action, _this.copyObj(state));
+                console.group(action.type);
+                console.info('payload: ', action.payload);
+                console.info(_this.copyObj(state));
+                console.groupEnd();
             });
         }
     }, {
@@ -121,7 +113,7 @@ var _DevTools = function () {
     }, {
         key: 'dispatchMonitorAction',
         value: function dispatchMonitorAction(message) {
-            this.ignoreAction = false;
+
             if (message.type === 'DISPATCH') {
                 var state = void 0;
                 switch (message.payload.type) {
@@ -157,11 +149,9 @@ var _DevTools = function () {
                         break;
                     case 'JUMP_TO_STATE':
                     case 'JUMP_TO_ACTION':
-                        this.ignoreAction = true;
                         this.setAppState((0, _jsan.parse)(message.state));
                         break;
                     case 'TOGGLE_ACTION':
-                        //this.ignoreAction = true;
                         //this.toggleAction(message.payload.id, message.state);
                         break;
                     case 'IMPORT_STATE':
@@ -215,6 +205,7 @@ var _DevTools = function () {
                 if (i !== start && liftedState.skippedActionIds.indexOf(liftedState.stagedActionIds[i]) !== -1) continue; // it's already skipped
 
                 var action = liftedState.actionsById[liftedState.stagedActionIds[i]].action;
+
                 this.ctx.store.dispatch(action);
                 liftedState.computedStates[i].state = this.getAppState();
             }

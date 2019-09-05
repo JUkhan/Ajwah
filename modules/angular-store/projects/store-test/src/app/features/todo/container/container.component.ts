@@ -26,7 +26,7 @@ export class ContainerComponent implements OnInit, OnDestroy {
   @Select('jtodo')
   todo$: Observable<ITodoState>;
 
-  constructor(private store: Store, state: JTodoState) {
+  constructor(private store: Store, private state: JTodoState) {
     //console.log(state)
     this.store.addFeatureStates([state]);
     this.store.dispatch('LoadTodos');
@@ -35,7 +35,7 @@ export class ContainerComponent implements OnInit, OnDestroy {
 
   ngOnDestroy() {
 
-    this.store.removeState('jtodo');
+    this.store.removeFeatureStates([this.state]);
     console.log('remove state-todos...')
   }
   showForm() {

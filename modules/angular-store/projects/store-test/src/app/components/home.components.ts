@@ -12,7 +12,6 @@ import { TutorialContainer } from '../features/tutorial/container';
 @Component({
     selector: 'home-com',
     template: `<p><counter [counter]="counter$|async" ></counter></p>
-    <marger-com [grid]="grid" [form]="form"></marger-com>
     `,
     changeDetection: ChangeDetectionStrategy.OnPush
 })

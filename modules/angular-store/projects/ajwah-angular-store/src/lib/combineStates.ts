@@ -20,14 +20,16 @@ export function combineStates(state, action, store) {
                     newSubState = await Promise.resolve(obj.value);
                     if (newSubState && newSubState.hasState && newSubState.state !== state[key]) {
                         state[key] = newSubState.state;
-                        store.stateChange(state);
+                        store.stateChange(state, action);
+
                     }
                 } while (!obj.done);
             } else {
                 Promise.resolve(gen).then(function (newSubState) {
                     if (newSubState !== currentSubState) {
                         state[key] = newSubState;
-                        store.stateChange(state);
+                        store.stateChange(state, action);
+
                     }
                 })
             }

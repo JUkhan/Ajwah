@@ -26,8 +26,8 @@ import { AppRoutingModule } from './app.routing.module';
 import { MergerComponent } from './merger/marger.component';
 import { FormDirective, GridDirective } from './merger/anchors';
 import { MargerState } from './merger/margerState';
-import { TodoModule } from './features/todo/todo.module';
-import { TutorialModule } from './features/tutorial/tutorial.module';
+//import { TodoModule } from './features/todo/todo.module';
+//import { TutorialModule } from './features/tutorial/tutorial.module';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations'
 
 @NgModule({
@@ -46,8 +46,8 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations'
       //effectsMethodStartsWith: 'myEffect',
       enableCodingByConvention: true
     }),
-    TodoModule,
-    TutorialModule,
+    //TodoModule,
+    //TutorialModule,
     BrowserAnimationsModule
   ],
   providers: [

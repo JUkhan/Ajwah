@@ -1,5 +1,5 @@
 
-import { withLatestFrom } from 'rxjs/operators';
+import { filter } from 'rxjs/operators';
 import { parse } from 'jsan';
 
 export function devTools({
@@ -12,9 +12,8 @@ export function devTools({
 class Logger {
 
     run(ctx) {
-        ctx.store.pipe(
-            withLatestFrom(ctx.dispatcher)
-        ).subscribe(([state, action]) => {
+        ctx.store._actionHelper.pipe(
+        ).subscribe(([action, state]) => {
             if (action.type !== ctx.importState) {
                 console.group(action.type);
                 console.info('payload: ', action.payload);
@@ -28,33 +27,22 @@ class Logger {
 class _DevTools {
     constructor(config) {
         this.config = config;
-        this.ignoreAction = false;
     }
     run(ctx) {
         this.ctx = ctx;
 
         this.devTools = window.__REDUX_DEVTOOLS_EXTENSION__.connect(this.config);
         this.unsubscribe = this.devTools.subscribe((message) => this.dispatchMonitorAction(message));
-        // ctx.dispatcher.pipe(
-        //     filter(action => action.type !== ctx.importState),
-        //     withLatestFrom(ctx.store)
-        // ).subscribe(([action, state]) => {
-        //     this.devTools.send(action, state);
-        // })
 
-        ctx.store.pipe(
-            withLatestFrom(ctx.dispatcher)
-        ).subscribe(([state, action]) => {
-            if (action.type !== ctx.importState && this.ignoreAction == false) {
-                this.devTools.send(action, { ...state });
-                console.group(action.type);
-                console.info('payload: ', action.payload);
-                console.info(this.copyObj(state));
-                console.groupEnd();
-            }
-
-            this.ignoreAction = false;
-
+        this.devTools.send({ type: '@@INIT' }, ctx.store.getValue());
+        ctx.store._actionHelper.pipe(
+            filter(arr => arr[0].type !== ctx.importState)
+        ).subscribe(([action, state]) => {
+            this.devTools.send(action, this.copyObj(state));
+            console.group(action.type);
+            console.info('payload: ', action.payload);
+            console.info(this.copyObj(state));
+            console.groupEnd();
         })
 
     }
@@ -74,7 +62,7 @@ class _DevTools {
     }
 
     dispatchMonitorAction(message) {
-        this.ignoreAction = false;
+
         if (message.type === 'DISPATCH') {
             let state;
             switch (message.payload.type) {
@@ -110,11 +98,9 @@ class _DevTools {
                     break;
                 case 'JUMP_TO_STATE':
                 case 'JUMP_TO_ACTION':
-                    this.ignoreAction = true;
                     this.setAppState(parse(message.state));
                     break;
                 case 'TOGGLE_ACTION':
-                    //this.ignoreAction = true;
                     //this.toggleAction(message.payload.id, message.state);
                     break;
                 case 'IMPORT_STATE': {
@@ -164,6 +150,7 @@ class _DevTools {
             ) continue; // it's already skipped
 
             const action = liftedState.actionsById[liftedState.stagedActionIds[i]].action;
+
             this.ctx.store.dispatch(action);
             liftedState.computedStates[i].state = this.getAppState();
         }
