@@ -74,10 +74,6 @@ var _DevTools = function () {
                     state = _ref5[1];
 
                 _this.devTools.send(action, _this.copyObj(state));
-                console.group(action.type);
-                console.info('payload: ', action.payload);
-                console.info(_this.copyObj(state));
-                console.groupEnd();
             });
         }
     }, {

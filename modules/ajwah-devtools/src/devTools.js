@@ -39,11 +39,7 @@ class _DevTools {
             filter(arr => arr[0].type !== ctx.importState)
         ).subscribe(([action, state]) => {
             this.devTools.send(action, this.copyObj(state));
-            console.group(action.type);
-            console.info('payload: ', action.payload);
-            console.info(this.copyObj(state));
-            console.groupEnd();
-        })
+        });
 
     }
     dispose() {
