@@ -37,7 +37,7 @@ var Logger = function () {
     _createClass(Logger, [{
         key: 'run',
         value: function run(ctx) {
-            ctx.store._actionHelper.pipe().subscribe(function (_ref2) {
+            ctx.store.dispatcher.pipe((0, _operators.withLatestFrom)(ctx.store)).subscribe(function (_ref2) {
                 var _ref3 = _slicedToArray(_ref2, 2),
                     action = _ref3[0],
                     state = _ref3[1];
@@ -74,15 +74,15 @@ var _DevTools = function () {
                 return _this.dispatchMonitorAction(message);
             });
 
-            this.devTools.send({ type: '@@INIT' }, ctx.store.getValue());
-            ctx.store._actionHelper.pipe((0, _operators.filter)(function (arr) {
+            //this.devTools.send({ type: '@@INIT' }, ctx.store.getValue());
+            ctx.store.dispatcher.pipe((0, _operators.withLatestFrom)(ctx.store), (0, _operators.filter)(function (arr) {
                 return arr[0].type !== ctx.importState;
             })).subscribe(function (_ref4) {
                 var _ref5 = _slicedToArray(_ref4, 2),
                     action = _ref5[0],
                     state = _ref5[1];
 
-                _this.devTools.send(action, _this.copyObj(state));
+                _this.devTools.send(action, state);
             });
         }
     }, {
@@ -148,7 +148,7 @@ var _DevTools = function () {
                         this.setAppState((0, _jsan.parse)(message.state));
                         break;
                     case 'TOGGLE_ACTION':
-                        //this.toggleAction(message.payload.id, message.state);
+                        this.toggleAction(message.payload.id, message.state);
                         break;
                     case 'IMPORT_STATE':
                         {

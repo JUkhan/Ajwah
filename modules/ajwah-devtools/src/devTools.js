@@ -1,5 +1,5 @@
 
-import { filter } from 'rxjs/operators';
+import { filter, withLatestFrom } from 'rxjs/operators';
 import { parse } from 'jsan';
 
 export function devTools({
@@ -12,7 +12,8 @@ export function devTools({
 class Logger {
 
     run(ctx) {
-        ctx.store._actionHelper.pipe(
+        ctx.store.dispatcher.pipe(
+            withLatestFrom(ctx.store)
         ).subscribe(([action, state]) => {
             if (action.type !== ctx.importState) {
                 console.group(action.type);
@@ -34,11 +35,12 @@ class _DevTools {
         this.devTools = window.__REDUX_DEVTOOLS_EXTENSION__.connect(this.config);
         this.unsubscribe = this.devTools.subscribe((message) => this.dispatchMonitorAction(message));
 
-        this.devTools.send({ type: '@@INIT' }, ctx.store.getValue());
-        ctx.store._actionHelper.pipe(
+        //this.devTools.send({ type: '@@INIT' }, ctx.store.getValue());
+        ctx.store.dispatcher.pipe(
+            withLatestFrom(ctx.store),
             filter(arr => arr[0].type !== ctx.importState)
         ).subscribe(([action, state]) => {
-            this.devTools.send(action, this.copyObj(state));
+            this.devTools.send(action, state);
         });
 
     }
@@ -97,7 +99,7 @@ class _DevTools {
                     this.setAppState(parse(message.state));
                     break;
                 case 'TOGGLE_ACTION':
-                    //this.toggleAction(message.payload.id, message.state);
+                    this.toggleAction(message.payload.id, message.state);
                     break;
                 case 'IMPORT_STATE': {
                     const { nextLiftedState } = message.payload;
