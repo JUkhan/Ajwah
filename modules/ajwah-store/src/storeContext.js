@@ -84,10 +84,10 @@ class StoreContext {
         else this.effSubs.addEffectByKey(instance, subscription);
     }
     exportState() {
-        return this.store.pipe(
-            withLatestFrom(this.dispatcher),
+        return this.dispatcher.pipe(
+            withLatestFrom(this.store),
             map(arr => {
-                arr[0] = copyObj(arr[0]);
+                arr[1] = copyObj(arr[1]);
                 return arr;
             })
         );

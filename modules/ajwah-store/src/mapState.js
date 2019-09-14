@@ -1,3 +1,8 @@
-export function mapState(state) {
-    return { hasState: true, state: state };
+import { tap, withLatestFrom, ignoreElements } from 'rxjs/operators';
+export function mapState(action$, state, callback) {
+    return action$.pipe(
+        withLatestFrom(state),
+        tap(arr => callback(arr[1], arr[0])),
+        ignoreElements()
+    );
 }

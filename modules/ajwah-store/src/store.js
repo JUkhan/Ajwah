@@ -25,9 +25,7 @@ export class Store extends BehaviorSubject {
     dispatch(action) {
         this.dispatcher.next(action);
     }
-    stateChange(state) {
-        super.next(state);
-    }
+
     select(pathOrMapFn) {
 
         let mapped$;

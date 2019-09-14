@@ -8,6 +8,7 @@ import { JTodoService } from '../services/jtodoService';
 import { ITodoState } from '../../../store/model';
 import { Injectable } from '@angular/core';
 import { TodoModule } from '../todo.module';
+import { mapState } from 'projects/ajwah-angular-store/src/public-api';
 
 @Injectable()
 @State({
@@ -55,8 +56,16 @@ export class JTodoState {
     addTodo(state) {
         return updateObject(state, { message: ' - Adding a new todo...' })
     }
-
-    @Effect()
+    effectForAddTodo(action$: Actions) {
+        return mapState(action$, this.store$.select('jtodo'), this.addHandler.bind(this));
+    }
+    async addHandler(state: any, action) {
+        const newTodo: any = await this.todoService.addTodo(action.payload).toPromise();
+        state.completed = false;
+        const payload = { message: '', data: [newTodo, ...state.data] };
+        this.store$.dispatch(TODOS_DATA, payload);
+    }
+    /*@Effect()
     addTodoEffect() {
         return this.action$.pipe(
             ofType(ADD_TODO),
@@ -71,7 +80,7 @@ export class JTodoState {
                 )
             )
         );
-    }
+    }*/
 
 
     @Action(UPDATE_TODO)
