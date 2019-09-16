@@ -13,7 +13,7 @@ function onSubmit(event) {
     el.url.value = '';
 }
 function addTutorial(props) {
-    console.log('fx-add-tutorial-component')
+    console.log('fx-add-tutorial-component-kkkk-test:)')
     return <form onSubmit={onSubmit}>
         <input type="text" name="name" placeholder="Enter Name" />
 
