@@ -8,7 +8,7 @@
     "test": "ng test",
     "lint": "ng lint",
     "e2e": "ng e2e",
-    "store:build": "ng build ajwah-angular-store"
+    "pbuild": "ng build ajwah-angular-store"
   },
   "private": true,
   "dependencies": {

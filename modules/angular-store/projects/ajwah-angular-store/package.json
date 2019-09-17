@@ -1,6 +1,6 @@
 {
   "name": "ajwah-angular-store",
-  "version": "1.7.5-gen-promise",
+  "version": "1.7.6-gen-promise",
   "peerDependencies": {
     "@angular/common": ">=7.0.0 <20",
     "@angular/core": ">=7.0.0 <20"

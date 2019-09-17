@@ -33,12 +33,10 @@ var Logger = function () {
                     action = _ref3[0],
                     state = _ref3[1];
 
-                //if (action.type !== ctx.importState) {
-                console.group(action.type);
+                console.group(action.type || '@@INIT');
                 console.info('payload: ', action.payload);
                 console.info(_extends({}, state));
                 console.groupEnd();
-                //}
             });
         }
     }]);
@@ -73,6 +71,9 @@ var _DevTools = function () {
                     action = _ref5[0],
                     state = _ref5[1];
 
+                if (!action.type) {
+                    action.type = '@@INIT';
+                }
                 _this.devTools.send(action, state);
             });
         }

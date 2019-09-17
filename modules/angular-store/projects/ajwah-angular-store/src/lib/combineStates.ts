@@ -20,6 +20,7 @@ export async function combineStates(state, action, store) {
                     obj = gen.next(newSubState);
                     newSubState = await Promise.resolve(obj.value);
                     if (newSubState && newSubState.hasState && newSubState.state !== state[key]) {
+                        state = store.value;
                         state[key] = newSubState.state;
                         action.type = newSubState.type || action.type;
                         store.stateChange({ ...state }, action);
@@ -28,6 +29,7 @@ export async function combineStates(state, action, store) {
             } else if (typeof gen.then === 'function') {
                 Promise.resolve(gen).then(function (newSubState) {
                     if (newSubState !== currentSubState) {
+                        state = store.value;
                         state[key] = newSubState;
                         store.stateChange({ ...state }, action);
                     }
