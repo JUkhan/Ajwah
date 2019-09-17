@@ -12,15 +12,13 @@ export function devTools({
 class Logger {
 
     run(ctx) {
-        ctx.store.dispatcher.pipe(
-            withLatestFrom(ctx.store)
-        ).subscribe(([action, state]) => {
-            if (action.type !== ctx.importState) {
-                console.group(action.type);
-                console.info('payload: ', action.payload);
-                console.info({ ...state });
-                console.groupEnd();
-            }
+        ctx.store.exportState().subscribe(([action, state]) => {
+            //if (action.type !== ctx.importState) {
+            console.group(action.type);
+            console.info('payload: ', action.payload);
+            console.info({ ...state });
+            console.groupEnd();
+            //}
         });
     }
 }
@@ -36,8 +34,7 @@ class _DevTools {
         this.unsubscribe = this.devTools.subscribe((message) => this.dispatchMonitorAction(message));
 
         //this.devTools.send({ type: '@@INIT' }, ctx.store.getValue());
-        ctx.store.dispatcher.pipe(
-            withLatestFrom(ctx.store),
+        ctx.store.exportState().pipe(
             filter(arr => arr[0].type !== ctx.importState)
         ).subscribe(([action, state]) => {
             this.devTools.send(action, state);

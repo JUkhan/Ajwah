@@ -48,13 +48,21 @@ class CounterState {
             map(s => num)
         ).toPromise()
     }
-
-    onAsyncInc(state) {
-        return { ...state, msg: 'loading...' }
+    onSetDatax(state, { payload }) {
+        console.log({ ...state, payload })
+        return { ...state, ...payload }
     }
-    effectForAsyncInc(action$: Actions) {
+    async onAsyncInc(state, action) {
+        // yield mapState({ ...state, msg: 'loading...' });
+        this.store.dispatch('SetDatax', { msg: 'loading...' })
+        const data = await this.getData(state.count);
+        //yield mapState(data);
+        //this.store.dispatch('SetDatax', data);
+        return data;
+    }
+    /*effectForAsyncInc(action$: Actions) {
         return mapState(action$, this.store.select('counter'), this.dddd.bind(this));
-    }
+    }*/
 
     async dddd(state, action) {
         console.log(state, action)

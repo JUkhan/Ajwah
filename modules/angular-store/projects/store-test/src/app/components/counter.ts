@@ -24,6 +24,7 @@ export class Counter {
     @Input() counter: any;
 
     constructor(public store: Store) {
+
     }
 
     inc() {

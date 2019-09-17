@@ -1,6 +1,6 @@
 
-import { BehaviorSubject, Subscription, Observable, queueScheduler } from 'rxjs';
-import { map, scan, distinctUntilChanged, pluck, subscribeOn, distinct, withLatestFrom } from 'rxjs/operators';
+import { BehaviorSubject, Subscription, Observable, queueScheduler, Subject } from 'rxjs';
+import { map, distinctUntilChanged, pluck, subscribeOn, withLatestFrom, tap } from 'rxjs/operators';
 import { combineStates } from './combineStates';
 import { Dispatcher } from './dispatcher';
 import { Injectable, Injector, Type, OnDestroy } from '@angular/core';
@@ -31,10 +31,8 @@ export class Store<S = any> extends BehaviorSubject<any> implements OnDestroy {
         }
         this.storeSubscription = this.dispatcher.pipe(
             subscribeOn(queueScheduler),
-            scan(((state, action: any) => action.type === IMPORT_STATE ? action.payload : combineStates(state, action, this)), {}),
-            distinct()
-        )
-            .subscribe((newState => { super.next(newState); }));
+            tap(action => { combineStates(this.value, action, this); })
+        ).subscribe();
 
         this.effect.addEffects(initStates);
         if (initEffects.length)
@@ -54,7 +52,11 @@ export class Store<S = any> extends BehaviorSubject<any> implements OnDestroy {
         return this;
     }
 
-
+    action: any = {};
+    stateChange(state, action) {
+        this.action = action;
+        super.next(state);
+    }
     select<T = any>(pathOrMapFn: ((state: S) => any) | string): Observable<T> {
 
         let mapped$;
@@ -132,15 +134,12 @@ export class Store<S = any> extends BehaviorSubject<any> implements OnDestroy {
                 state[key] = initData;
             }
         });
-        this.next({ type: IMPORT_STATE as any, payload: state });
+        this.stateChange(state, { type: IMPORT_STATE });
     }
-    exportState(): Observable<[IAction, S]> {
-        return this.dispatcher.pipe(
-            withLatestFrom(this),
-            map(arr => {
-                arr[1] = copyObj(arr[1]);
-                return arr;
-            })
+
+    exportState(): Observable<any[]> {
+        return this.pipe(
+            map(state => [this.action, copyObj(state)])
         );
     }
 

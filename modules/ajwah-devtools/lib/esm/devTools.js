@@ -28,17 +28,17 @@ var Logger = function () {
     _createClass(Logger, [{
         key: 'run',
         value: function run(ctx) {
-            ctx.store.dispatcher.pipe(withLatestFrom(ctx.store)).subscribe(function (_ref2) {
+            ctx.store.exportState().subscribe(function (_ref2) {
                 var _ref3 = _slicedToArray(_ref2, 2),
                     action = _ref3[0],
                     state = _ref3[1];
 
-                if (action.type !== ctx.importState) {
-                    console.group(action.type);
-                    console.info('payload: ', action.payload);
-                    console.info(_extends({}, state));
-                    console.groupEnd();
-                }
+                //if (action.type !== ctx.importState) {
+                console.group(action.type);
+                console.info('payload: ', action.payload);
+                console.info(_extends({}, state));
+                console.groupEnd();
+                //}
             });
         }
     }]);
@@ -66,7 +66,7 @@ var _DevTools = function () {
             });
 
             //this.devTools.send({ type: '@@INIT' }, ctx.store.getValue());
-            ctx.store.dispatcher.pipe(withLatestFrom(ctx.store), filter(function (arr) {
+            ctx.store.exportState().pipe(filter(function (arr) {
                 return arr[0].type !== ctx.importState;
             })).subscribe(function (_ref4) {
                 var _ref5 = _slicedToArray(_ref4, 2),

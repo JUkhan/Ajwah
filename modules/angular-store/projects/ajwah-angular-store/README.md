@@ -268,9 +268,9 @@ class CounterState {
         try {
             yield mapState({ count: state.count, msg: 'loading by generator function......' });
             const nstate = yield this.getData(state.count);
-            yield mapState(nstate);
+            yield mapState(nstate, 'Inc');
             const xstare = yield this.getData(nstate.count);
-            yield mapState(xstare);
+            yield mapState(xstare, 'Inc');
         } catch (err) {
             yield mapState({ ...state, msg: err.message });
         }

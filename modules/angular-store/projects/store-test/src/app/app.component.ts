@@ -46,12 +46,13 @@ export class AppComponent implements OnDestroy, OnInit {
     this.subscription.unsubscribe();
   }
   ngOnInit() {
-    // this.store.exportState().subscribe(([state, action]) => {
+    // this.store.exportState().subscribe(([action, state]) => {
     //   console.group(action.type);
-    //   console.info('payloadxx: ', action.payload);
+    //   console.info('payload: ', action.payload);
     //   console.info(state);
     //   console.groupEnd();
     // })
+
 
 
   }

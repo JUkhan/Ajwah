@@ -52,18 +52,20 @@ export class JTodoState {
     }*/
 
 
-    @Action(ADD_TODO)
+    //@Action(ADD_TODO)
     addTodo(state) {
         return updateObject(state, { message: ' - Adding a new todo...' })
     }
-    effectForAddTodo(action$: Actions) {
-        return mapState(action$, this.store$.select('jtodo'), this.addHandler.bind(this));
-    }
-    async addHandler(state: any, action) {
-        const newTodo: any = await this.todoService.addTodo(action.payload).toPromise();
+    //effectForAddTodo(action$: Actions) {
+    // return mapState(action$, this.store$.select('jtodo'), this.addHandler.bind(this));
+    //}
+    @Action(ADD_TODO)
+    *addHandler(state: any, action) {
+        yield mapState({ ...state, message: ' - Adding a new todo...' })
+        const newTodo: any = yield this.todoService.addTodo(action.payload).toPromise();
         state.completed = false;
-        const payload = { message: '', data: [newTodo, ...state.data] };
-        this.store$.dispatch(TODOS_DATA, payload);
+        //const payload = { message: '', data: [newTodo, ...state.data] };
+        yield mapState({ ...state, message: '', data: [newTodo, ...state.data] }, 'addTodoSuccess');
     }
     /*@Effect()
     addTodoEffect() {
