@@ -1,3 +1,5 @@
+
+
 import { Actions, Effect, ofType, Action, Store, mapState } from 'ajwah-angular-store';
 import { INCREMENT, DECREMENT, ASYNC_INCREMENT } from './actions';
 import { debounceTime, mapTo, map, flatMap, withLatestFrom, tap, ignoreElements } from 'rxjs/operators';
@@ -52,13 +54,18 @@ class CounterState {
         console.log({ ...state, payload })
         return { ...state, ...payload }
     }
-    async onAsyncInc(state, action) {
+    *onAsyncInc(state, action) {
         // yield mapState({ ...state, msg: 'loading...' });
-        this.store.dispatch('SetDatax', { msg: 'loading...' })
-        const data = await this.getData(state.count);
-        //yield mapState(data);
+        //this.store.dispatch('SetDatax', { msg: 'loading...' });
+        this.store.dispatch('Inc');
+        this.store.dispatch('SetDatax', { msg: 'loading...' });
+        this.store.dispatch('Inc');
+        const data = yield this.getData(this.store.value.counter.count + 1);
+        yield mapState(data, 'delayInc');
         //this.store.dispatch('SetDatax', data);
-        return data;
+        //return data;
+        //yield mapState(data, 'Inc')
+        yield mapState({ ...this.store.value.counter }, 'last');
     }
     /*effectForAsyncInc(action$: Actions) {
         return mapState(action$, this.store.select('counter'), this.dddd.bind(this));

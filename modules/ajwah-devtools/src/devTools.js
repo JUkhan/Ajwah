@@ -13,7 +13,7 @@ class Logger {
 
     run(ctx) {
         ctx.store.exportState().subscribe(([action, state]) => {
-            console.group(action.type || '@@INIT');
+            console.group(action.type);
             console.info('payload: ', action.payload);
             console.info({ ...state });
             console.groupEnd();
@@ -35,7 +35,7 @@ class _DevTools {
         ctx.store.exportState().pipe(
             filter(arr => arr[0].type !== ctx.importState)
         ).subscribe(([action, state]) => {
-            if (!action.type) { action.type = '@@INIT'; }
+            //if (!action.type) { action.type = '@@INIT'; }
             this.devTools.send(action, state);
         });
 

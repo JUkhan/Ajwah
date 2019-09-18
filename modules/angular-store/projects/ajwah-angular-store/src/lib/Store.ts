@@ -52,7 +52,7 @@ export class Store<S = any> extends BehaviorSubject<any> implements OnDestroy {
         return this;
     }
 
-    action: any = {};
+    action: any = { type: '@@INIT' };
     stateChange(state, action) {
         this.action = action;
         super.next(state);
