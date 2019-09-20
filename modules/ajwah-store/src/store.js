@@ -1,31 +1,39 @@
 import { BehaviorSubject, queueScheduler } from 'rxjs';
-import { map, scan, distinctUntilChanged, pluck, observeOn, distinct } from 'rxjs/operators';
+import { map, tap, distinctUntilChanged, pluck, observeOn } from 'rxjs/operators';
 import { combineStates } from './combineStates';
 import { STATE_METADATA_KEY, IMPORT_STATE } from './tokens';
 import { copyObj } from './utils';
 
 export class Store extends BehaviorSubject {
-
+    states = {};
     constructor(initStates, dispatcher) {
         super({});
-        this.states = {};
+        //this.states = {};
 
         for (let state of initStates) {
             this._mapState(state);
         }
         this.dispatcher = dispatcher;
 
+        // this.subscription = this.dispatcher.pipe(
+        //     observeOn(queueScheduler),
+        //     scan((state, action) => action.type === IMPORT_STATE ? action.payload : combineStates(state, action, this), {}),
+        //     distinct()
+        // ).subscribe(newState => { super.next(newState); });
         this.subscription = this.dispatcher.pipe(
             observeOn(queueScheduler),
-            scan((state, action) => action.type === IMPORT_STATE ? action.payload : combineStates(state, action, this), {}),
-            distinct()
-        ).subscribe(newState => { super.next(newState); });
+            tap(action => { combineStates(this.value, action, this); })
+        ).subscribe();
 
     }
     dispatch(action) {
         this.dispatcher.next(action);
     }
-
+    action = { type: '@@INIT' };
+    stateChange(state, action) {
+        this.action = action;
+        super.next(state);
+    }
     select(pathOrMapFn) {
 
         let mapped$;
@@ -91,6 +99,11 @@ export class Store extends BehaviorSubject {
                 state[key] = initData;
             }
         });
-        this.next({ type: IMPORT_STATE, payload: state });
+        this.stateChange(state, { type: IMPORT_STATE });
+    }
+    exportState() {
+        return this.pipe(
+            map(state => [this.action, copyObj(state)])
+        );
     }
 }

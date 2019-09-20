@@ -3,7 +3,7 @@ import { INCREMENT } from "./actions";
 import { updateObject } from "../utli";
 import { debounceTime, mapTo, sample, distinct } from 'rxjs/operators';
 import { timer } from 'rxjs'
-import { mapState, dispatch, store } from 'ajwah-store'
+import { mapState, dispatch, store, mapEffectCallback } from 'ajwah-store'
 class CounterSate {
 
     name = 'counter'
@@ -18,19 +18,19 @@ class CounterSate {
         return updateObject(state, { count: state.count - 1, msg: '' })
     }
 
-    /**actionAsyncInc(state) {
+    *actionAsyncInc(state) {
 
-        yield mapState(updateObject(state, { msg: 'loading...xxxx....' }))
+        yield mapState(updateObject(state, { msg: 'loading...' }), 'Loading')
 
-        const nstate = yield timer(450).pipe(mapTo({ count: state.count + 1, msg: '' })).toPromise();
-        yield mapState(nstate)
-    }*/
-    actionAsyncInc(state) {
+        const nstate = yield timer(1000).pipe(mapTo({ count: state.count + 1, msg: '' })).toPromise();
+        yield mapState(nstate, 'Inc')
+    }
+    xactionAsyncInc(state) {
         return { ...state, msg: 'loading...' }
     }
-    effectForAsyncInc(actions) {
+    xeffectForAsyncInc(actions) {
 
-        return mapState(actions, store().select('counter'), this.asyncIncHandler);
+        return mapEffectCallback(actions, store().select('counter'), this.asyncIncHandler);
     }
     asyncIncHandler(state, action) {
         setTimeout(() => {

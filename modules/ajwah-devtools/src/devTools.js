@@ -15,7 +15,7 @@ class Logger {
         ctx.store.exportState().subscribe(([action, state]) => {
             console.group(action.type);
             console.info('payload: ', action.payload);
-            console.info({ ...state });
+            console.info(state);
             console.groupEnd();
         });
     }
@@ -31,11 +31,9 @@ class _DevTools {
         this.devTools = window.__REDUX_DEVTOOLS_EXTENSION__.connect(this.config);
         this.unsubscribe = this.devTools.subscribe((message) => this.dispatchMonitorAction(message));
 
-        //this.devTools.send({ type: '@@INIT' }, ctx.store.getValue());
         ctx.store.exportState().pipe(
             filter(arr => arr[0].type !== ctx.importState)
         ).subscribe(([action, state]) => {
-            //if (!action.type) { action.type = '@@INIT'; }
             this.devTools.send(action, state);
         });
 

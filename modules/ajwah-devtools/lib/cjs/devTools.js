@@ -44,7 +44,7 @@ var Logger = function () {
 
                 console.group(action.type);
                 console.info('payload: ', action.payload);
-                console.info(_extends({}, state));
+                console.info(state);
                 console.groupEnd();
             });
         }

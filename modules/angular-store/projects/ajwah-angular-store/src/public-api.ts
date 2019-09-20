@@ -7,7 +7,7 @@ export { Dispatcher } from './lib/dispatcher';
 export { ofType } from './lib/operators';
 export { Select } from './lib/decorators/select';
 export { Actions } from './lib/actions';
-export { mapState } from './lib/mapState';
+export { mapState, mapEffectCallback } from './lib/mapState';
 
 
 

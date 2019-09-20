@@ -32,7 +32,8 @@ class CounterState {
 
     }
     onLoading(state) {
-        return { count: state.count, msg: 'loading......' }
+        console.log('---loading----')
+        return { ...state, msg: 'loading......' }
     }
     //@Action(ASYNC_INCREMENT)
 
@@ -54,22 +55,22 @@ class CounterState {
         console.log({ ...state, payload })
         return { ...state, ...payload }
     }
+
+
+
     *onAsyncInc(state, action) {
-        // yield mapState({ ...state, msg: 'loading...' });
-        //this.store.dispatch('SetDatax', { msg: 'loading...' });
-        this.store.dispatch('Inc');
-        this.store.dispatch('SetDatax', { msg: 'loading...' });
-        this.store.dispatch('Inc');
-        const data = yield this.getData(this.store.value.counter.count + 1);
-        yield mapState(data, 'delayInc');
-        //this.store.dispatch('SetDatax', data);
-        //return data;
-        //yield mapState(data, 'Inc')
-        yield mapState({ ...this.store.value.counter }, 'last');
+        yield mapState({ ...state, msg: 'loading...' }, 'loading');
+        state = yield mapState(yield this.getData(state.count), 'Inc1');
+        yield mapState(yield this.getData(state.count), 'Inc2');
+
     }
-    /*effectForAsyncInc(action$: Actions) {
-        return mapState(action$, this.store.select('counter'), this.dddd.bind(this));
-    }*/
+    xeffectForAsyncInc(action$: Actions) {
+        return action$.pipe(
+            debounceTime(555),
+            tap(console.log),
+            mapTo({ type: 'Inc' })
+        )
+    }
 
     async dddd(state, action) {
         console.log(state, action)

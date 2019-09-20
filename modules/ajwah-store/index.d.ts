@@ -44,6 +44,11 @@ export declare function dispatch(actionName: IAction): Store;
 export declare function dispatch(actionName: string): Store;
 export declare function dispatch(actionName: string, payload?: any): Store;
 
-export declare function mapState(action$: Observable<any>, state: Observable<any>, callback: (state: any, action: any) => any): Observable<any>;
+export declare function mapEffectCallback(action$: Observable<any>, state: Observable<any>, callback: (state: any, action: any) => any): Observable<any>;
+export declare function mapState(state: any, actionType?: string): {
+    hasState: boolean;
+    state: any;
+    type: string;
+};
 
 

@@ -235,7 +235,7 @@ class CounterState {
 }
 export default CounterState;
 ```
-### Also `onXXX(state, action)` or `@Action(XXX)` decorated methods allow to make async operations.
+### Also `onXXX(state, action)` or `@Action(XXX)` decorated methods allow to make async operations using(generator,promise,async-await).
 
 ## Example
 ```js
@@ -260,17 +260,21 @@ class CounterState {
         return { count: state.count , msg: 'loading...' }
     }
     onAsyncInc(state) {
-        this.store.dispatch({type:'loading'});
+        this.store.dispatch({type:'Loading'});
         return this.getData(state.count);
+    }
+    //or
+    async onAsyncInc(state) {
+        this.store.dispatch({type:'Loading'});
+        const data=await this.getData(state.count);
+        return data;
     }
     //or
     *onAsyncInc(state, action) {
         try {
-            yield mapState({ count: state.count, msg: 'loading by generator function......' });
-            const nstate = yield this.getData(state.count);
-            yield mapState(nstate, 'Inc');
-            const xstare = yield this.getData(nstate.count);
-            yield mapState(xstare, 'Inc');
+            yield mapState({ ...state, msg: 'loading...' }, 'loading');
+            state = yield mapState(yield this.getData(state.count), 'Inc');
+            yield mapState(yield this.getData(state.count), 'Inc');
         } catch (err) {
             yield mapState({ ...state, msg: err.message });
         }

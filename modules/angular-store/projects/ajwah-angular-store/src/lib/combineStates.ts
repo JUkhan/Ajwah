@@ -17,13 +17,13 @@ export async function combineStates(state, action, store) {
                 let newSubState: { hasState?: boolean, state?: any, type?: any } = {};
                 let obj;
                 do {
-                    obj = gen.next(newSubState);
+                    obj = gen.next(newSubState.state ? newSubState.state : newSubState);
                     newSubState = await Promise.resolve(obj.value);
                     if (newSubState && newSubState.hasState && newSubState.state !== state[key]) {
                         state = store.value;
                         state[key] = newSubState.state;
                         action.type = newSubState.type || action.type;
-                        store.stateChange({ ...state }, action);
+                        store.stateChange(state, action);
                     }
                 } while (!obj.done);
             } else if (typeof gen.then === 'function') {
@@ -31,12 +31,12 @@ export async function combineStates(state, action, store) {
                     if (newSubState !== currentSubState) {
                         state = store.value;
                         state[key] = newSubState;
-                        store.stateChange({ ...state }, action);
+                        store.stateChange(state, action);
                     }
                 })
             } else if (gen !== currentSubState) {
                 state[key] = gen;
-                store.stateChange({ ...state }, action);
+                store.stateChange(state, action);
             }
 
         }
@@ -46,7 +46,7 @@ export async function combineStates(state, action, store) {
 
     }
     if (action.type === '@@INIT') {
-        store.stateChange({ ...state }, action);
+        store.stateChange(state, action);
     }
 
 }

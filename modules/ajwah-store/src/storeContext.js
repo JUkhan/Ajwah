@@ -6,8 +6,6 @@ import { Actions } from './actions';
 import { Subscription } from 'rxjs';
 import { STATE_METADATA_KEY, EFFECT_METADATA_KEY, IMPORT_STATE } from './tokens';
 import { setKeys, setActionsAndEffects } from './decorators/altdecoretors';
-import { withLatestFrom, map } from 'rxjs/operators';
-import { copyObj } from './utils';
 
 class StoreContext {
     constructor(states) {
@@ -41,10 +39,6 @@ class StoreContext {
     removeState(stateName) {
         this.store.removeState(stateName);
         this.removeEffectsByKey(stateName);
-        return this;
-    }
-    importState(state) {
-        this.store.importState(state);
         return this;
     }
     select(pathOrMapFn) {
@@ -84,13 +78,11 @@ class StoreContext {
         else this.effSubs.addEffectByKey(instance, subscription);
     }
     exportState() {
-        return this.dispatcher.pipe(
-            withLatestFrom(this.store),
-            map(arr => {
-                arr[1] = copyObj(arr[1]);
-                return arr;
-            })
-        );
+        return this.store.exportState();
+    }
+    importState(state) {
+        this.store.importState(state);
+        return this;
     }
 
     dispose() {
