@@ -72,7 +72,6 @@ var _DevTools = function () {
                 return _this.dispatchMonitorAction(message);
             });
 
-            //this.devTools.send({ type: '@@INIT' }, ctx.store.getValue());
             ctx.store.exportState().pipe((0, _operators.filter)(function (arr) {
                 return arr[0].type !== ctx.importState;
             })).subscribe(function (_ref4) {
@@ -80,7 +79,6 @@ var _DevTools = function () {
                     action = _ref5[0],
                     state = _ref5[1];
 
-                //if (!action.type) { action.type = '@@INIT'; }
                 _this.devTools.send(action, state);
             });
         }

@@ -1,6 +1,6 @@
 {
   "name": "ajwah-devtools",
-  "version": "0.1.9-gen-promise",
+  "version": "1.0.0",
   "description": "Ajwah devTools for ajwah store(react, angular, vue, preact)",
   "main": "lib/cjs/index.js",
   "module": "lib/esm/index.js",

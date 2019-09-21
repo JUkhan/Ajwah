@@ -18,17 +18,17 @@ class CounterSate {
         return updateObject(state, { count: state.count - 1, msg: '' })
     }
 
-    *actionAsyncInc(state) {
+    *xactionAsyncInc(state) {
 
         yield mapState(updateObject(state, { msg: 'loading...' }), 'Loading')
 
         const nstate = yield timer(1000).pipe(mapTo({ count: state.count + 1, msg: '' })).toPromise();
         yield mapState(nstate, 'Inc')
     }
-    xactionAsyncInc(state) {
+    actionAsyncInc(state) {
         return { ...state, msg: 'loading...' }
     }
-    xeffectForAsyncInc(actions) {
+    effectForAsyncInc(actions) {
 
         return mapEffectCallback(actions, store().select('counter'), this.asyncIncHandler);
     }

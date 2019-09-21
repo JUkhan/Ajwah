@@ -1,5 +1,5 @@
 import { BehaviorSubject, queueScheduler } from 'rxjs';
-import { map, tap, distinctUntilChanged, pluck, observeOn } from 'rxjs/operators';
+import { map, distinctUntilChanged, pluck, observeOn } from 'rxjs/operators';
 import { combineStates } from './combineStates';
 import { STATE_METADATA_KEY, IMPORT_STATE } from './tokens';
 import { copyObj } from './utils';
@@ -8,22 +8,15 @@ export class Store extends BehaviorSubject {
     states = {};
     constructor(initStates, dispatcher) {
         super({});
-        //this.states = {};
 
         for (let state of initStates) {
             this._mapState(state);
         }
         this.dispatcher = dispatcher;
 
-        // this.subscription = this.dispatcher.pipe(
-        //     observeOn(queueScheduler),
-        //     scan((state, action) => action.type === IMPORT_STATE ? action.payload : combineStates(state, action, this), {}),
-        //     distinct()
-        // ).subscribe(newState => { super.next(newState); });
         this.subscription = this.dispatcher.pipe(
-            observeOn(queueScheduler),
-            tap(action => { combineStates(this.value, action, this); })
-        ).subscribe();
+            observeOn(queueScheduler)
+        ).subscribe(action => { combineStates(this.value, action, this); });
 
     }
     dispatch(action) {
