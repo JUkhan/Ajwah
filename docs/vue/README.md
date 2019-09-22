@@ -267,7 +267,64 @@ class CounterSate {
 export default CounterSate;
 
 ```
-`You can choose any style you like or any combination - ajwah support both together`
+### Also `onXXX(state, action)` or `@Action(XXX)` decorated methods allow to make async operations using(generator,promise,async-await).
+
+## Example
+```js
+import { mapState } from 'ajwah-angular-store';
+
+class CounterState {
+    name = 'counter'
+    initialState = { count: 12, msg: '' }
+
+    constructor(private store: Store) {
+
+    }
+    
+    onInc(state) {
+        return { count: state.count + 1, msg: '' }
+    }
+    
+    onDec(state) {
+        return { count: state.count - 1, msg: '' }
+    }
+    onLoading(state){
+        return { count: state.count , msg: 'loading...' }
+    }
+    onAsyncInc(state) {
+        this.store.dispatch({type:'Loading'});
+        return this.getData(state.count);
+    }
+    //or
+    async onAsyncInc(state) {
+        this.store.dispatch({type:'Loading'});
+        const data=await this.getData(state.count);
+        return data;
+    }
+    //or
+    *onAsyncInc(state, action) {
+        try {
+            yield mapState({ ...state, msg: 'loading...' }, 'loading');
+            state = yield mapState(yield this.getData(state.count), 'Inc');
+            yield mapState(yield this.getData(state.count), 'Inc');
+        } catch (err) {
+            yield mapState({ ...state, msg: err.message });
+        }
+    }
+    getData(num) {
+        return new Promise(resolve => {
+            setTimeout(() => {
+                resolve({ count: num+1, msg: '' })
+            }, 1000);
+        });
+    }
+
+}
+
+export default CounterState;
+```
+
+`You can choose any style you like or any combination :)`
 
 ### `CounterComponent`
 

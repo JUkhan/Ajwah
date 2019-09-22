@@ -36,47 +36,26 @@ class CounterState {
         return { ...state, msg: 'loading......' }
     }
     //@Action(ASYNC_INCREMENT)
+    //@Action(ASYNC_INCREMENT)
+    *onAsyncInc(state, action) {
+        yield mapState({ count: state.count, msg: 'loading by generator function...' }, 'loading');
+        //state = yield this.getData(state.count);
+        yield mapState(yield this.getData(state.count), 'inc');
+    }
 
+    /*@Effect()
+    asyncInc$=this.action$.pipe(
+            ofType(ASYNC_INCREMENT),
+            debounceTime(450),
+            mapTo({ type: INCREMENT })
+        )*/
 
-    getData(num: number) {
+    getData(num: number): Promise<any> {
         return new Promise(resolve => {
             setTimeout(() => {
-                resolve({ count: num + 1, msg: '' })
-            }, 1000);
-        });
-    }
-
-    getData2(num) {
-        return timer(1000).pipe(
-            map(s => num)
-        ).toPromise()
-    }
-    onSetDatax(state, { payload }) {
-        console.log({ ...state, payload })
-        return { ...state, ...payload }
-    }
-
-
-
-    *onAsyncInc(state, action) {
-        yield mapState({ ...state, msg: 'loading...' }, 'loading');
-        state = yield mapState(yield this.getData(state.count), 'Inc1');
-        yield mapState(yield this.getData(state.count), 'Inc2');
-
-    }
-    xeffectForAsyncInc(action$: Actions) {
-        return action$.pipe(
-            debounceTime(555),
-            tap(console.log),
-            mapTo({ type: 'Inc' })
-        )
-    }
-
-    async dddd(state, action) {
-        console.log(state, action)
-        const data: any = await this.getData(state.count);
-        this.store.dispatch('Inc', data.count);
-
+                resolve({ count: num + Math.floor(Math.random() * 15), msg: '' })
+            }, 1000)
+        })
     }
 
 }
