@@ -1,10 +1,10 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
-import { Select, Store } from 'ajwah-angular-store';
-import { Observable } from 'rxjs';
-import { ITodoState, AppState } from '../../../store/model';
+import { Component, OnInit, OnDestroy } from "@angular/core";
+import { Store } from "ajwah-angular-store";
+import { Observable } from "rxjs";
+import { ITodoState, AppState } from "../../../store/model";
 
-import { JTodoState } from '../store/jtodoState';
-import { fade } from '../../../animations';
+import { JTodoState } from "../store/jtodoState";
+import { fade } from "../../../animations";
 /*
 import { LoadTodos } from 'src/app/store/actionTypes';
 import { TodoState } from 'src/app/store/todo/todoState';
@@ -12,37 +12,35 @@ import { TodoEffect } from 'src/app/store/todo/todoEffects';
 import { TodoService } from 'src/app/services/todo.service';*/
 
 @Component({
-  selector: 'app-container',
-  templateUrl: './container.component.html',
-  styleUrls: ['./container.component.css'],
-  animations: [fade]
+  selector: "app-container",
+  templateUrl: "./container.component.html",
+  styleUrls: ["./container.component.css"],
+  animations: [fade],
 })
 export class ContainerComponent implements OnInit, OnDestroy {
-
   ngOnInit() {
     //this.store.addFeatureState(JTodoState);
   }
 
-  @Select('jtodo')
+  //@Select("jtodo")
   todo$: Observable<ITodoState>;
 
   constructor(private store: Store, private state: JTodoState) {
     //console.log(state)
+    this.todo$ = store.select("jtodo");
     this.store.addFeatureStates([state]);
-    this.store.dispatch('LoadTodos');
+    this.store.dispatch("LoadTodos");
     //this.todo$ = this.store.select('jtodo');
   }
 
   ngOnDestroy() {
-
     this.store.removeFeatureStates([this.state]);
-    console.log('remove state-todos...')
+    console.log("remove state-todos...");
   }
   showForm() {
-
-    this.store.dispatch('ShowForm');
+    this.store.dispatch("ShowForm");
   }
   hideForm() {
-    this.store.dispatch('HideForm');
+    this.store.dispatch("HideForm");
   }
 }

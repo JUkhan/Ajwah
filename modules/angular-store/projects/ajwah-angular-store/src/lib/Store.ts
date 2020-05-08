@@ -1,222 +1,154 @@
+import {
+  BehaviorSubject,
+  Subscription,
+  Observable,
+  queueScheduler,
+} from "rxjs";
+import { map, distinctUntilChanged, pluck, observeOn } from "rxjs/operators";
 
-import { BehaviorSubject, Subscription, Observable, queueScheduler } from 'rxjs';
-import { map, distinctUntilChanged, pluck, observeOn } from 'rxjs/operators';
-import { combineStates } from './combineStates';
-import { Dispatcher } from './dispatcher';
-import { Injectable, Injector, Type, OnDestroy } from '@angular/core';
-import { STATE_METADATA_KEY, EFFECT_METADATA_KEY, IMPORT_STATE } from './tokens';
-import { EffectsSubscription } from './effectsSubscription';
+import { Dispatcher } from "./dispatcher";
+import { Injectable, Injector, Type, OnDestroy } from "@angular/core";
+import { IMPORT_STATE } from "./tokens";
 
-import { IAction } from './model'
-import { copyObj } from './utils';
+import { copyObj } from "./utils";
+import { BaseState, Action } from "./BaseState";
 
 @Injectable()
 export class Store<S = any> extends BehaviorSubject<any> implements OnDestroy {
-    private subscriptionMap;
-    private states;
-    private storeSubscription: Subscription;
-    constructor(
-        private dispatcher: Dispatcher,
-        private effect: EffectsSubscription,
-        private injector: Injector
-    ) {
-        super({});
-        this.subscriptionMap = {};
-        this.states = {};
-    }
+  //private subscriptionMap;
+  private states: BaseState[];
+  private storeSubscription: Subscription;
+  action: Action = { type: "@@INIT" };
+  constructor(private dispatcher: Dispatcher, private injector: Injector) {
+    super({});
+  }
 
-    __init__(initStates: any, initEffects: any) {
-        for (let state of initStates) {
-            this.mapState(state);
+  __init__(rootStates: BaseState[]) {
+    this.states = rootStates;
+    this.storeSubscription = this.dispatcher
+      .pipe(observeOn(queueScheduler))
+      .subscribe((action) => {
+        this.combineStates(this.value, action);
+      });
+  }
+  private combineStates(currentState: any, action: Action) {
+    //debugger;
+    for (const obj of this.states) {
+      this.bindGen(currentState, obj, action);
+    }
+  }
+  private async bindGen(currentState: any, obj: BaseState, action: Action) {
+    for await (const newState of obj.mapActionToState(
+      currentState[obj.stateName] || copyObj(obj.initState),
+      action
+    )) {
+      if (currentState[obj.stateName] !== newState) {
+        currentState[obj.stateName] = newState;
+        this.stateChange(currentState, action);
+      }
+    }
+  }
+  dispatch<V extends Action = Action>(actionName: V): Store;
+  dispatch(actionName: string): Store;
+  dispatch(actionName: string, payload?: any): Store;
+  dispatch(actionName: string | Action, payload?: any): Store {
+    if (typeof actionName === "object") {
+      this.dispatcher.next(actionName);
+      return;
+    }
+    this.dispatcher.next({ type: actionName, payload });
+    return this;
+  }
+
+  stateChange(state, action) {
+    this.action = action;
+    super.next(state);
+  }
+  select<T = any>(pathOrMapFn: ((state: S) => any) | string): Observable<T> {
+    let mapped$;
+    if (typeof pathOrMapFn === "string") {
+      mapped$ = this.pipe(pluck(pathOrMapFn));
+    } else if (typeof pathOrMapFn === "function") {
+      mapped$ = this.pipe(map((source: any) => pathOrMapFn(source)));
+    } else {
+      throw new TypeError(
+        `Unexpected type '${typeof pathOrMapFn}' in select operator,` +
+          ` expected 'string' or 'function'`
+      );
+    }
+    return mapped$.pipe(distinctUntilChanged());
+  }
+
+  next(action: Action) {
+    this.dispatcher.next(action);
+  }
+
+  error(error) {
+    this.dispatcher.error(error);
+  }
+
+  complete() {
+    this.dispatcher.complete();
+  }
+
+  ngOnDestroy() {
+    this.storeSubscription.unsubscribe();
+    this.complete();
+  }
+
+  addState(stateClassType: Type<BaseState>): Store {
+    const instance = this.injector.get(stateClassType);
+    this.states.push(instance);
+    this.next({ type: `add_state(${name})` });
+    return this;
+  }
+
+  removeState(stateName): Store {
+    if (this.states.find((it) => it.stateName === stateName)) {
+      this.states = this.states.filter((it) => it.stateName !== stateName);
+      const state = copyObj(this.value);
+      delete state[stateName];
+      this.stateChange(state, { type: `remove_state(${stateName})` });
+    }
+    return this;
+  }
+
+  importState(state) {
+    Object.keys(this.states).forEach((key) => {
+      if (!state[key]) {
+        const obj = this.states.find((it) => it.stateName === key);
+        if (obj) {
+          state[key] = copyObj(obj.initState);
         }
-        this.storeSubscription = this.dispatcher.pipe(
-            observeOn(queueScheduler)
-        ).subscribe(action => { combineStates(this.value, action, this); });
+      }
+    });
+    this.stateChange(state, { type: IMPORT_STATE });
+  }
 
-        this.effect.addEffects(initStates);
-        if (initEffects.length)
-            this.effect.addEffects(initEffects);
+  exportState(): Observable<any[]> {
+    return this.pipe(map((state) => [this.action, copyObj(state)]));
+  }
 
+  /**
+   *
+   * @param featureStates
+   */
+  addFeatureStates(featureStates: any[]) {
+    for (const state of featureStates) {
+      if (!this.states.find((it) => it.stateName === state.stateName)) {
+        this.states.push(state);
+        this.next({ type: `add_state(${state.stateName})` });
+      }
     }
+  }
 
-    dispatch<V extends IAction = IAction>(actionName: V): Store;
-    dispatch(actionName: string): Store;
-    dispatch(actionName: string, payload?: any): Store;
-    dispatch(actionName: string | IAction, payload?: any): Store {
-        if (typeof actionName === 'object') {
-            this.dispatcher.next(actionName);
-            return;
-        }
-        this.dispatcher.next({ type: actionName, payload });
-        return this;
+  /**
+   *
+   * @param featureStates
+   */
+  removeFeatureStates(featureStates: any[]) {
+    for (const state of featureStates) {
+      this.removeState(state.stateName);
     }
-
-    action: any = { type: '@@INIT' };
-    stateChange(state, action) {
-        this.action = action;
-        super.next(state);
-    }
-    select<T = any>(pathOrMapFn: ((state: S) => any) | string): Observable<T> {
-
-        let mapped$;
-        if (typeof pathOrMapFn === 'string') {
-            mapped$ = this.pipe(pluck(pathOrMapFn));
-        }
-        else if (typeof pathOrMapFn === 'function') {
-            mapped$ = this.pipe(map(((source: any) => pathOrMapFn(source))));
-        }
-        else {
-            throw new TypeError(`Unexpected type '${typeof pathOrMapFn}' in select operator,` +
-                ` expected 'string' or 'function'`);
-        }
-        return mapped$.pipe(distinctUntilChanged());
-    }
-
-    next(action: IAction) {
-        this.dispatcher.next(action);
-    }
-
-    error(error) {
-        this.dispatcher.error(error);
-    }
-
-    complete() {
-        this.dispatcher.complete();
-    }
-
-    ngOnDestroy() {
-        this.storeSubscription.unsubscribe();
-        this.complete();
-        Object.keys(this.subscriptionMap).forEach(this.removeEffectsByKey);
-    }
-
-    addState(stateClassType: Type<any>): Store {
-        const instance = this.injector.get(stateClassType);
-        const name = this.mapState(instance);
-        this.addEffectsByKey(instance, name);
-        this.next({ type: `add_state(${name})` });
-        return this;
-    }
-
-    removeState(stateName): Store {
-        if (this.states[stateName]) {
-            delete this.states[stateName];
-            this.removeEffectsByKey(stateName);
-            const state = this.getValue();
-            delete state[stateName];
-            this.next({ type: `remove_state(${stateName})` });
-        }
-        return this;
-    }
-
-    private mapState(instance) {
-        const meta = instance[STATE_METADATA_KEY];
-        if (instance.name) {
-            if (!meta) {
-                throw 'State name is undefined.\nMay be you forgot to enable some options like bellow:\nAjwahStoreModule.forRoot({enableCodingByConvention:true})';
-            }
-            meta.name = instance.name;
-            meta.initialState = instance.initialState || {};
-        }
-        if (!meta.name) {
-            throw 'State name is undefined.';
-        }
-        this.states[meta.name] = instance;
-        return meta.name;
-    }
-
-    importState(state) {
-        Object.keys(this.states).forEach((key) => {
-            if (!state[key]) {
-                const metaProp = this.states[key][STATE_METADATA_KEY];
-                const initData = copyObj(metaProp.initialState);
-                state[key] = initData;
-            }
-        });
-        this.stateChange(state, { type: IMPORT_STATE });
-    }
-
-    exportState(): Observable<any[]> {
-        return this.pipe(
-            map(state => [this.action, copyObj(state)])
-        );
-    }
-
-    addEffects(effectClassType: Type<any>): Store {
-        const inst = this.injector.get(effectClassType);
-        if (inst.effectKey) {
-            inst[EFFECT_METADATA_KEY].key = inst.effectKey;
-        }
-        const key = inst[EFFECT_METADATA_KEY].key;
-        if (key) {
-            this.removeEffectsByKey(key);
-            this.addEffectsByKey(inst, key);
-        } else {
-            this.effect.addEffects([inst]);
-        }
-        return this;
-
-    }
-
-    removeEffectsByKey(key: string): Store {
-        if (this.subscriptionMap[key]) {
-            this.subscriptionMap[key].unsubscribe();
-            this.subscriptionMap[key] = undefined;
-        }
-        return this;
-    }
-
-    private addEffectsByKey(instance, key) {
-        this.effect.addEffectsByKey(instance, this.subscriptionMap[key] || (this.subscriptionMap[key] = new Subscription()));
-    }
-    /**
-     * 
-     * @param effects 
-     */
-    addFeatureEffects(effects: any[]) {
-        for (let instance of effects) {
-            const key = instance[EFFECT_METADATA_KEY].key;
-            if (key) {
-                this.removeEffectsByKey(key);
-                this.addEffectsByKey(instance, key);
-            }
-            else {
-                this.effect.addEffect(instance);
-            }
-        }
-    }
-    /**
-     * 
-     * @param effects 
-     */
-    removeFeatureEffects(effects: any[]) {
-        for (let instance of effects) {
-            const key = instance[EFFECT_METADATA_KEY].key;
-            if (key) {
-                this.removeEffectsByKey(key);
-            }
-        }
-    }
-    /**
-     * 
-     * @param featureStates 
-     */
-    addFeatureStates(featureStates: any[]) {
-        for (let state of featureStates) {
-            const name = this.mapState(state);
-            this.removeEffectsByKey(name);
-            this.addEffectsByKey(state, name);
-            this.next({ type: `add_state(${name})` });
-        }
-    }
-
-    /**
-     * 
-     * @param featureStates 
-     */
-    removeFeatureStates(featureStates: any[]) {
-        for (let state of featureStates) {
-            this.removeState(state[STATE_METADATA_KEY].name);
-        }
-    }
+  }
 }

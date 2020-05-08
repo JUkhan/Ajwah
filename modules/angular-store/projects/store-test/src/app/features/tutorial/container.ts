@@ -1,28 +1,28 @@
-import { ADD_TUTORIAL } from '../../store/actions';
-import { Store, Select } from 'ajwah-angular-store';
-import { Component, ChangeDetectionStrategy } from '@angular/core';
-
-
+import { ADD_TUTORIAL } from "../../store/actions";
+import { Store } from "ajwah-angular-store";
+import { Component, ChangeDetectionStrategy } from "@angular/core";
 
 @Component({
-  selector: 'tutorial-container',
+  selector: "tutorial-container",
   template: `
-    <div *ngIf="tutorial$|async as tutorial">
-  <addTutorial></addTutorial>
-  <tutorialList [tutorials]="tutorial.data" [counter]="counter$|async"></tutorialList>
-</div>
-   `,
-  changeDetection: ChangeDetectionStrategy.OnPush
+    <div *ngIf="tutorial$ | async as tutorial">
+      <addTutorial></addTutorial>
+      <tutorialList
+        [tutorials]="tutorial.data"
+        [counter]="counter$ | async"
+      ></tutorialList>
+    </div>
+  `,
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class TutorialContainer {
+  tutorial$;
 
-  @Select('tutorial') tutorial$
-
-  @Select('counter') counter$
+  counter$;
 
   constructor(public store: Store) {
-    console.log('TutorialContainer....')
+    console.log("TutorialContainer....");
+    this.counter$ = store.select("counter");
+    this.tutorial$ = store.select("tutorial");
   }
-
-
 }
