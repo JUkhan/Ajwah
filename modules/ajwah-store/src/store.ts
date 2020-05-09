@@ -103,15 +103,6 @@ export class Store<S = any> extends BehaviorSubject<any> {
   }
 
   importState(state: any) {
-    Object.keys(this.states).forEach((key) => {
-      if (!state[key]) {
-        /*const obj = this.states.find((it) => it[0] === key);
-        if (obj) {
-          state[key] = copyObj(obj.initState);
-        }*/
-        state[key] = {};
-      }
-    });
     this.stateChange(state, { type: IMPORT_STATE });
   }
 

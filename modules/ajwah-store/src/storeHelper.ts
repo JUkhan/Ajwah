@@ -3,7 +3,10 @@ import { Dispatcher } from "./dispatcher";
 import { Observable } from "rxjs";
 import { IMPORT_STATE } from "./utils";
 var store = new Store(new Dispatcher());
-export function createStore(options: { reducers: any[]; devTools?: any }) {
+export function createStore(options: {
+  reducers: any[];
+  devTools?: any;
+}): Store {
   store.__init__(options.reducers);
   if (options.devTools && options.devTools.run) {
     options.devTools.run({
@@ -12,6 +15,7 @@ export function createStore(options: { reducers: any[]; devTools?: any }) {
       importState: IMPORT_STATE,
     });
   }
+  return store;
 }
 
 export function dispatch(actionType: any, payload?: any) {

@@ -111,15 +111,7 @@ export class Store<S = any> extends BehaviorSubject<any> implements OnDestroy {
     return this;
   }
 
-  importState(state) {
-    Object.keys(this.states).forEach((key) => {
-      if (!state[key]) {
-        const obj = this.states.find((it) => it.stateName === key);
-        if (obj) {
-          state[key] = copyObj(obj.initState);
-        }
-      }
-    });
+  importState(state: any) {
     this.stateChange(state, { type: IMPORT_STATE });
   }
 

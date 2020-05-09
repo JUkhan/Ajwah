@@ -1,36 +1,23 @@
 {
   "name": "react-ajwah",
-  "version": "0.3.0",
+  "version": "1.0.4",
   "description": "React bindings for ajwah",
-  "main": "lib/cjs/index.js",
-  "module": "lib/esm/index.js",
-  "typings": "index.d.ts",
+  "main": "lib/index.js",
+  "types": "lib",
   "scripts": {
-    "babel-version": "babel --version",
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "build": "npm run build:esm && npm run build:cjs",
-    "clean": "rimraf lib temp dist",
-    "build:esm": "gulp build:esm",
-    "build:cjs": "babel src -d lib/cjs"
+    "build": "tsc -p ."
   },
   "devDependencies": {
-    "@babel/cli": "^7.4.4",
-    "@babel/core": "^7.4.4",
-    "@babel/plugin-proposal-class-properties": "^7.4.4",
-    "@babel/plugin-proposal-object-rest-spread": "^7.4.4",
-    "@babel/preset-env": "^7.4.4",
-    "@babel/register": "^7.4.4",
-    "ajwah-store": "^0.3.4",
-    "gulp": "^3.9.1",
-    "gulp-babel": "^8.0.0",
+    "@types/react": "^16.9.34",
     "react": "^16.8.4",
-    "rimraf": "^2.5.4",
-    "rxjs": "^6.4.0"
+    "rxjs": "^6.4.0",
+    "ajwah-store": "^3.0.0",
+    "typescript": "^3.8.3"
   },
   "peerDependencies": {
-    "rxjs": ">=6.0.0-beta.0 <7",
-    "react": ">=16.8.3 <18",
-    "ajwah-store": ">=0.3.4 <2"
+    "rxjs": ">=6.0.0-beta.0",
+    "react": ">=16.8.3",
+    "ajwah-store": ">=3.0.0"
   },
   "repository": {
     "type": "git",
@@ -53,5 +40,6 @@
   "bugs": {
     "url": "https://github.com/JUkhan/Ajwah/issues"
   },
-  "homepage": "https://github.com/JUkhan/Ajwah#readme"
+  "homepage": "https://github.com/JUkhan/Ajwah#readme",
+  "dependencies": {}
 }

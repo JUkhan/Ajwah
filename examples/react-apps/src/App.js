@@ -3,15 +3,26 @@ import logo from "./logo.svg";
 import "./App.css";
 import { devTools } from "ajwah-devtools";
 import { mapActionToState } from "./counterReducer";
-import { createStore, dispatch, select } from "test-store";
-import { useSubscription, useSubscription2 } from "./useSubscription";
-
+//import { filter } from "rxjs/operators";
+import {
+  createStore,
+  dispatch,
+  addState,
+  removeState,
+  importState,
+  exportState,
+  select,
+} from "ajwah-store";
+import { useStreamByStateNames, useStreamBySelect } from "react-ajwah";
+//import { from } from "rxjs";
+import CounterCom from "./counterCom";
+exportState().subscribe(console.log);
 createStore({
   reducers: [["counter", mapActionToState]],
   devTools: devTools({ name: "jasim" }),
 });
 function App() {
-  const { counter = { mag: "", count: 0 } } = useSubscription2({
+  const { counter = { mag: "", count: 0 } } = useStreamBySelect({
     counter: select("counter"),
   });
   return (
@@ -22,12 +33,25 @@ function App() {
           Edit <code>src/App.js</code> and save to reload.
         </p>
         <div>
+          <button onClick={() => addState("counter", mapActionToState)}>
+            Add State
+          </button>
+          <button onClick={() => removeState("counter")}>Remove State</button>
+          <button
+            onClick={() => importState({ counter: { msg: "", count: 555 } })}
+          >
+            Import State
+          </button>
+        </div>
+        <div>
           <button onClick={() => dispatch("Inc")}>+</button>
           <button onClick={() => dispatch("Dec")}>-</button>
           <button onClick={() => dispatch("AsyncInc")}>async(+)</button>
           {counter.msg || counter.count}
         </div>
-
+        <div>
+          <CounterCom />
+        </div>
         <a
           className="App-link"
           href="https://reactjs.org"

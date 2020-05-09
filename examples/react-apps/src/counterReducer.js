@@ -10,10 +10,9 @@ export async function* mapActionToState(
       yield { count: state.count - 1, msg: "" };
       break;
     case "AsyncInc":
-      yield { count: state.count, msg: "loading by generator function..." };
-      //state = yield this.getData(state.count);
-      var data = await getData(state.count);
-      yield data;
+      yield { count: state.count, msg: " loading..." };
+      const count = await getData(state.count);
+      yield { msg: "", count };
       break;
     default:
       yield state;
@@ -23,7 +22,7 @@ export async function* mapActionToState(
 function getData(num) {
   return new Promise((resolve) => {
     setTimeout(() => {
-      resolve({ count: num + Math.floor(Math.random() * 15), msg: "" });
+      resolve(num + Math.floor(Math.random() * 15));
     }, 1000);
   });
 }
