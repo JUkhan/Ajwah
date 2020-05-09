@@ -1,0 +1,15 @@
+{
+  "compileOnSave": false,
+  "compilerOptions": {
+    "outDir": "lib",
+    "sourceMap": true,
+    "declaration": true,
+    "declarationMap": true,
+    "module": "commonjs",
+    "strict": true,
+    "esModuleInterop": true,
+    "target": "es5",
+    "lib": ["es2018"]
+  },
+  "include": ["src"]
+}

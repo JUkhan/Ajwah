@@ -25,6 +25,9 @@ export class StoreRootModule {
     @Inject(ROOT_STATES) initStates,
     @Inject(STORE_OPTIONS) options
   ) {
+    if (Symbol["asyncIterator"] === undefined) {
+      (Symbol as any)["asyncIterator"] = Symbol.for("asyncIterator");
+    }
     store.__init__(initStates /*, initEffects*/);
     if (options.devTools && options.devTools.run) {
       options.devTools.run({ store, dispatcher, importState: IMPORT_STATE });

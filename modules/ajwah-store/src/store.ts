@@ -7,22 +7,17 @@ import {
 import { map, distinctUntilChanged, pluck, observeOn } from "rxjs/operators";
 
 import { Dispatcher } from "./dispatcher";
-import { Injectable, Injector, Type, OnDestroy } from "@angular/core";
-import { IMPORT_STATE } from "./tokens";
+import { copyObj, IMPORT_STATE, Action, Reducer } from "./utils";
 
-import { copyObj } from "./utils";
-import { BaseState, Action } from "./BaseState";
-
-@Injectable()
-export class Store<S = any> extends BehaviorSubject<any> implements OnDestroy {
-  private states: BaseState[];
-  private storeSubscription: Subscription;
+export class Store<S = any> extends BehaviorSubject<any> {
+  private states: any[] = [];
+  private storeSubscription: Subscription = Subscription.EMPTY;
   action: Action = { type: "@@INIT" };
-  constructor(private dispatcher: Dispatcher, private injector: Injector) {
+  constructor(public dispatcher: Dispatcher) {
     super({});
   }
 
-  __init__(rootStates: BaseState[]) {
+  __init__(rootStates: any[]) {
     this.states = rootStates;
     this.storeSubscription = this.dispatcher
       .pipe(observeOn(queueScheduler))
@@ -35,13 +30,10 @@ export class Store<S = any> extends BehaviorSubject<any> implements OnDestroy {
       this.bindGen(currentState, obj, action);
     }
   }
-  private async bindGen(currentState: any, obj: BaseState, action: Action) {
-    for await (const newState of obj.mapActionToState(
-      currentState[obj.stateName] || copyObj(obj.initState),
-      action
-    )) {
-      if (currentState[obj.stateName] !== newState) {
-        currentState[obj.stateName] = newState;
+  private async bindGen(currentState: any, obj: any[], action: Action) {
+    for await (const newState of obj[1](currentState[obj[0]], action)) {
+      if (currentState[obj[0]] !== newState) {
+        currentState[obj[0]] = newState;
         this.stateChange(currentState, action);
       }
     }
@@ -52,13 +44,13 @@ export class Store<S = any> extends BehaviorSubject<any> implements OnDestroy {
   dispatch(actionName: string | Action, payload?: any): Store {
     if (typeof actionName === "object") {
       this.dispatcher.next(actionName);
-      return;
+      return this;
     }
     this.dispatcher.next({ type: actionName, payload });
     return this;
   }
 
-  stateChange(state, action) {
+  stateChange(state: any, action: Action) {
     this.action = action;
     super.next(state);
   }
@@ -81,7 +73,7 @@ export class Store<S = any> extends BehaviorSubject<any> implements OnDestroy {
     this.dispatcher.next(action);
   }
 
-  error(error) {
+  error(error: any) {
     this.dispatcher.error(error);
   }
 
@@ -89,35 +81,35 @@ export class Store<S = any> extends BehaviorSubject<any> implements OnDestroy {
     this.dispatcher.complete();
   }
 
-  ngOnDestroy() {
+  destroy() {
     this.storeSubscription.unsubscribe();
     this.complete();
   }
 
-  addState(stateClassType: Type<BaseState>): Store {
-    const instance = this.injector.get(stateClassType);
-    this.states.push(instance);
-    this.next({ type: `add_state(${name})` });
-    return this;
+  addState(stateName: string, reducer: any) {
+    if (!this.states.find((it) => it[0] === stateName)) {
+      this.states.push([stateName, reducer]);
+      this.next({ type: `add_state(${stateName})` });
+    }
   }
 
-  removeState(stateName): Store {
-    if (this.states.find((it) => it.stateName === stateName)) {
-      this.states = this.states.filter((it) => it.stateName !== stateName);
+  removeState(stateName: string) {
+    if (this.states.find((it) => it[0] === stateName)) {
+      this.states = this.states.filter((it) => it[0] !== stateName);
       const state = copyObj(this.value);
       delete state[stateName];
       this.stateChange(state, { type: `remove_state(${stateName})` });
     }
-    return this;
   }
 
-  importState(state) {
+  importState(state: any) {
     Object.keys(this.states).forEach((key) => {
       if (!state[key]) {
-        const obj = this.states.find((it) => it.stateName === key);
+        /*const obj = this.states.find((it) => it[0] === key);
         if (obj) {
           state[key] = copyObj(obj.initState);
-        }
+        }*/
+        state[key] = {};
       }
     });
     this.stateChange(state, { type: IMPORT_STATE });
@@ -125,28 +117,5 @@ export class Store<S = any> extends BehaviorSubject<any> implements OnDestroy {
 
   exportState(): Observable<any[]> {
     return this.pipe(map((state) => [this.action, copyObj(state)]));
-  }
-
-  /**
-   *
-   * @param featureStates
-   */
-  addFeatureStates(featureStates: any[]) {
-    for (const state of featureStates) {
-      if (!this.states.find((it) => it.stateName === state.stateName)) {
-        this.states.push(state);
-        this.next({ type: `add_state(${state.stateName})` });
-      }
-    }
-  }
-
-  /**
-   *
-   * @param featureStates
-   */
-  removeFeatureStates(featureStates: any[]) {
-    for (const state of featureStates) {
-      this.removeState(state.stateName);
-    }
   }
 }

@@ -7,7 +7,7 @@ import { Injectable } from "@angular/core";
 //     name: 'counter',
 //     initialState: { count: 101, msg: '' }
 // })
-class CounterState implements BaseState {
+class CounterState implements BaseState<any> {
   constructor(private store: Store) {}
   stateName: string = "counter";
   initState: any = { count: 12, msg: "" };
