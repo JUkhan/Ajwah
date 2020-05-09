@@ -120,8 +120,8 @@ function App() {
 export default App;
 ```
 
-[React Doc](https://github.com/JUkhan/Ajwah/tree/master/docs/react#ajwah)
+[React Doc](https://github.com/JUkhan/Ajwah/tree/minandeasy/docs/react#ajwah)
 
-[Vue Doc](https://github.com/JUkhan/Ajwah/tree/master/docs/vue#ajwah)
+[Vue Doc](https://github.com/JUkhan/Ajwah/tree/minandeasy/docs/vue#ajwah)
 
-[Angular Doc](https://github.com/JUkhan/Ajwah/tree/master/docs/angular#ajwah)
+[Angular Doc](https://github.com/JUkhan/Ajwah/tree/minandeasy/docs/angular#ajwah)
