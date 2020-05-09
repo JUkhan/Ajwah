@@ -15,10 +15,7 @@ Rx based store library for React, Vue, Angular, Preact. Manage your application'
 ### counterReducer
 
 ```javascript
-export async function* mapActionToState(
-  state = { count: 10, msg: "" },
-  action
-) {
+export async function* counterReducer(state = { count: 10, msg: "" }, action) {
   switch (action.type) {
     case "Inc":
       yield { count: state.count + 1, msg: "" };
