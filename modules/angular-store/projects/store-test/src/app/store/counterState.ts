@@ -1,17 +1,19 @@
-import { BaseState, Action, Store } from "ajwah-angular-store";
+import { BaseState, Action } from "ajwah-angular-store";
 
 import { Injectable } from "@angular/core";
-
+interface Counter {
+  msg: string;
+  count: number;
+}
 @Injectable()
-// @State({
-//     name: 'counter',
-//     initialState: { count: 101, msg: '' }
-// })
-class CounterState implements BaseState<any> {
-  constructor(private store: Store) {}
+class CounterState implements BaseState<Counter> {
   stateName: string = "counter";
-  initState: any = { count: 12, msg: "" };
-  *mapActionToState(state: any, action: Action): IterableIterator<any> {
+  initState: Counter = { count: 12, msg: "" };
+
+  async *mapActionToState(
+    state: Counter,
+    action: Action
+  ): AsyncIterableIterator<Counter> {
     switch (action.type) {
       case "Inc":
         yield { count: state.count + 1, msg: "" };
@@ -20,9 +22,8 @@ class CounterState implements BaseState<any> {
         yield { count: state.count - 1, msg: "" };
         break;
       case "AsyncInc":
-        yield { count: state.count, msg: "loading by generator function..." };
-        //state = yield this.getData(state.count);
-        yield this.getData(state.count);
+        yield { count: state.count, msg: " loading..." };
+        yield { msg: "", count: await this.getData(state.count) };
         break;
       default:
         yield state;
@@ -32,7 +33,7 @@ class CounterState implements BaseState<any> {
   getData(num: number): Promise<any> {
     return new Promise((resolve) => {
       setTimeout(() => {
-        resolve({ count: num + Math.floor(Math.random() * 15), msg: "" });
+        resolve(num + 1);
       }, 1000);
     });
   }

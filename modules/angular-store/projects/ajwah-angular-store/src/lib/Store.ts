@@ -4,7 +4,13 @@ import {
   Observable,
   queueScheduler,
 } from "rxjs";
-import { map, distinctUntilChanged, pluck, observeOn } from "rxjs/operators";
+import {
+  map,
+  distinctUntilChanged,
+  pluck,
+  observeOn,
+  withLatestFrom,
+} from "rxjs/operators";
 
 import { Dispatcher } from "./dispatcher";
 import { Injectable, Injector, Type, OnDestroy } from "@angular/core";
@@ -27,7 +33,7 @@ export class Store<S = any> extends BehaviorSubject<any> implements OnDestroy {
     this.storeSubscription = this.dispatcher
       .pipe(observeOn(queueScheduler))
       .subscribe((action) => {
-        this.combineStates(this.value, action);
+        this.combineStates(this.getValue(), action);
       });
   }
   private combineStates(currentState: any, action: Action) {

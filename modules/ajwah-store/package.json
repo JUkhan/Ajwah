@@ -1,6 +1,6 @@
 {
   "name": "ajwah-store",
-  "version": "3.0.0",
+  "version": "3.0.1",
   "description": "Rx based store library for React, Vue, Angular, Preact. Manage your application's states, effects, and actions easy way. It's easy to use in functional components with React hooks.",
   "main": "lib/index.js",
   "types": "lib",

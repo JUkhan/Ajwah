@@ -31,19 +31,20 @@ export class JTodoState implements BaseState<Todo> {
   }
   stateName: string = "jtodo";
   initState: Todo = { message: "", data: [] };
-  *mapActionToState(state: Todo, action: Action<any>) {
+  async *mapActionToState(state: Todo, action: Action<any>) {
     console.log(action.type + ".........");
     switch (action.type) {
       case LOAD_TODOS:
         yield { message: " - loading todos....", data: [] };
-        yield this.todoService
-          .getTodos()
-          .toPromise()
-          .then((res: any) => ({ message: "", data: res }));
+        yield {
+          message: "",
+          data: await this.todoService.getTodos().toPromise(),
+        };
 
         break;
 
       default:
+        yield state;
         break;
     }
   }
