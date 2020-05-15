@@ -29,16 +29,22 @@ export class JTodoState implements BaseState<Todo> {
   constructor(private todoService: JTodoService, private store$: Store) {
     // console.log('DDD', todoService, action, store);
   }
+
   stateName: string = "jtodo";
   initState: Todo = { message: "", data: [] };
-  async *mapActionToState(state: Todo, action: Action<any>) {
+  async *mapActionToState(
+    state: Todo,
+    action: Action<any>
+  ): AsyncGenerator<Todo> {
     console.log(action.type + ".........");
+
     switch (action.type) {
       case LOAD_TODOS:
         yield { message: " - loading todos....", data: [] };
+        var data: any = await this.todoService.getTodos().toPromise();
         yield {
           message: "",
-          data: await this.todoService.getTodos().toPromise(),
+          data,
         };
 
         break;

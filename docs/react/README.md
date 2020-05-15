@@ -1,6 +1,7 @@
 # Ajwah
 
 Rx based store library for React, Vue, Angular, Preact. Manage your application's states, effects, and actions easy way. It's easy to use in functional components with React hooks.
+[Live Demo](https://stackblitz.com/edit/react-ts-cb9zfa?file=index.tsx)
 
 ### Installation
 

@@ -4,9 +4,9 @@
   "newProjectRoot": "projects",
   "projects": {
     "ajwah-angular-store": {
+      "projectType": "library",
       "root": "projects/ajwah-angular-store",
       "sourceRoot": "projects/ajwah-angular-store/src",
-      "projectType": "library",
       "prefix": "lib",
       "architect": {
         "build": {
@@ -14,6 +14,11 @@
           "options": {
             "tsConfig": "projects/ajwah-angular-store/tsconfig.lib.json",
             "project": "projects/ajwah-angular-store/ng-package.json"
+          },
+          "configurations": {
+            "production": {
+              "tsConfig": "projects/ajwah-angular-store/tsconfig.lib.prod.json"
+            }
           }
         },
         "test": {
@@ -38,98 +43,38 @@
         }
       }
     },
-    "store-test": {
-      "root": "projects/store-test/",
-      "sourceRoot": "projects/store-test/src",
-      "projectType": "application",
-      "prefix": "app",
-      "schematics": {},
+    "test-app": {
+      "projectType": "library",
+      "root": "projects/test-app",
+      "sourceRoot": "projects/test-app/src",
+      "prefix": "lib",
       "architect": {
         "build": {
-          "builder": "@angular-devkit/build-angular:browser",
+          "builder": "@angular-devkit/build-ng-packagr:build",
           "options": {
-            "outputPath": "dist/store-test",
-            "index": "projects/store-test/src/index.html",
-            "main": "projects/store-test/src/main.ts",
-            "polyfills": "projects/store-test/src/polyfills.ts",
-            "tsConfig": "projects/store-test/tsconfig.app.json",
-            "assets": [
-              "projects/store-test/src/favicon.ico",
-              "projects/store-test/src/assets"
-            ],
-            "styles": [
-              "projects/store-test/src/styles.css"
-            ],
-            "scripts": [],
-            "es5BrowserSupport": true
+            "tsConfig": "projects/test-app/tsconfig.lib.json",
+            "project": "projects/test-app/ng-package.json"
           },
           "configurations": {
             "production": {
-              "fileReplacements": [
-                {
-                  "replace": "projects/store-test/src/environments/environment.ts",
-                  "with": "projects/store-test/src/environments/environment.prod.ts"
-                }
-              ],
-              "optimization": true,
-              "outputHashing": "all",
-              "sourceMap": false,
-              "extractCss": true,
-              "namedChunks": false,
-              "aot": true,
-              "extractLicenses": true,
-              "vendorChunk": false,
-              "buildOptimizer": true,
-              "budgets": [
-                {
-                  "type": "initial",
-                  "maximumWarning": "2mb",
-                  "maximumError": "5mb"
-                }
-              ]
+              "tsConfig": "projects/test-app/tsconfig.lib.prod.json"
             }
-          }
-        },
-        "serve": {
-          "builder": "@angular-devkit/build-angular:dev-server",
-          "options": {
-            "browserTarget": "store-test:build"
-          },
-          "configurations": {
-            "production": {
-              "browserTarget": "store-test:build:production"
-            }
-          }
-        },
-        "extract-i18n": {
-          "builder": "@angular-devkit/build-angular:extract-i18n",
-          "options": {
-            "browserTarget": "store-test:build"
           }
         },
         "test": {
           "builder": "@angular-devkit/build-angular:karma",
           "options": {
-            "main": "projects/store-test/src/test.ts",
-            "polyfills": "projects/store-test/src/polyfills.ts",
-            "tsConfig": "projects/store-test/tsconfig.spec.json",
-            "karmaConfig": "projects/store-test/karma.conf.js",
-            "styles": [
-              "projects/store-test/src/styles.css"
-            ],
-            "scripts": [],
-            "assets": [
-              "projects/store-test/src/favicon.ico",
-              "projects/store-test/src/assets"
-            ]
+            "main": "projects/test-app/src/test.ts",
+            "tsConfig": "projects/test-app/tsconfig.spec.json",
+            "karmaConfig": "projects/test-app/karma.conf.js"
           }
         },
         "lint": {
           "builder": "@angular-devkit/build-angular:tslint",
           "options": {
             "tsConfig": [
-              "projects/store-test/tsconfig.app.json",
-              "projects/store-test/tsconfig.spec.json"
+              "projects/test-app/tsconfig.lib.json",
+              "projects/test-app/tsconfig.spec.json"
             ],
             "exclude": [
               "**/node_modules/**"
@@ -137,35 +82,9 @@
           }
         }
       }
-    },
-    "store-test-e2e": {
-      "root": "projects/store-test-e2e/",
-      "projectType": "application",
-      "prefix": "",
-      "architect": {
-        "e2e": {
-          "builder": "@angular-devkit/build-angular:protractor",
-          "options": {
-            "protractorConfig": "projects/store-test-e2e/protractor.conf.js",
-            "devServerTarget": "store-test:serve"
-          },
-          "configurations": {
-            "production": {
-              "devServerTarget": "store-test:serve:production"
-            }
-          }
-        },
-        "lint": {
-          "builder": "@angular-devkit/build-angular:tslint",
-          "options": {
-            "tsConfig": "projects/store-test-e2e/tsconfig.e2e.json",
-            "exclude": [
-              "**/node_modules/**"
-            ]
-          }
-        }
-      }
-    }
+    }},
+  "cli": {
+    "analytics": false
   },
   "defaultProject": "ajwah-angular-store"
 }

@@ -1,7 +1,13 @@
 import { Store } from "./store";
 import { Dispatcher } from "./dispatcher";
 import { Observable } from "rxjs";
-import { IMPORT_STATE } from "./utils";
+import { IMPORT_STATE, Action } from "./utils";
+
+export declare function mapActionToState<T>(
+  state: T,
+  action: Action
+): IterableIterator<T> | AsyncIterableIterator<T>;
+
 var store = new Store(new Dispatcher());
 export function createStore(options: {
   reducers: any[];
