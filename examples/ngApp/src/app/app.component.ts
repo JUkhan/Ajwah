@@ -1,17 +1,18 @@
-import { LOAD_TODOS } from "./store/actions";
-import { Subscription, Observable } from "rxjs";
+import { LOAD_TODOS } from './store/actions';
+import { Subscription, Observable } from 'rxjs';
 //import { TutorialState } from './store/tutorialState';
 
-import { Component, OnDestroy, OnInit } from "@angular/core";
-import { Store } from "ajwah-angular-store";
+import { Component, OnDestroy, OnInit } from '@angular/core';
+
 //import { DynamicEffect } from "./store/effects";
-import { DYNAMIC_EFFECTS_KEY } from "./store/actions";
-import { AppState, ICounterState, ITodoState } from "./store/model";
+import { DYNAMIC_EFFECTS_KEY } from './store/actions';
+import { AppState, ICounterState, ITodoState } from './store/model';
+import { Store } from './services/store';
 
 @Component({
-  selector: "app-root",
-  templateUrl: "./app.component.html",
-  styleUrls: ["./app.component.css"],
+  selector: 'app-root',
+  templateUrl: './app.component.html',
+  styleUrls: ['./app.component.css'],
 })
 export class AppComponent implements OnDestroy, OnInit {
   subscription: Subscription;
@@ -21,8 +22,9 @@ export class AppComponent implements OnDestroy, OnInit {
     // this.subscription.add(this.store.select('todo').subscribe(res => this.todo = res));
     // this.store.dispatch({ type: LOAD_TODOS });
     // this.jac.subscribe(res => console.log(res))
-    this.mac = store.select("counter");
-    this.jac = store.select("todo");
+    //this.mac = store.select("counter");
+    //this.jac = store.select("todo");
+    store.exportState().subscribe(console.log);
   }
 
   counter: any;
@@ -38,7 +40,7 @@ export class AppComponent implements OnDestroy, OnInit {
     //this.store.addState(TutorialState);
   }
   removeState() {
-    this.store.removeState("tutorial");
+    this.store.unregisterState('tutorial');
   }
 
   ngOnDestroy() {

@@ -1,17 +1,16 @@
-import { Store } from 'ajwah-angular-store';
 import { Component, ChangeDetectionStrategy, Input } from '@angular/core';
+import { Store } from '../services/store';
 
 @Component({
-    selector: 'todos',
-    template: `
+  selector: 'todos',
+  template: `
     <div>
-        <todoItem *ngFor="let todo of todos" [todo]="todo" ></todoItem>
+      <todoItem *ngFor="let todo of todos" [todo]="todo"></todoItem>
     </div>
-    `,
-    changeDetection: ChangeDetectionStrategy.OnPush
+  `,
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class TodosComponent {
-    @Input() todos: any[];
-    constructor(public store: Store) {
-    }
+  @Input() todos: any[];
+  constructor(public store: Store) {}
 }

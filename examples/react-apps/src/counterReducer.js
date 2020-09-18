@@ -1,7 +1,9 @@
+import { latestState } from "ajwah-store";
 export async function* mapActionToState(
   state = { count: 10, msg: "" },
   action
 ) {
+  console.log(state, "()");
   switch (action.type) {
     case "Inc":
       yield { count: state.count + 1, msg: "" };
@@ -15,7 +17,7 @@ export async function* mapActionToState(
       yield { msg: "", count };
       break;
     default:
-      yield state;
+      yield latestState("counter", state);
   }
 }
 

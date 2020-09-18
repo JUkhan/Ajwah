@@ -1,6 +1,6 @@
 import React, { PureComponent } from "react";
 import { dispatch, select } from "ajwah-store";
-import { filter } from "rxjs/operators";
+//import { filter } from "rxjs/operators";
 import { Connect } from "react-ajwah";
 
 class CounterComponent extends PureComponent {
@@ -8,9 +8,7 @@ class CounterComponent extends PureComponent {
     super();
     Connect(
       {
-        counter: select((state) => state.counter).pipe(
-          filter((it) => it?.count > 15)
-        ),
+        counter: select((state) => state.counter),
       },
       this
     );

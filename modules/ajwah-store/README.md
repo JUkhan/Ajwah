@@ -1,124 +1,37 @@
-# Ajwah
+# Ajwah Store
 
-Rx based store library for React, Vue, Angular, Preact. Manage your application's states, effects, and actions easy way. It's easy to use in functional components with React hooks.
+Rx based state management library. Manage your application's states, effects, and actions easy way. Make apps more scalable with a unidirectional data-flow.
 
-### Installation
+[React Demo](https://stackblitz.com/edit/react-ts-cb9zfa?file=index.tsx) | [Vue Demo](https://codesandbox.io/s/42ql8y5x) | [Angular Demo](https://stackblitz.com/edit/angular-ajwah-test?file=src%2Fapp%2FcounterState.ts)
+
+### Installation for (angular/react/vue/others)
 
 ```sh
 >> npm i ajwah-store
 >> npm i react-ajwah
+>> npm i vue-ajwah
 >> npm i ajwah-devtools
 ```
 
-### Example
-
-### counterReducer
-
-```javascript
-export async function* counterReducer(state = { count: 10, msg: "" }, action) {
-  switch (action.type) {
-    case "Inc":
-      yield { count: state.count + 1, msg: "" };
-      break;
-    case "Dec":
-      yield { count: state.count - 1, msg: "" };
-      break;
-    case "AsyncInc":
-      yield { count: state.count, msg: " loading..." };
-      const count = await getData(state.count);
-      yield { msg: "", count };
-      break;
-    default:
-      yield state;
-  }
-}
-
-function getData(num) {
-  return new Promise((resolve) => {
-    setTimeout(() => {
-      resolve(num + Math.floor(Math.random() * 15));
-    }, 1000);
-  });
-}
-```
-
-### counterComponent
+Declare your store as a global variable.
 
 ```js
-import Reacts from "react";
-import { dispatch } from "ajwah-store";
-import { useStreamByStateNames } from "react-ajwah";
-
-function counterComponent() {
-  const { counter } = useStreamByStateNames("counter");
-
-  return (
-    <div>
-      <button onClick={() => dispatch(Inc)}>+</button>
-      <button onClick={() => dispatch(Dec)}>-</button>
-      <button onClick={() => dispatch(AsyncInc)}>async(+)</button>
-      {counter?.msg || counter?.count}
-    </div>
-  );
-}
-
-export default counterComponent;
+const store = new AjwahStore();
 ```
 
-### APP.js
+Now register states as much as you want and consume them where ever you want in your app.
 
 ```js
-import React from "react";
-import "./App.css";
-import { devTools } from "ajwah-devtools";
-import { counterReducer } from "./counterReducer";
+const store = new AjwahStore();
 
-import {
-  createStore,
-  dispatch,
-  addState,
-  removeState,
-  importState,
-  exportState,
-  select,
-} from "ajwah-store";
+store.registerState<number>(
+  'counter',
+  0,
+  (state, action, emit)=> {
+    if (action.type == 'inc') emit(state + 1);
+  },
+);
 
-import CounterCom from "./counterCom";
-
-exportState().subscribe(console.log);
-
-createStore({
-  reducers: [["counter", counterReducer]],
-  devTools: devTools({ name: "dev-tool" }),
-});
-
-function App() {
-  return (
-    <div className="App">
-      <div>
-        <button onClick={() => addState("counter", mapActionToState)}>
-          Add State
-        </button>
-        <button onClick={() => removeState("counter")}>Remove State</button>
-        <button
-          onClick={() => importState({ counter: { msg: "", count: 555 } })}
-        >
-          Import State
-        </button>
-      </div>
-
-      <div>
-        <CounterCom />
-      </div>
-    </div>
-  );
-}
-
-export default App;
+store.select('counter').subscribe(console.log); // 0, 1
+store.dispatch({type: 'inc'});
 ```
-
-[React Doc](https://github.com/JUkhan/Ajwah/tree/minandeasy/docs/react#ajwah)
-
-[Vue Doc](https://github.com/JUkhan/Ajwah/tree/minandeasy/docs/vue#ajwah)
-
-[Angular Doc](https://github.com/JUkhan/Ajwah/tree/minandeasy/docs/angular#ajwah)

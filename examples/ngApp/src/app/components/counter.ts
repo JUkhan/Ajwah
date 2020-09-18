@@ -1,14 +1,21 @@
-import { INCREMENT, DECREMENT, ASYNC_INCREMENT } from "../store/actions";
-import { Store, dispatch } from "ajwah-angular-store";
-import { Component, ChangeDetectionStrategy, Input } from "@angular/core";
+import { mapTo } from 'rxjs/operators';
+import { map } from 'rxjs/operators';
+import { debounceTime } from 'rxjs/operators';
+import { INCREMENT, DECREMENT, ASYNC_INCREMENT } from '../store/actions';
 
-import CounterState from "../store/counterState";
+import { Component, ChangeDetectionStrategy, Input } from '@angular/core';
+
+import { registerCounterState } from '../store/counterState';
+import { Store } from '../services/store';
 
 @Component({
-  selector: "counter",
+  selector: 'counter',
   template: `
     <button (click)="removeState()">Remove State</button>
     <button (click)="addState()">Add State</button>
+    <button (click)="addEffect()">Add Effect</button>
+    <button (click)="removeEffect()">Remove Effect</button>
+    <button (click)="importState()">Import</button>
     <p *ngIf="counter">
       <button class="btn" (click)="inc()">+</button>
       <button class="btn" (click)="dec()">-</button>
@@ -24,19 +31,36 @@ export class Counter {
   constructor(public store: Store) {}
 
   inc() {
-    dispatch(INCREMENT);
+    this.store.dispatch(INCREMENT);
   }
   dec() {
-    dispatch(DECREMENT);
+    this.store.dispatch(DECREMENT);
   }
   asyncInc() {
-    dispatch(ASYNC_INCREMENT);
+    this.store.dispatch(ASYNC_INCREMENT);
   }
 
   removeState() {
-    this.store.removeState("counter");
+    this.store.unregisterState('counter');
   }
   addState() {
-    this.store.addState(CounterState);
+    registerCounterState(this.store);
+  }
+  effectKey = 'asyncInc-effect';
+  addEffect() {
+    this.store.registerEffect(
+      (action$, _) =>
+        action$.whereType('AsyncInc').pipe(
+          debounceTime(1000),
+          map((a) => ({ type: 'Inc' }))
+        ),
+      this.effectKey
+    );
+  }
+  removeEffect() {
+    this.store.unregisterEffect(this.effectKey);
+  }
+  importState() {
+    this.store.importState({ counter: { count: 100, msg: '' } });
   }
 }

@@ -1,7 +1,0 @@
-<div class="todo-item" [ngClass]="{'is-complete':todo.completed}">
-  <p>
-    <input [checked]="todo.completed" type="checkbox" (change)="updateTodo($event)" />
-    <span class="item-text">{{todo.title}}</span>
-    <button (click)="removeTodo()" class="del">x</button>
-  </p>
-</div>

@@ -1,7 +1,7 @@
-import { Action } from "ajwah-angular-store";
-import { SEARCH_KEYSTROKE, SEARCH_RESULT } from "./actions";
-import { updateObject } from "./util";
-import { Injectable } from "@angular/core";
+import { Action } from 'ajwah-store';
+import { SEARCH_KEYSTROKE, SEARCH_RESULT } from './actions';
+import { updateObject } from './util';
+import { Injectable } from '@angular/core';
 
 @Injectable()
 export class SearchState {
