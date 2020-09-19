@@ -4,10 +4,11 @@ interface Counter {
   count: number;
 }
 export function registerCounterState(store: Store) {
-  store.registerState<Counter>(
-    'counter',
-    { count: 0, msg: '' },
-    async (state, action, emit) => {
+  store.registerState<Counter>({
+    stateName: 'counter',
+    initialState: { count: 0, msg: '' },
+    filterActions: (action) => action.type === 'Inc',
+    mapActionToState: async (state, action, emit) => {
       switch (action.type) {
         case 'Inc':
           emit({ count: state.count + 1, msg: '' });
@@ -20,8 +21,8 @@ export function registerCounterState(store: Store) {
           //emit({ msg: '', count: await getData(state.count) });
           break;
       }
-    }
-  );
+    },
+  });
 }
 
 function getData(num: number): Promise<any> {

@@ -21,17 +21,19 @@ const store = new AjwahStore();
 
 Now register states as much as you want and consume them where ever you want in your app.
 
-```js
+```ts
 const store = new AjwahStore();
 
-store.registerState<number>(
-  'counter',
-  0,
-  (state, action, emit)=> {
-    if (action.type == 'inc') emit(state + 1);
+store.registerState<number>({
+  stateName: "counter",
+  initialState: 0,
+  mapActionToState: (state, action, emit) => {
+    if (action.type === "inc") {
+      emit(state + 1);
+    }
   },
-);
+});
 
-store.select('counter').subscribe(console.log); // 0, 1
-store.dispatch({type: 'inc'});
+store.select("counter").subscribe(console.log); // 0, 1
+store.dispatch({ type: "inc" });
 ```

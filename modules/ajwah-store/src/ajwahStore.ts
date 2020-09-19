@@ -4,10 +4,21 @@ import {
   distinctUntilChanged,
   pluck,
   withLatestFrom,
+  filter,
 } from "rxjs/operators";
 
 import { Action } from "./action";
 import { Actions } from "./actions";
+export interface RegisterState<M> {
+  stateName: string;
+  initialState: M;
+  mapActionToState: (
+    state: M,
+    action: Action,
+    emit: (state: M) => void
+  ) => void;
+  filterActions?: (action: Action) => boolean;
+}
 
 export class AjwahStore<S = any> {
   private _dispatcher: BehaviorSubject<Action>;
@@ -22,16 +33,15 @@ export class AjwahStore<S = any> {
     this._stateSubscriptions = new Map<String, Subscription>();
     this._effectSubscriptions = new Map<String, Subscription>();
   }
-  registerState<M>(
-    stateName: string,
-    initialState: M,
-    mapActionToState: (
-      state: M,
-      action: Action,
-      emit: (state: M) => void
-    ) => void
-  ): void {
-    this.unregisterState(stateName);
+  registerState<M>({
+    stateName,
+    initialState,
+    mapActionToState,
+    filterActions,
+  }: RegisterState<M>): void {
+    if (this._store.value[stateName]) {
+      return;
+    }
     this._store.value[stateName] = initialState;
     this._store.next(this._store.value);
     this.dispatch({ type: `registerState(${stateName})` });
@@ -41,15 +51,22 @@ export class AjwahStore<S = any> {
         this._store.next(this._store.value);
       }
     };
-
-    this._stateSubscriptions.set(
-      stateName,
-      this._dispatcher.subscribe((action) => {
-        mapActionToState(this._store.value[stateName], action, emitState);
-      })
-    );
+    if (typeof filterActions === "function") {
+      this._stateSubscriptions.set(
+        stateName,
+        this._dispatcher.pipe(filter(filterActions)).subscribe((action) => {
+          mapActionToState(this._store.value[stateName], action, emitState);
+        })
+      );
+    } else {
+      this._stateSubscriptions.set(
+        stateName,
+        this._dispatcher.subscribe((action) => {
+          mapActionToState(this._store.value[stateName], action, emitState);
+        })
+      );
+    }
   }
-
   dispatch<V extends Action = Action>(actionName: V): AjwahStore;
   dispatch(actionName: string): AjwahStore;
   dispatch(actionName: string, payload?: any): AjwahStore;
@@ -101,6 +118,10 @@ export class AjwahStore<S = any> {
     if (this._stateSubscriptions.has(stateName)) {
       this._stateSubscriptions.get(stateName)?.unsubscribe();
       this._stateSubscriptions.delete(stateName);
+      delete this._store.value[stateName];
+      this._store.next(this._store.value);
+      this.dispatch({ type: `unregisterState(${stateName})` });
+    } else if (this._store.value[stateName]) {
       delete this._store.value[stateName];
       this._store.next(this._store.value);
       this.dispatch({ type: `unregisterState(${stateName})` });
