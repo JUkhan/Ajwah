@@ -146,7 +146,7 @@ export class AjwahStore<S = any> {
   }
 
   importState(states: any) {
-    this._store.next({ ...states });
+    this._store.next(Object.assign({}, states));
     this.dispatch({ type: "@importState" });
   }
 
