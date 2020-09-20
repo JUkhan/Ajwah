@@ -7,7 +7,7 @@ export function registerCounterState(store: Store) {
   store.registerState<Counter>({
     stateName: 'counter',
     initialState: { count: 0, msg: '' },
-    filterActions: (action) => action.type === 'Inc',
+    //filterActions: (action) => action.type === 'Inc',
     mapActionToState: async (state, action, emit) => {
       switch (action.type) {
         case 'Inc':

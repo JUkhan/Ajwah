@@ -5,4 +5,5 @@ export class Store<S = any> extends AjwahStore {
   constructor() {
     super();
   }
+  sdf() {}
 }

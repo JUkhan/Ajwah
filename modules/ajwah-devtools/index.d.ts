@@ -1,5 +1,9 @@
-
-export declare function devTools({ maxAge, name }?: {
-    maxAge?: number;
-    name?: string
+export declare function devTools({
+  store,
+  maxAge,
+  name,
+}?: {
+  store: any;
+  maxAge?: number;
+  name?: string;
 }): any;

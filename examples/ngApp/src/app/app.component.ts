@@ -8,6 +8,7 @@ import { Component, OnDestroy, OnInit } from '@angular/core';
 import { DYNAMIC_EFFECTS_KEY } from './store/actions';
 import { AppState, ICounterState, ITodoState } from './store/model';
 import { Store } from './services/store';
+import { devTools } from 'ajwah-devtools';
 
 @Component({
   selector: 'app-root',
@@ -17,13 +18,7 @@ import { Store } from './services/store';
 export class AppComponent implements OnDestroy, OnInit {
   subscription: Subscription;
   constructor(private store: Store<AppState>) {
-    // this.subscription = this.store.select('counter').subscribe(res => this.counter = res);
-    // this.subscription.add(this.store.select('tutorial').subscribe(res => this.tutorial = res));
-    // this.subscription.add(this.store.select('todo').subscribe(res => this.todo = res));
-    // this.store.dispatch({ type: LOAD_TODOS });
-    // this.jac.subscribe(res => console.log(res))
-    //this.mac = store.select("counter");
-    //this.jac = store.select("todo");
+    devTools({ store });
     store.exportState().subscribe(console.log);
   }
 

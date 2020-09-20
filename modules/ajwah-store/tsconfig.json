@@ -1,15 +1,19 @@
 {
   "compileOnSave": false,
   "compilerOptions": {
-    "outDir": "lib",
-    "sourceMap": false,
+    "baseUrl": "./",
+    "outDir": "./lib",
+    "sourceMap": true,
     "declaration": true,
-    "declarationMap": true,
-    "module": "commonjs",
-    "strict": true,
-    "esModuleInterop": true,
+    "module": "es2015",
+    "moduleResolution": "node",
+    "importHelpers": true,
     "target": "es5",
-    "lib": ["es2018"]
-  },
-  "include": ["src"]
+    "typeRoots": ["node_modules/@types"],
+    "lib": ["es2018"],
+    "paths": {
+      "ajwah-angular-store": ["dist/ajwah-store"],
+      "ajwah-angular-store/*": ["dist/ajwah-store/*"]
+    }
+  }
 }

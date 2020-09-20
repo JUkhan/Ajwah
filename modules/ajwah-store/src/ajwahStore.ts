@@ -134,6 +134,9 @@ export class AjwahStore<S = any> {
   get actions(): Actions {
     return this._actions;
   }
+  getValue(): any {
+    return this._store.getValue();
+  }
   getState<T>(stateName: string): T {
     return this._store.value[stateName];
   }
