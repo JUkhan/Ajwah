@@ -98,7 +98,9 @@ export class AjwahStore<S = any> {
     callback: (action$: Actions, store: AjwahStore) => Observable<Action>,
     effectKey: string
   ): void {
-    this.unregisterEffect(effectKey);
+    if (this._effectSubscriptions.has(effectKey)) {
+      return;
+    }
     this._effectSubscriptions.set(
       effectKey,
       callback(this._actions, this).subscribe((action) => this.dispatch(action))

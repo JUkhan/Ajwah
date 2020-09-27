@@ -14,4 +14,7 @@ export class Actions {
       filter((action) => actionTypes.includes(action.type))
     );
   }
+  where(predicate: (action: Action) => boolean): Observable<Action> {
+    return this._dispatcher.pipe(filter(predicate));
+  }
 }

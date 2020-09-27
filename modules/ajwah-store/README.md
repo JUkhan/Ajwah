@@ -1,6 +1,6 @@
 # Ajwah Store
 
-Rx based state management library. Manage your application's states, effects, and actions easy way. Make apps more scalable with a unidirectional data-flow.
+A reactive state management library. Manage your application's states, effects, and actions easy way. Make apps more scalable with a unidirectional data-flow.
 
 [React Demo](https://stackblitz.com/edit/react-ts-cb9zfa?file=index.tsx) | [Vue Demo](https://codesandbox.io/s/42ql8y5x) | [Angular Demo](https://stackblitz.com/edit/angular-ajwah-test?file=src%2Fapp%2FcounterState.ts)
 
@@ -8,9 +8,8 @@ Rx based state management library. Manage your application's states, effects, an
 
 ```sh
 >> npm i ajwah-store
->> npm i react-ajwah
->> npm i vue-ajwah
->> npm i ajwah-devtools
+>> npm i react-ajwah  [optiona]
+>> npm i ajwah-devtools [optional]
 ```
 
 Declare your store as a global variable.

@@ -1,7 +1,7 @@
 {
   "name": "ajwah-store",
-  "version": "4.0.3",
-  "description": "Rx based state management library. Manage your application's states, effects, and actions easy way. Make apps more scalable with a unidirectional data-flow.",
+  "version": "4.0.4",
+  "description": "A reactive state management library. Manage your application's states, effects, and actions easy way. Make apps more scalable with a unidirectional data-flow.",
   "main": "lib/index.js",
   "types": "lib",
   "scripts": {
