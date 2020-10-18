@@ -22,7 +22,7 @@ Now register states as much as you want and consume them where ever you want in 
 
 ```ts
 //register [counter] state
-store.registerState<number>(
+store.registerState<number>({
     stateName: 'counter',
     initialState: 0,
     mapActionToState: (state, action, emit) {
@@ -36,7 +36,7 @@ store.registerState<number>(
         default:
       }
     },
-  );
+});
 
   //consuming
   store.select('counter').subscribe(console.log); // 0,1,0,1
@@ -53,7 +53,7 @@ For filtering out the `dec` action from the `counter` state:
 
 ```ts
 //register [counter] state
-store.registerState<number>(
+store.registerState<number>({
     stateName: 'counter',
     initialState: 0,
     filterActions: (action) => action.type != 'dec',
@@ -68,7 +68,7 @@ store.registerState<number>(
         default:
       }
     },
-  );
+});
 
   //consuming
   store.select('counter').subscribe(console.log); // 0,1,2
@@ -95,7 +95,7 @@ Here we are capturing the `dec` action using `whereType` and then map the action
 
 ```ts
 //register [counter] state
-store.registerState<number>(
+store.registerState<number>({
     stateName: 'counter',
     initialState: 0,
     filterActions: (action) => action.type != 'dec',
@@ -110,7 +110,7 @@ store.registerState<number>(
         default:
       }
     },
-  );
+});
 
   //consuming
   store.select('counter').subscribe(console.log); // 0,1,2,3

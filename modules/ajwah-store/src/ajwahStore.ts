@@ -45,13 +45,13 @@ export class AjwahStore<S = any> {
     this._store.value[stateName] = initialState;
     this._store.next(this._store.value);
     this.dispatch({ type: `registerState(${stateName})` });
-    var emitState = (state: M) => {
-      if (this._store.value[stateName] != state) {
+    const emitState = (state: M) => {
+      if (this._store.value[stateName] !== state) {
         this._store.value[stateName] = state;
         this._store.next(this._store.value);
       }
     };
-    if (typeof filterActions === "function") {
+    if (typeof filterActions === 'function') {
       this._stateSubscriptions.set(
         stateName,
         this._dispatcher.pipe(filter(filterActions)).subscribe((action) => {
@@ -88,7 +88,7 @@ export class AjwahStore<S = any> {
     } else {
       throw new TypeError(
         `Unexpected type '${typeof pathOrMapFn}' in select operator,` +
-          ` expected 'string' or 'function'`
+        ` expected 'string' or 'function'`
       );
     }
     return mapped$.pipe(distinctUntilChanged());
