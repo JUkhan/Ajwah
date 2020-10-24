@@ -1,9 +1,9 @@
 import store from "./store";
 import { onMounted, onUnmounted, ref } from "vue";
 
-export function useStreamByStateName(stateName, defaultValue = {}) {
+export function useStreamByStateName(stateName) {
   let subs = null;
-  let state = ref(defaultValue);
+  let state = ref(store.getState(stateName));
   onMounted(() => {
     subs = store.select(stateName).subscribe((res) => {
       state.value = res;
@@ -15,7 +15,7 @@ export function useStreamByStateName(stateName, defaultValue = {}) {
   return state;
 }
 
-export function useStreamBySelect(stream$, defaultValue = {}) {
+export function useStream(stream$, defaultValue = {}) {
   let subs = null;
   let state = ref(defaultValue);
   onMounted(() => {

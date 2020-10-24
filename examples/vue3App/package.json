@@ -6,8 +6,9 @@
     "build": "vite build"
   },
   "dependencies": {
-    "ajwah-store": "file:../../modules/ajwah-store",
     "ajwah-devtools": "file:../../modules/ajwah-devtools",
+    "ajwah-store": "file:../../modules/ajwah-store",
+    "axios": "^0.20.0",
     "rxjs": "^6.6.3",
     "vue": "^3.0.0"
   },

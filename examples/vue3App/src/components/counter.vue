@@ -15,8 +15,7 @@ import { useStreamByStateName } from "../states/useStream";
 export default {
   name: "Counter",
   setup() {
-    console.log("setup---");
-    const counter = useStreamByStateName("counter", { count: 0, msg: "" });
+    const counter = useStreamByStateName("counter");
 
     function inc() {
       store.dispatch("inc");
