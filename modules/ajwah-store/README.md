@@ -24,7 +24,7 @@ Now register states as much as you want and consume them where ever you want in 
 store.registerState<number>({
     stateName: 'counter',
     initialState: 0,
-    mapActionToState: (state, action, emit) {
+    mapActionToState: (state, action, emit)=> {
       switch (action.type) {
         case 'inc':
           emit(state + 1);
@@ -56,7 +56,7 @@ store.registerState<number>({
     stateName: 'counter',
     initialState: 0,
     filterActions: (action) => action.type != 'dec',
-    mapActionToState: (state, action, emit) {
+    mapActionToState: (state, action, emit)=> {
       switch (action.type) {
         case 'inc':
           emit(state + 1);
@@ -98,7 +98,7 @@ store.registerState<number>({
     stateName: 'counter',
     initialState: 0,
     filterActions: (action) => action.type != 'dec',
-    mapActionToState: (state, action, emit) {
+    mapActionToState: (state, action, emit)=> {
       switch (action.type) {
         case 'inc':
           emit(state + 1);
