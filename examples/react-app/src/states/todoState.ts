@@ -1,3 +1,6 @@
+import { map } from 'rxjs/operators';
+import { Action } from 'ajwah-store';
+import { Observable } from 'rxjs';
 import store from "./store";
 import { addTodo, getTodos, removeTodo, updateTodo } from '../api/todoApi';
 import { SearchCategory, TodoActions, TodoState, Todo } from '../models/todo';
@@ -12,13 +15,13 @@ store.registerState<TodoState>({
                 emit({ ...state, todos: action.payload });
                 break;
             case TodoActions.loadtodos:
-                getTodos().subscribe(res => store.dispatch(TodoActions.loadEnd, res));
+                callApi<Todo[]>(getTodos(), apiRes => ({ type: TodoActions.loadEnd, payload: apiRes }));
                 break;
             case TodoActions.addEnd:
                 emit({ ...state, todos: [action.payload, ...state.todos] });
                 break;
             case TodoActions.addTodo:
-                addTodo(action.payload).subscribe(res => store.dispatch(TodoActions.addEnd, res));
+                callApi<Todo>(addTodo(action.payload), apiRes => ({ type: TodoActions.addEnd, payload: apiRes }));
                 break;
             case TodoActions.updateEnd:
                 emit({
@@ -29,17 +32,28 @@ store.registerState<TodoState>({
                 });
                 break;
             case TodoActions.updateTodo:
-                updateTodo(action.payload).subscribe(res => store.dispatch(TodoActions.updateEnd, res));
+                callApi<Todo>(updateTodo(action.payload), apiRes => ({ type: TodoActions.updateEnd, payload: apiRes }));
                 break;
             case TodoActions.removeEnd:
                 emit({ ...state, todos: state.todos.filter(todo => todo.id !== action.payload) });
                 break;
             case TodoActions.removeTodo:
-                removeTodo(action.payload).subscribe(res => store.dispatch(TodoActions.removeEnd, res));
+                callApi<number>(removeTodo(action.payload), apiRes => ({ type: TodoActions.removeEnd, payload: apiRes }));
                 break;
             case TodoActions.searchCategory:
                 emit({ ...state, searchCategory: action.payload });
                 break;
+            case TodoActions.refresh: console.log('refresh...');
+                emit({ ...state, todos: [...state.todos] });
+                break;
         }
     }
 });
+
+function callApi<T>(stream: Observable<T>, mapCallback: (data: T) => Action): void {
+    stream.pipe(map(mapCallback)).subscribe(
+        action => store.dispatch(action),
+        err => store.dispatch({ type: TodoActions.error, payload: err }),
+        () => console.info('done')
+    );
+}

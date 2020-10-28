@@ -1,7 +1,9 @@
-import { pluck, map, exhaustMap, repeat, takeUntil, endWith } from 'rxjs/operators';
+import { Observable } from 'rxjs';
+import { pluck, map, exhaustMap, repeat, takeUntil, endWith, delay, startWith, mergeAll, tap } from 'rxjs/operators';
 import store from '../states/store';
 import { tween } from './rxAnimationService';
 import { TodoState, SearchCategory, TodoActions } from '../models/todo';
+import { merge } from 'rxjs';
 
 
 const todos$ = store.select<TodoState>('todos').pipe(
@@ -31,12 +33,33 @@ const end$ = store.actions.whereTypes([
     TodoActions.loadEnd, TodoActions.addEnd,
     TodoActions.updateEnd, TodoActions.removeEnd]);
 
+const _error$ = store.actions.whereType(TodoActions.error);
+
+const errorEnd$ = _error$.pipe(
+    delay(5 * 1000)
+);
+
+const stopLoading$ = merge(end$, _error$);
+
 const rotate$ = start$.pipe(
     exhaustMap(() => tween(0, 365, 500).pipe(
         repeat(),
-        takeUntil(end$),
+        takeUntil(stopLoading$),
         endWith(0)
     ))
 );
+
+
+const error$ = merge([
+    _error$.pipe(
+        map((action) => action.payload.toString())
+    ),
+    errorEnd$.pipe(
+        map(_ => '')
+    )
+]).pipe(
+    mergeAll()
+);
+
 const addEnd$ = store.actions.whereType(TodoActions.addEnd);
-export { todos$, searchCategory$, activeItem$, rotate$, TodoActions, SearchCategory, addEnd$ };
+export { todos$, searchCategory$, activeItem$, rotate$, TodoActions, SearchCategory, addEnd$, error$ };

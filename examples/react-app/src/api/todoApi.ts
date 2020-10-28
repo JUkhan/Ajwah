@@ -1,4 +1,4 @@
-import { of } from 'rxjs';
+import { of, throwError } from 'rxjs';
 import { delay } from 'rxjs/operators';
 let id = 4;
 export function getTodos() {
@@ -13,6 +13,9 @@ export function addTodo(todo: any) {
     return of(todo).pipe(delay(1000));
 }
 export function updateTodo(todo: any) {
+    if (todo.completed && todo.description.startsWith('Learn Reactive')) {
+        return throwError(new Error('Please take your time. Learning reactive programming is not so easy'));
+    }
     return of({ ...todo }).pipe(delay(1000));
 }
 export function removeTodo(id: number) {

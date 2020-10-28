@@ -2,3 +2,7 @@
 .active {
   color: yellowgreen;
 }
+.errors{
+  text-align: center;
+  color: brown;
+}

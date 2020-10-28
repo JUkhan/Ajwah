@@ -7,7 +7,10 @@ export enum TodoActions {
     updateEnd = 'todos-update-end',
     removeTodo = 'todos-remove',
     removeEnd = 'todos-remove-end',
-    searchCategory = 'todos-search-category'
+    searchCategory = 'todos-search-category',
+    error = 'todos-error',
+    errorEnd = 'todos-error-end',
+    refresh = 'todos-refresh',
 };
 
 export enum SearchCategory {
