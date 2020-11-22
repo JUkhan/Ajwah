@@ -1,4 +1,4 @@
-import { BehaviorSubject, Subscription, Observable } from "rxjs";
+import { BehaviorSubject, Subscription, Observable, merge } from "rxjs";
 import {
   map,
   distinctUntilChanged,
@@ -19,6 +19,7 @@ export interface RegisterState<M> {
   ) => void;
   filterActions?: (action: Action) => boolean;
 }
+type EffectCallback = (action$: Actions, store: AjwahStore) => Observable<Action>;
 
 export class AjwahStore<S = any> {
   private _dispatcher: BehaviorSubject<Action>;
@@ -95,15 +96,16 @@ export class AjwahStore<S = any> {
   }
 
   registerEffect(
-    callback: (action$: Actions, store: AjwahStore) => Observable<Action>,
-    effectKey: string
+    effectKey: string,
+    ...callbacks: EffectCallback[]
   ): void {
     if (this._effectSubscriptions.has(effectKey)) {
       return;
     }
     this._effectSubscriptions.set(
       effectKey,
-      callback(this._actions, this).subscribe((action) => this.dispatch(action))
+      merge(...callbacks.map(cb => cb(this._actions, this)))
+        .subscribe((action) => this.dispatch(action))
     );
     this.dispatch({ type: `registerEffect(${effectKey})` });
   }

@@ -28,7 +28,7 @@ import { Store } from '../services/store';
 export class Counter {
   @Input() counter: any;
 
-  constructor(public store: Store) {}
+  constructor(public store: Store) { }
 
   inc() {
     this.store.dispatch(INCREMENT);
@@ -49,12 +49,12 @@ export class Counter {
   effectKey = 'asyncInc-effect';
   addEffect() {
     this.store.registerEffect(
+      this.effectKey,
       (action$, _) =>
         action$.whereType('AsyncInc').pipe(
           debounceTime(1000),
           map((a) => ({ type: 'Inc' }))
-        ),
-      this.effectKey
+        )
     );
   }
   removeEffect() {

@@ -11,7 +11,7 @@ A reactive state management library. Manage your application's states, effects, 
 >> npm i ajwah-devtools [optional]
 ```
 
-Declare your store as a global variable or enable `exposeApiGlobally:true`.
+Declare your store as a global variable.
 
 ```dart
 const store = new AjwahStore();
@@ -82,11 +82,11 @@ store.registerState<number>({
 Now `dec` action is useless. Let's add an `effect` on `dec` action:
 
 ```ts
-store.registerEffect(
+store.registerEffect('effect-key',
       (action$, store) =>
           action$.whereType('dec')
-          .map((event) => ({type: 'inc'})),
-      effectKey: 'test');
+          .map((event) => ({type: 'inc'}))
+      );
 
 ```
 
@@ -115,10 +115,10 @@ store.registerState<number>({
   store.select('counter').subscribe(console.log); // 0,1,2,3
 
   //effect on dec action - so that it works as inc
-  store.registerEffect(
+  store.registerEffect('effect-key',
       (action$, store) =>
-          action$.whereType('dec').map((event) => ({type: 'inc'})),
-      effectKey: 'test');
+          action$.whereType('dec').map((event) => ({type: 'inc'}))
+  );
 
   //dispatching actions
   store.dispatch('inc');

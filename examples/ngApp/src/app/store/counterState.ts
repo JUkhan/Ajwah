@@ -23,6 +23,7 @@ export function registerCounterState(store: Store) {
       }
     },
   });
+
 }
 
 function getData(num: number): Promise<any> {

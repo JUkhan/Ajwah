@@ -57,3 +57,4 @@ function callApi<T>(stream: Observable<T>, mapCallback: (data: T) => Action): vo
         () => console.info('done')
     );
 }
+

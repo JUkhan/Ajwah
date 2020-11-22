@@ -50,16 +50,13 @@ const rotate$ = start$.pipe(
 );
 
 
-const error$ = merge([
+const error$ = merge(
     _error$.pipe(
         map((action) => action.payload.toString())
     ),
     errorEnd$.pipe(
         map(_ => '')
     )
-]).pipe(
-    mergeAll()
-);
-
+)
 const addEnd$ = store.actions.whereType(TodoActions.addEnd);
 export { todos$, searchCategory$, activeItem$, rotate$, TodoActions, SearchCategory, addEnd$, error$ };
