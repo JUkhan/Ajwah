@@ -183,4 +183,5 @@ function getFilteredTodos(): Observable<Todo[]> {
     }
   });
 }
+
 ```
