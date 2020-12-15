@@ -2,7 +2,7 @@
 
 A reactive state management library. Manage your application's states, effects, and actions easy way. Make apps more scalable with a unidirectional data-flow.
 
- [Angular Demo](https://stackblitz.com/edit/angular-ajwah-test?file=src%2Fapp%2Fapp.component.ts) | [React Demo](https://stackblitz.com/edit/react-ts-cb9zfa?file=index.tsx) | [Vue Demo](https://stackblitz.com/edit/vue-ajwah-store?file=src%2FApp.vue) 
+[Angular Demo](https://stackblitz.com/edit/angular-ajwah-test?file=src%2Fapp%2Fapp.component.ts) | [React Demo](https://stackblitz.com/edit/react-ts-cb9zfa?file=index.tsx) | [Vue Demo](https://stackblitz.com/edit/vue-ajwah-store?file=src%2FApp.vue)
 
 ### Installation for (angular/react/vue/others)
 
@@ -22,28 +22,28 @@ Now register states as much as you want and consume them where ever you want in 
 ```ts
 //register [counter] state
 store.registerState<number>({
-    stateName: 'counter',
-    initialState: 0,
-    mapActionToState: (state, action, emit)=> {
-      switch (action.type) {
-        case 'inc':
-          emit(state + 1);
-          break;
-        case 'dec':
-          emit(state - 1);
-          break;
-        default:
-      }
-    },
+  stateName: "counter",
+  initialState: 0,
+  mapActionToState: (state, action, emit) => {
+    switch (action.type) {
+      case "inc":
+        emit(state + 1);
+        break;
+      case "dec":
+        emit(state - 1);
+        break;
+      default:
+    }
+  },
 });
 
-  //consuming
-  store.select('counter').subscribe(console.log); // 0,1,0,1
+//consuming
+store.select("counter").subscribe(console.log); // 0,1,0,1
 
-  //dispatching actions
-  store.dispatch('inc');
-  store.dispatch('dec');
-  store.dispatch('inc');
+//dispatching actions
+store.dispatch("inc");
+store.dispatch("dec");
+store.dispatch("inc");
 ```
 
 You can easily filter out actions using the optional `filterActions:(action)=>bool` param of `registerState` method.
@@ -53,41 +53,37 @@ For filtering out the `dec` action from the `counter` state:
 ```ts
 //register [counter] state
 store.registerState<number>({
-    stateName: 'counter',
-    initialState: 0,
-    filterActions: (action) => action.type != 'dec',
-    mapActionToState: (state, action, emit)=> {
-      switch (action.type) {
-        case 'inc':
-          emit(state + 1);
-          break;
-        case 'dec':
-          emit(state - 1);
-          break;
-        default:
-      }
-    },
+  stateName: "counter",
+  initialState: 0,
+  filterActions: (action) => action.type != "dec",
+  mapActionToState: (state, action, emit) => {
+    switch (action.type) {
+      case "inc":
+        emit(state + 1);
+        break;
+      case "dec":
+        emit(state - 1);
+        break;
+      default:
+    }
+  },
 });
 
-  //consuming
-  store.select('counter').subscribe(console.log); // 0,1,2
+//consuming
+store.select("counter").subscribe(console.log); // 0,1,2
 
-  //dispatching actions
-  store.dispatch('inc');
-  store.dispatch('dec');
-  store.dispatch('inc');
-
+//dispatching actions
+store.dispatch("inc");
+store.dispatch("dec");
+store.dispatch("inc");
 ```
 
 Now `dec` action is useless. Let's add an `effect` on `dec` action:
 
 ```ts
-store.registerEffect('effect-key',
-      (action$, store) =>
-          action$.whereType('dec')
-          .map((event) => ({type: 'inc'}))
-      );
-
+store.registerEffect("effect-key", (action$, store) =>
+  action$.whereType("dec").map((event) => ({ type: "inc" }))
+);
 ```
 
 Here we are capturing the `dec` action using `whereType` and then map the action as an `inc` action
@@ -95,36 +91,34 @@ Here we are capturing the `dec` action using `whereType` and then map the action
 ```ts
 //register [counter] state
 store.registerState<number>({
-    stateName: 'counter',
-    initialState: 0,
-    filterActions: (action) => action.type != 'dec',
-    mapActionToState: (state, action, emit)=> {
-      switch (action.type) {
-        case 'inc':
-          emit(state + 1);
-          break;
-        case 'dec':
-          emit(state - 1);
-          break;
-        default:
-      }
-    },
+  stateName: "counter",
+  initialState: 0,
+  filterActions: (action) => action.type != "dec",
+  mapActionToState: (state, action, emit) => {
+    switch (action.type) {
+      case "inc":
+        emit(state + 1);
+        break;
+      case "dec":
+        emit(state - 1);
+        break;
+      default:
+    }
+  },
 });
 
-  //consuming
-  store.select('counter').subscribe(console.log); // 0,1,2,3
+//consuming
+store.select("counter").subscribe(console.log); // 0,1,2,3
 
-  //effect on dec action - so that it works as inc
-  store.registerEffect('effect-key',
-      (action$, store) =>
-          action$.whereType('dec').map((event) => ({type: 'inc'}))
-  );
+//effect on dec action - so that it works as inc
+store.registerEffect("effect-key", (action$, store) =>
+  action$.whereType("dec").map((event) => ({ type: "inc" }))
+);
 
-  //dispatching actions
-  store.dispatch('inc');
-  store.dispatch('dec');
-  store.dispatch('inc');
-
+//dispatching actions
+store.dispatch("inc");
+store.dispatch("dec");
+store.dispatch("inc");
 ```
 
 If you want to log all the action and state changed - just use the `exportState()` function. Call this function just after your `createStore()` function.
