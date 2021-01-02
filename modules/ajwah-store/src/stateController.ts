@@ -37,5 +37,11 @@ export abstract class StateController<S> {
     get stream$(): Observable<S>{
         return this._store.select(this._stateName);
     }
+    get currentState(): S{
+      return this._currentState;
+    }
+    dispose() :void{
+      this._store.dispose();
+    }
     
   }

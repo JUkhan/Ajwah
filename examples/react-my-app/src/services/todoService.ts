@@ -26,12 +26,12 @@ const activeItem$ = store.select<TodoState>('todos').pipe(
 );
 
 
-const start$ = store.actions.whereTypes([
+const start$ = store.actions.whereTypes(
     TodoActions.loadtodos, TodoActions.addTodo,
-    TodoActions.updateTodo, TodoActions.removeTodo]);
-const end$ = store.actions.whereTypes([
+    TodoActions.updateTodo, TodoActions.removeTodo);
+const end$ = store.actions.whereTypes(
     TodoActions.loadEnd, TodoActions.addEnd,
-    TodoActions.updateEnd, TodoActions.removeEnd]);
+    TodoActions.updateEnd, TodoActions.removeEnd);
 
 const _error$ = store.actions.whereType(TodoActions.error);
 
