@@ -51,7 +51,7 @@ export class CounterService extends StateController<number> {
   get loading$(): Observable<boolean> {
     const start = this.actions.whereType("async-inc");
     const done = this.actions.whereType("async-inc-done");
-    return merge<boolean>(start.pipe(mapTo(true)), done.pipe(mapTo(false)));
+    return merge(start.pipe(mapTo(true)), done.pipe(mapTo(false)));
   }
 }
 ```
