@@ -5,8 +5,8 @@ import { tween } from './rxAnimationService';
 import { TodoState, SearchCategory, TodoActions } from '../models/todo';
 import { merge } from 'rxjs';
 
-
-const todos$ = store.select<TodoState>('todos').pipe(
+const stream$= store.select<TodoState>('todos');
+const todos$ = stream$.pipe(
     map(state => {
         switch (state.searchCategory) {
             case SearchCategory.active:
@@ -18,8 +18,8 @@ const todos$ = store.select<TodoState>('todos').pipe(
         }
     })
 );
-const searchCategory$ = store.select<TodoState>('todos').pipe(pluck('searchCategory'));
-const activeItem$ = store.select<TodoState>('todos').pipe(
+const searchCategory$ = stream$.pipe(pluck('searchCategory'));
+const activeItem$ = stream$.pipe(
     pluck('todos'),
     map(arr => arr.filter(todo => !todo.completed)),
     map(arr => `${arr.length} items left`),
