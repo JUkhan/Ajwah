@@ -1,4 +1,6 @@
-import { Component, OnInit } from '@angular/core';
+import { Subscription } from 'rxjs';
+import { TodosController } from './controllers/todos-controller';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 
 @Component({
   selector: 'app-todos',
@@ -6,10 +8,11 @@ import { Component, OnInit } from '@angular/core';
   styleUrls: ['./todos.component.css']
 })
 export class TodosComponent implements OnInit {
-
-  constructor() { }
-
+ 
+  constructor(public controller: TodosController) {}
+  
   ngOnInit(): void {
+   !this.controller.currentState.todos.length &&  this.controller.loadTodos();
   }
 
 }

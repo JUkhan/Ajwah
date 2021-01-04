@@ -1,5 +1,5 @@
 import { mapTo } from 'rxjs/operators';
-import { StateController } from 'ajwah-store';
+import { Action, StateController } from 'ajwah-store';
 import { Injectable } from '@angular/core';
 import { merge, Observable } from 'rxjs';
 
@@ -30,9 +30,13 @@ export class CounterService extends StateController<number>{
   get loading$():Observable<boolean>{
       const start = this.actions.whereType('async-inc');
       const done = this.actions.whereType('async-inc-done')
-      return merge<boolean>(
+      return merge(
           start.pipe(mapTo(true)),
           done.pipe(mapTo(false)),
       );
+  }
+  onAction(state:number, action:Action){
+    console.log(state, action);
+    
   }
 }

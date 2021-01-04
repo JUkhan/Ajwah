@@ -5,9 +5,9 @@ import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
   selector: 'app-counter',
   template: `
     <p>
-      <button class="btn" (click)="service.increment()">+</button>
-      <button class="btn" (click)="service.decrement()">-</button>
-      <button class="btn" (click)="service.asyncInc()">async(+)</button>
+      <button class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-full" (click)="service.increment()">+</button>
+      <button class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-full" (click)="service.decrement()">-</button>
+      <button class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-full" (click)="service.asyncInc()">async(+)</button>
       {{ service.stream$|async}} <app-loading></app-loading>
     </p>
   `,

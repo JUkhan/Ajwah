@@ -1,0 +1,9 @@
+<div  *ngIf="controller.searchCategory$|async as sc">
+    <div class="float-left">{{controller.activeItem$|async}}</div>
+    <div class="float-right">
+        <button class="mr-2 text-blue-500 hover:text-blue-800" [class.active]="sc===1" (click)="controller.all()">All</button>
+        <button class="mr-2 text-blue-500 hover:text-blue-800" [class.active]="sc===2" (click)="controller.active()">Active</button>
+        <button class="mr-2 text-blue-500 hover:text-blue-800" [class.active]="sc===3" (click)="controller.completed()">Completed</button>
+    </div>
+    <div class="clear-both"></div>
+</div>

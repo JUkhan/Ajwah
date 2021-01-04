@@ -1,4 +1,4 @@
-# Ajwah Store
+## Ajwah Store
 
 A reactive state management library. Manage your application's states, effects, and actions easy way. Make apps more scalable with a unidirectional data-flow.
 

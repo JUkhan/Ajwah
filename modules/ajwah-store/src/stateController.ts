@@ -1,6 +1,7 @@
 import { Observable } from 'rxjs';
 import { AjwahStore } from './ajwahStore';
 import { Actions } from "./actions";
+import { Action } from "./action";
 export abstract class StateController<S> {
     private _stateName:string;
     private  _currentState:S;
@@ -20,6 +21,7 @@ export abstract class StateController<S> {
           mapActionToState: (state, action, emit)=> {
             this._currentState = state;
             this._emit = emit;
+            this.onAction(state, action);
           }});
     }
     update(callback:(state: S)=>S):void {
@@ -43,5 +45,8 @@ export abstract class StateController<S> {
     dispose() :void{
       this._store.dispose();
     }
-    
+    get store(): AjwahStore{
+      return this._store;
+    }
+    onAction(state: S, action: Action){}
   }

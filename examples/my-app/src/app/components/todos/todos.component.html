@@ -1,1 +1,8 @@
-<p>todos works!</p>
+
+<div class="bg-white rounded shadow p-6 m-4">
+    <app-loading></app-loading>
+    <app-add-todo></app-add-todo>
+    <app-toolbar></app-toolbar>
+    <app-todo-item  *ngFor="let todo of (controller.todos$|async)" [todo]="todo"></app-todo-item>
+    <app-error></app-error>
+</div>

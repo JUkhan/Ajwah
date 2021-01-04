@@ -1,0 +1,19 @@
+<div class="flex bg-white border p-2 justify-between">
+    <div>
+         <input class="align-middle" type="checkbox"
+         [checked]="todo.completed" #inputCom
+         (change)="updateCompleted(inputCom.checked)">
+         <span style="cursor: pointer;" (dblclick)="isDblclick=true" *ngIf="!isDblclick else edit">
+             {{todo?.description}}
+         </span>
+    </div> 
+    <div>
+        <button class="text-red-200 hover:text-red-600"
+         (click)="service.removeTodo(todo)" >Remove</button>
+    </div>
+ </div>
+ <ng-template #edit>
+ <form class="inline-block" (ngSubmit)="updateDescription(todo.description)">
+     <input class="ml-1 pl-2 border" (blur)="isDblclick=false" autofocus type="text" name="description" [(ngModel)]="todo.description">
+ </form>
+ </ng-template>
