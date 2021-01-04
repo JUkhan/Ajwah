@@ -26,7 +26,7 @@ import { merge, Observable } from "rxjs";
 })
 export class CounterService extends StateController<number> {
   constructor() {
-    super("cointer", 0);
+    super("counter", 0);
   }
 
   increment() {
