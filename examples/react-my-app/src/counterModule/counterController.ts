@@ -6,7 +6,7 @@ import { merge, Observable } from 'rxjs';
 export class CounterController extends StateController<number>{
 
   constructor() { 
-    super('cointer', 0)
+    super('cointer', 2)
   }
   increment(){
     this.update(state=>state+1);

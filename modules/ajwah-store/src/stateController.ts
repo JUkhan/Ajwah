@@ -5,7 +5,7 @@ import { Action } from "./action";
 export abstract class StateController<S> {
     private _stateName:string;
     private  _currentState:S;
-    private _emit: (S)=>void;
+    private _emit: any;
     private _store: AjwahStore;
     constructor(
       stateName:string,

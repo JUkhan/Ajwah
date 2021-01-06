@@ -1,30 +1,29 @@
 {
-  "name": "ajwah-store",
-  "version": "4.2.1",
-  "description": "A reactive state management library. Manage your application's states, effects, and actions easy way. Make apps more scalable with a unidirectional data-flow.",
+  "name": "ajwah-test",
+  "version": "1.1.1",
+  "description": "test lib for ajwah-store",
   "main": "./dist/cjs/index.js",
   "module": "./dist/esm5/index.js",
   "es2015": "./dist/esm/index.js",
   "types": "./dist/types/index.d.ts",
-  "sideEffects": false,
   "scripts": {
     "compile": "tsc -b ./src/tsconfig.cjs.json ./src/tsconfig.cjs.spec.json ./src/tsconfig.esm.json ./src/tsconfig.esm5.json ./src/tsconfig.esm5.rollup.json ./src/tsconfig.types.json",
     "build:clean": "shx rm -rf ./dist",
     "build:global": "node ./tools/make-umd-bundle.js && node ./tools/make-closure-core.js",
     "build:package": "npm-run-all build:clean compile build:global && node ./tools/prepare-package.js && node ./tools/generate-alias.js",
-    "api_guardian:update": "tsc -b ./src/tsconfig.types.json && ts-api-guardian --outDir api_guard dist/types/index.d.ts dist/types/ajax/index.d.ts dist/types/fetch/index.d.ts dist/types/operators/index.d.ts dist/types/testing/index.d.ts dist/types/webSocket/index.d.ts",
-    "api_guardian": "ts-api-guardian --verifyDir api_guard dist/types/index.d.ts dist/types/ajax/index.d.ts dist/types/fetch/index.d.ts dist/types/operators/index.d.ts dist/types/testing/index.d.ts dist/types/webSocket/index.d.ts",
-    "rollup":"rollup ./dist/esm5_for_rollup/internal/umd.js --format umd --name myBundle --file bundle.js"
+    "test": "jest"
   },
   "devDependencies": {
     "@angular-devkit/build-optimizer": "0.4.6",
     "@angular-devkit/schematics": "^7.3.9",
+    "@types/jest": "^26.0.19",
     "@types/lodash": "4.14.102",
     "@types/node": "^14.14.6",
     "@types/shelljs": "^0.8.8",
     "@types/sinon": "4.1.3",
     "@types/sinon-chai": "2.7.29",
     "@types/source-map": "^0.5.2",
+    "ajwah-store": "file:../ajwah-store",
     "babel-polyfill": "6.26.0",
     "check-side-effects": "0.0.23",
     "color": "3.0.0",
@@ -40,6 +39,7 @@
     "glob": "7.1.2",
     "google-closure-compiler-js": "20170218.0.0",
     "husky": "^4.2.5",
+    "jest": "^26.6.3",
     "klaw-sync": "3.0.2",
     "lint-staged": "^10.2.11",
     "lodash": "^4.17.15",
@@ -57,10 +57,9 @@
     "rxjs": "^6.0.0",
     "shelljs": "^0.8.4",
     "shx": "^0.3.2",
-    "sinon": "4.3.0",
-    "sinon-chai": "2.14.0",
     "source-map-support": "0.5.3",
     "systemjs": "^0.21.0",
+    "ts-jest": "^26.4.4",
     "ts-node": "^9.1.1",
     "typescript": "^4.1.3",
     "validate-commit-msg": "2.14.0",
@@ -75,9 +74,8 @@
   },
   "keywords": [
     "ajwah",
-    "rxjs",
-    "reactive",
-    "redux"
+    "ajwah-test",
+    "reactive"
   ],
   "files": [
     "dist/bundles",

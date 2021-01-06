@@ -13,7 +13,7 @@
       "esnext"
     ],
     "target": "esnext",
-    "baseUrl": ".",
+    "baseUrl": "./",
     "paths": {
       "ajwah-store": ["./src/index"]
     }

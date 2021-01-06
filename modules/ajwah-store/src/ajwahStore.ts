@@ -112,7 +112,7 @@ export class AjwahStore<S = any> {
 
   unregisterEffect(effectKey: string): void {
     if (this._effectSubscriptions.has(effectKey)) {
-      this._effectSubscriptions.get(effectKey).unsubscribe();
+      this._effectSubscriptions.get(effectKey)?.unsubscribe();
       this._effectSubscriptions.delete(effectKey);
       this.dispatch({ type: `unregisterEffect(${effectKey})` });
     }
@@ -120,7 +120,7 @@ export class AjwahStore<S = any> {
 
   unregisterState(stateName: string): void {
     if (this._stateSubscriptions.has(stateName)) {
-      this._stateSubscriptions.get(stateName).unsubscribe();
+      this._stateSubscriptions.get(stateName)?.unsubscribe();
       this._stateSubscriptions.delete(stateName);
       delete this._store.value[stateName];
       this._store.next(this._store.value);
