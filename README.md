@@ -11,6 +11,7 @@ todos : [Angular Demo](https://stackblitz.com/edit/angular-ajwah-test?file=src%2
 ```sh
 >> npm i ajwah-store
 >> npm i ajwah-devtools [optional]
+>> npm i ajwah-test  [optional]
 ```
 
 Define a state controller class
@@ -26,7 +27,7 @@ import { merge, Observable } from "rxjs";
 })
 export class CounterService extends StateController<number> {
   constructor() {
-    super("counter", 0);
+    super("counter", 2);
   }
 
   increment() {
@@ -101,4 +102,71 @@ export class LoadingComponent implements OnInit {
 
   ngOnInit(): void {}
 }
+```
+
+Testing: We need to add the testing dependency ajwah-test
+
+```ts
+import { ajwahTest } from "ajwah-test";
+import { CounterController } from "./counterController";
+
+describe("counterState", () => {
+  let cs: CounterController;
+
+  beforeEach(() => {
+    cs = new CounterController();
+  });
+  afterEach(() => {
+    cs.dispose();
+  });
+
+  it("initial state", async () => {
+    await ajwahTest({
+      build: () => cs.stream$,
+      verify: (states) => {
+        expect(states[0]).toBe(2);
+      },
+    });
+  });
+
+  it("increment", async () => {
+    await ajwahTest({
+      build: () => cs.stream$,
+      act: () => {
+        cs.increment();
+      },
+      skip: 1,
+      verify: (states) => {
+        expect(states[0]).toBe(3);
+      },
+    });
+  });
+
+  it("decrement", async () => {
+    await ajwahTest({
+      build: () => cs.stream$,
+      act: () => {
+        cs.decrement();
+      },
+      skip: 1,
+      verify: (states) => {
+        expect(states[0]).toBe(1);
+      },
+    });
+  });
+
+  it("async increment", async () => {
+    await ajwahTest({
+      build: () => cs.stream$,
+      act: () => {
+        cs.asyncInc();
+      },
+      skip: 1,
+      wait: 1000,
+      verify: (states) => {
+        expect(states[0]).toBe(3);
+      },
+    });
+  });
+});
 ```

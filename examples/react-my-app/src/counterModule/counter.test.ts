@@ -53,7 +53,7 @@ describe('counterState', ()=>{
             act:()=>{
                 cs.asyncInc()
             },
-            skip:1,
+            skip:1 ,
             wait:1000,
             verify:(states)=>{
                 expect(states[0]).toBe(3)

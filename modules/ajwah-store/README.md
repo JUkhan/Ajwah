@@ -104,7 +104,7 @@ export class LoadingComponent implements OnInit {
 }
 ```
 
-Testing: We need to add the testing dependency ajwa-test
+Testing: We need to add the testing dependency ajwah-test
 
 ```ts
 import { ajwahTest } from "ajwah-test";

@@ -10,7 +10,7 @@
     "@types/node": "^12.19.11",
     "@types/react": "^16.14.2",
     "@types/react-dom": "^16.9.10",
-    "ajwah-store": "file:../../modules/ajwah-store",
+    "ajwah-store": "4.2.1",
     "react": "^17.0.1",
     "react-dom": "^17.0.1",
     "react-hook-form": "^6.14.0",
@@ -20,7 +20,7 @@
     "web-vitals": "^0.2.4"
   },
   "devDependencies": {
-    "ajwah-test": "file:../../modules/ajwah-test"
+    "ajwah-test": "1.1.1"
   },
   "scripts": {
     "start": "react-scripts start",
