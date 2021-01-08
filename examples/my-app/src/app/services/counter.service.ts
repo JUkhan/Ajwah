@@ -1,3 +1,4 @@
+import { RootState } from './root-state';
 import { mapTo } from 'rxjs/operators';
 import { Action, StateController } from 'ajwah-store';
 import { Injectable } from '@angular/core';
@@ -8,8 +9,8 @@ import { merge, Observable } from 'rxjs';
 })
 export class CounterService extends StateController<number>{
 
-  constructor() { 
-    super('cointer', 0)
+  constructor(private rstore:RootState) { 
+    super('counter',0, rstore);
   }
   increment(){
     this.update(state=>state+1);
@@ -36,7 +37,6 @@ export class CounterService extends StateController<number>{
       );
   }
   onAction(state:number, action:Action){
-    console.log(state, action);
-    
+    console.log(state, action)
   }
 }

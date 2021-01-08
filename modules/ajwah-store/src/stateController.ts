@@ -14,7 +14,7 @@ export abstract class StateController<S> {
     )   {
       this._currentState = initialState;
       this._stateName = stateName;
-      this._store = store==null? new AjwahStore():store;
+      this._store = store instanceof AjwahStore?store: new AjwahStore();
       this._store.registerState<S>({
           stateName: this._stateName,
           initialState: this._currentState,
@@ -48,5 +48,5 @@ export abstract class StateController<S> {
     get store(): AjwahStore{
       return this._store;
     }
-    onAction(state: S, action: Action){}
+    protected onAction(state: S, action: Action){}
   }
