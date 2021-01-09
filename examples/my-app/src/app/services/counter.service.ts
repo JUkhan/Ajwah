@@ -13,6 +13,8 @@ export class CounterService extends StateController<number>{
     super('counter',0, rstore);
   }
   increment(){
+    this.update(this.currentState+3);
+    
     this.update(state=>state+1);
   }
   decrement(){
@@ -27,6 +29,7 @@ export class CounterService extends StateController<number>{
       })
       this.dispatch('async-inc-done')
       this.increment()
+      this.dispose()
   }
   get loading$():Observable<boolean>{
       const start = this.actions.whereType('async-inc');

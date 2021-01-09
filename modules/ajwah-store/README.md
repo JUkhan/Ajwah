@@ -40,9 +40,9 @@ export class CounterService extends StateController<number> {
 
   async asyncInc() {
     this.dispatch("async-inc");
-    await new Promise((resolver) => {
+    await new Promise((resolve) => {
       setTimeout(() => {
-        resolver(2);
+        resolve(2);
       }, 1000);
     });
     this.dispatch("async-inc-done");

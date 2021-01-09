@@ -2,6 +2,7 @@ import { Observable } from 'rxjs';
 import { AjwahStore } from './ajwahStore';
 import { Actions } from "./actions";
 import { Action } from "./action";
+type UpdateStateCallback<S> = (state:S) => S; 
 export abstract class StateController<S> {
     private _stateName:string;
     private  _currentState:S;
@@ -24,13 +25,18 @@ export abstract class StateController<S> {
             this.onAction(state, action);
           }});
     }
-    update(callback:(state: S)=>S):void {
-      this._currentState = callback(this._currentState);
+
+    update(stateOrCallback:UpdateStateCallback<S>|S):void {
+      const cb = stateOrCallback as any;
+      this._currentState =(typeof cb ==='function')? cb(this._currentState):cb;
       this._emit(this._currentState);
     }
   
-    dispatch( actionName: any, payload?:any): void {
-      this._store.dispatch(actionName, payload);
+    dispatch<V extends Action = Action>(actionName: V): void;
+    dispatch(actionName: string): void;
+    dispatch(actionName: string, payload?: any): void;
+    dispatch(actionName: string | Action, payload?: any): void {
+      this._store.dispatch(actionName as any, payload);
     }
   
     get actions(): Actions{
@@ -50,3 +56,4 @@ export abstract class StateController<S> {
     }
     protected onAction(state: S, action: Action){}
   }
+  
