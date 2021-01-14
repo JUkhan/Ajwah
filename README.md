@@ -40,9 +40,9 @@ export class CounterService extends StateController<number> {
 
   async asyncInc() {
     this.dispatch("async-inc");
-    await new Promise((resolver) => {
+    await new Promise((resolve) => {
       setTimeout(() => {
-        resolver(2);
+        resolve(2);
       }, 1000);
     });
     this.dispatch("async-inc-done");
@@ -104,7 +104,7 @@ export class LoadingComponent implements OnInit {
 }
 ```
 
-Testing: We need to add the testing dependency ajwah-test
+Testing `CounterState`
 
 ```ts
 import { ajwahTest } from "ajwah-test";
@@ -115,9 +115,6 @@ describe("counterState", () => {
 
   beforeEach(() => {
     cs = new CounterController();
-  });
-  afterEach(() => {
-    cs.dispose();
   });
 
   it("initial state", async () => {

@@ -21,7 +21,7 @@ export class CounterService extends StateController<number>{
       this.update(state=>state-1)
   }
   async asyncInc(){
-      this.dispatch('async-inc')
+      this.dispatch({type:'async-inc'})
       await new Promise(resolver=>{
           setTimeout(() => {
               resolver(2)
@@ -29,7 +29,6 @@ export class CounterService extends StateController<number>{
       })
       this.dispatch('async-inc-done')
       this.increment()
-      this.dispose()
   }
   get loading$():Observable<boolean>{
       const start = this.actions.whereType('async-inc');

@@ -2,7 +2,7 @@ import { Observable } from 'rxjs';
 import { AjwahStore } from './ajwahStore';
 import { Actions } from "./actions";
 import { Action } from "./action";
-type UpdateStateCallback<S> = (state:S) => S; 
+type StateCallback<S> = (state:S) => S; 
 export abstract class StateController<S> {
     private _stateName:string;
     private  _currentState:S;
@@ -25,13 +25,27 @@ export abstract class StateController<S> {
             this.onAction(state, action);
           }});
     }
-
-    update(stateOrCallback:UpdateStateCallback<S>|S):void {
-      const cb = stateOrCallback as any;
-      this._currentState =(typeof cb ==='function')? cb(this._currentState):cb;
+    /**
+     * This fuction merge the input state with the current store state
+     * @param state You can pass partial state or a fuction reference.
+     *
+     *### Example
+     *```
+     * //suppose state={count:0, loadinng:false}
+     *
+     * update({count:this.currentState.count+1}) //partial state
+     * 
+     * update(state=>({count:state.count+1}))     //partial state
+     * 
+     * ```
+     */
+    update(state:StateCallback<S>|S):void {
+      const cb = state as any;
+      const partialState =(typeof cb ==='function')? cb(this._currentState):cb;
+      this._currentState =typeof this._currentState ==='object'?Object.assign({}, this._currentState, partialState) :partialState;
       this._emit(this._currentState);
     }
-  
+    
     dispatch<V extends Action = Action>(actionName: V): void;
     dispatch(actionName: string): void;
     dispatch(actionName: string, payload?: any): void;
@@ -47,9 +61,6 @@ export abstract class StateController<S> {
     }
     get currentState(): S{
       return this._currentState;
-    }
-    dispose() :void{
-      this._store.dispose();
     }
     get store(): AjwahStore{
       return this._store;

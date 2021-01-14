@@ -116,9 +116,6 @@ describe("counterState", () => {
   beforeEach(() => {
     cs = new CounterController();
   });
-  afterEach(() => {
-    cs.dispose();
-  });
 
   it("initial state", async () => {
     await ajwahTest({

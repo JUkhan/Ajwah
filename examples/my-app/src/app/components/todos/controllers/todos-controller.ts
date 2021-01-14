@@ -1,3 +1,4 @@
+
 import { RxAnimationService } from './../rx-animation.service';
 import { endWith, exhaustMap, map, pluck, repeat, takeUntil, delay, mapTo } from 'rxjs/operators';
 import { Todo } from './../model/todo';
@@ -35,8 +36,8 @@ export class TodosController extends StateController<TodoState>{
   get activeItem$(){
     return this.stream$.pipe(
       pluck('todos'),
-      map(arr => arr.filter(todo => !todo.completed)),
-      map(arr => `${arr.length} items left`),
+      map(arr => arr?.filter(todo => !todo.completed)),
+      map(arr => `${arr?.length} items left`),
     );
   }
    
@@ -73,23 +74,23 @@ export class TodosController extends StateController<TodoState>{
   }
 
   private setSearchCategory(searchCategory:SearchCategory){
-    this.update(state=>({...state, searchCategory}))
+    this.update(state=>({searchCategory:searchCategory} as any))
   }
 
   loadTodos(){
    this.callApi(this.api.fetch("/todos"), todos=>{
-    this.update(state=>({...state, todos}));
+    this.update(state=>({todos}));
    });
   }
   addTodo(todoItem:Todo){
     this.callApi(this.api.add("/todos", todoItem), todo=>{
-      this.update(state=>({...state, todos:[...state.todos, todo]}));
+      this.update(state=>({todos:[...state.todos, todo]}));
      });
   }
   
   updateTodo(todo:Todo){
     this.callApi(this.api.update("/todos", todo), updatedtodo=>{
-      this.update(state=>({...state, todos:state.todos.reduce((acc: Todo[], todo) => {
+      this.update(state=>({ todos:state.todos.reduce((acc: Todo[], todo) => {
         acc.push(todo.id === updatedtodo.id ? updatedtodo : todo);
         return acc;
       }, [])}));
@@ -97,7 +98,7 @@ export class TodosController extends StateController<TodoState>{
   }
   removeTodo(todo:Todo){
     this.callApi(this.api.remove("/todos/"+todo.id), id=>{
-      this.update(state=>({...state, todos:state.todos.filter(t=>t.id!==id)}));
+      this.update(state=>({todos:state.todos.filter(t=>t.id!==id)}));
      });
   }
 

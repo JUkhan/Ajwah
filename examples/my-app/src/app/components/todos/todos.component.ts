@@ -1,3 +1,4 @@
+import { Todo } from './model/todo';
 import { Subscription } from 'rxjs';
 import { TodosController } from './controllers/todos-controller';
 import { Component, OnDestroy, OnInit } from '@angular/core';
@@ -14,5 +15,7 @@ export class TodosComponent implements OnInit {
   ngOnInit(): void {
    !this.controller.currentState.todos.length &&  this.controller.loadTodos();
   }
-
+  thrackById(id:number, t:Todo){
+    return t.id
+  }
 }
