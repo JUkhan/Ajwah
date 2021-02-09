@@ -24,7 +24,7 @@ interface CounterState{
   loading?:boolean
 }
 
-export class CounterController extends s.StateController<CounterState> {
+export class CounterController extends StateController<CounterState> {
   constructor() {
     super({count:0, loading:false});
   }
