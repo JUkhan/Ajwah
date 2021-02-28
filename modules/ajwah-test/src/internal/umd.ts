@@ -1,5 +1,5 @@
 
 
-/* ajwah-store */
+/* ajwah-test */
 export * from '../index';
 

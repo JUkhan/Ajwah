@@ -13,7 +13,7 @@ export class TodosComponent implements OnInit {
   constructor(public controller: TodosController) {}
   
   ngOnInit(): void {
-   !this.controller.currentState.todos.length &&  this.controller.loadTodos();
+   //!this.controller.state.todos.length &&  this.controller.loadTodos();
   }
   thrackById(id:number, t:Todo){
     return t.id

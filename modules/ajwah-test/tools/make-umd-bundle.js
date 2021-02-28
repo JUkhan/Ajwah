@@ -5,5 +5,5 @@ fs.ensureDirSync('dist/global');
 
 rollupBundle({
   input: 'dist/esm5_for_rollup/internal/umd.js',
-  dest: 'dist/global/ajwah-store.umd.js',
+  dest: 'dist/global/ajwah-test.umd.js',
 });

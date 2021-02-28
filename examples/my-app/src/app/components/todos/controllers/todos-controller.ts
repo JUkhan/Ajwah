@@ -3,7 +3,7 @@ import { RxAnimationService } from './../rx-animation.service';
 import { endWith, exhaustMap, map, pluck, repeat, takeUntil, delay, mapTo } from 'rxjs/operators';
 import { Todo } from './../model/todo';
 import { SearchCategory, TodoState } from '../model/todo'
-import { StateController } from 'ajwah-store';
+import { StateController, dispatch, actions$ } from 'ajwah-store';
 import { Injectable } from '@angular/core';
 import { Api } from '../Api';
 import { merge, Observable } from 'rxjs';
@@ -12,12 +12,21 @@ import { merge, Observable } from 'rxjs';
 export class TodosController extends StateController<TodoState>{
 
   constructor(private api:Api, private animation:RxAnimationService) { 
-    super('todos', {todos:[], searchCategory:SearchCategory.all})
+    super('todo',
+      {todos:[], searchCategory:SearchCategory.all}
+    )
   }
   readonly SPINING_START = 'SPINING_START'
   readonly SPINING_END   = 'SPINING_END'
   readonly TODOS_ERROR   = 'TODOS_ERROR'
-
+  onInit(){
+    this.select(s=>s.searchCategory).subscribe(c=>console.log(`category:${c}`));
+    this.loadTodos();
+    this.exportState().subscribe(arr=>{
+      console.log(arr);
+      
+    });
+  }
   get todos$(){
     return this.stream$.pipe(map(state => {
       switch (state.searchCategory) {
@@ -42,9 +51,9 @@ export class TodosController extends StateController<TodoState>{
   }
    
   get rotate$(){
-    const start$ = this.actions.whereTypes(this.SPINING_START);
-    const end$ = this.actions.whereTypes(this.SPINING_END);
-    const error$ = this.actions.whereTypes(this.TODOS_ERROR);
+    const start$ = actions$.whereTypes(this.SPINING_START);
+    const end$ = actions$.whereTypes(this.SPINING_END);
+    const error$ = actions$.whereTypes(this.TODOS_ERROR);
     return start$.pipe(
       exhaustMap(() => this.animation.tween(0, 365, 500).pipe(
         repeat(),
@@ -55,7 +64,7 @@ export class TodosController extends StateController<TodoState>{
   }
  
   get error$(){
-    const error$ = this.actions.whereType(this.TODOS_ERROR);
+    const error$ = actions$.whereType(this.TODOS_ERROR);
     return merge(
       error$.pipe(pluck('payload')),
       error$.pipe(delay(2000), mapTo(''))
@@ -74,42 +83,42 @@ export class TodosController extends StateController<TodoState>{
   }
 
   private setSearchCategory(searchCategory:SearchCategory){
-    this.update(state=>({searchCategory:searchCategory} as any))
+    this.emit({searchCategory})
   }
 
   loadTodos(){
    this.callApi(this.api.fetch("/todos"), todos=>{
-    this.update(state=>({todos}));
+    this.emit({todos});
    });
   }
   addTodo(todoItem:Todo){
     this.callApi(this.api.add("/todos", todoItem), todo=>{
-      this.update(state=>({todos:[...state.todos, todo]}));
+      this.emit({todos:[...this.state.todos, todo]});
      });
   }
   
   updateTodo(todo:Todo){
     this.callApi(this.api.update("/todos", todo), updatedtodo=>{
-      this.update(state=>({ todos:state.todos.reduce((acc: Todo[], todo) => {
+      this.emit({ todos:this.state.todos.reduce((acc: Todo[], todo) => {
         acc.push(todo.id === updatedtodo.id ? updatedtodo : todo);
         return acc;
-      }, [])}));
+      }, [])});
      });
   }
   removeTodo(todo:Todo){
     this.callApi(this.api.remove("/todos/"+todo.id), id=>{
-      this.update(state=>({todos:state.todos.filter(t=>t.id!==id)}));
+      this.emit({todos:this.state.todos.filter(t=>t.id!==id)});
      });
   }
 
   callApi<T>(stream: Observable<T>,resCallback: (data: T) => void): void {
-    this.dispatch(this.SPINING_START)
+    dispatch(this.SPINING_START)
     stream.subscribe(
       res =>{
         resCallback(res)
-        this.dispatch(this.SPINING_END)
+        dispatch(this.SPINING_END)
       },
-      errors =>this.dispatch(this.TODOS_ERROR, errors.error),
+      errors =>dispatch(this.TODOS_ERROR, errors.error),
       () => console.info("done")
     );
 }

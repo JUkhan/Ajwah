@@ -15,7 +15,7 @@
     "target": "esnext",
     "baseUrl": "./",
     "paths": {
-      "ajwah-store": ["./src/index"]
+      "ajwah-test": ["./src/index"]
     }
   },
   "bazelOptions": {

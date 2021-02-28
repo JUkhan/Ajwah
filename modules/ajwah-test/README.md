@@ -13,7 +13,7 @@ import { StateController } from "ajwah-store";
 
 export class CounterState extends StateController<number> {
   constructor() {
-    super("counter", 2);
+    super({initialState:2});
   }
   increment() {
     this.update((state) => state + 1);
@@ -30,15 +30,11 @@ describe("counterState", () => {
     cs = new CounterState();
   });
 
-  afterEach(() => {
-    cs.dispose();
-  });
-
   it("initial state", async () => {
     await ajwahTest({
       build: () => cs.stream$,
       verify: (states) => {
-        expect(2).toBe(states[0]);
+        expect(states[0]).toBe(2);
       },
     });
   });
@@ -51,7 +47,7 @@ describe("counterState", () => {
       },
       skip: 1,
       verify: (states) => {
-        expect(3).toBe(states[0]);
+        expect(states[0]).toBe(3);
       },
     });
   });
@@ -64,7 +60,7 @@ describe("counterState", () => {
       },
       skip: 1,
       verify: (states) => {
-        expect(1).toBe(states[0]);
+        expect(states[0]).toBe(1);
       },
     });
   });

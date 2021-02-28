@@ -1,3 +1,3 @@
 var makeClosure = require('./make-closure');
 
-makeClosure('dist/global/ajwah-store.umd.js');
+makeClosure('dist/global/ajwah-test.umd.js');

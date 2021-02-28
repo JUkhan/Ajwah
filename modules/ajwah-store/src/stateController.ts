@@ -1,70 +1,114 @@
-import { Observable } from 'rxjs';
-import { AjwahStore } from './ajwahStore';
-import { Actions } from "./actions";
+import { BehaviorSubject, Observable, Subscription, merge } from "rxjs";
+import {
+  map,
+  distinctUntilChanged,
+  withLatestFrom
+} from "rxjs/operators";
+
 import { Action } from "./action";
-type StateCallback<S> = (state:S) => S; 
+import { dispatch } from './dispatch';
+import {dispatcher} from './dispatcher';
+
+class RemoteStateAction implements Action<(state: any) => void>{
+  constructor(public type: string, public payload: (state: any) => void) { }
+}
+
+class RemoteControllerAction implements Action<(controller: any) => void>{
+  constructor(public type: string, public payload: (controller: any) => void) { }
+}
+
 export abstract class StateController<S> {
-    private _stateName:string;
-    private  _currentState:S;
-    private _emit: any;
-    private _store: AjwahStore;
-    constructor(
-      stateName:string,
-      initialState:S,
-      store?:AjwahStore,
-    )   {
-      this._currentState = initialState;
-      this._stateName = stateName;
-      this._store = store instanceof AjwahStore?store: new AjwahStore();
-      this._store.registerState<S>({
-          stateName: this._stateName,
-          initialState: this._currentState,
-          mapActionToState: (state, action, emit)=> {
-            this._currentState = state;
-            this._emit = emit;
-            this.onAction(state, action);
-          }});
+  private _store: BehaviorSubject<S>;
+  //private _actions: Actions;
+  private _sub: Subscription;
+  private _effSub?: Subscription;
+  constructor(private stateName: string, initialState: S) {
+    this._store = new BehaviorSubject<S>(initialState);
+    //this._actions = new Actions(dispatcher);
+    const that=this as any;
+    this._sub = dispatcher.subscribe(action => {
+      this.onAction(this.state, action);
+      that[action.type]?.call(this, this.state, action);
+      if (action instanceof RemoteStateAction && action.type === this.stateName) {
+        action.payload(this.state);
+      }
+      else if (action instanceof RemoteControllerAction && action.type === this.stateName) {
+        action.payload(this);
+      }
+    });
+
+    dispatch(`@newBornState(${this.stateName})`);
+    setTimeout(() => {
+      this.onInit();
+    }, 0);
+  }
+  onAction(state: S, action: Action) { }
+  onInit() { }
+
+  select<T = any>(mapFn: ((state: S) => any)): Observable<T> {
+    let mapped$;
+    if (typeof mapFn === "function") {
+      mapped$ = this._store.pipe(map((source: any) => mapFn(source)));
+    } else {
+      throw new TypeError(
+        `Unexpected type '${typeof mapFn}' in select operator,` +
+        ` expected 'string' or 'function'`
+      );
     }
-    /**
-     * This fuction merge the input state with the current store state
-     * @param state You can pass partial state or a fuction reference.
-     *
-     *### Example
-     *```
-     * //suppose state={count:0, loadinng:false}
-     *
-     * update({count:this.currentState.count+1}) //partial state
-     * 
-     * update(state=>({count:state.count+1}))     //partial state
-     * 
-     * ```
-     */
-    update(state:StateCallback<S>|S):void {
-      const cb = state as any;
-      const partialState =(typeof cb ==='function')? cb(this._currentState):cb;
-      this._currentState =typeof this._currentState ==='object'?Object.assign({}, this._currentState, partialState) :partialState;
-      this._emit(this._currentState);
-    }
-    
-    dispatch<V extends Action = Action>(actionName: V): void;
-    dispatch(actionName: string): void;
-    dispatch(actionName: string, payload?: any): void;
-    dispatch(actionName: string | Action, payload?: any): void {
-      this._store.dispatch(actionName as any, payload);
-    }
-  
-    get actions(): Actions{
-        return this._store.actions;
-    }
-    get stream$(): Observable<S>{
-        return this._store.select(this._stateName);
-    }
-    get currentState(): S{
-      return this._currentState;
-    }
-    get store(): AjwahStore{
-      return this._store;
-    }
-    protected onAction(state: S, action: Action){}
+    return mapped$.pipe(distinctUntilChanged());
+  }
+
+  get stream$(): Observable<S> {
+    return this._store.pipe(distinctUntilChanged());
   }
   
+  get state() {
+    return this._store.value;
+  }
+  /**
+   * This fuction merge the input state with the current store state
+   * @param state You can pass partial state.
+   *
+   */
+  emit(state: any) {
+    const ps = typeof state === 'object' ? Object.assign({}, this.state, state) : state;
+    this._store.next(ps);
+  }
+  exportState(): Observable<any[]> {
+    return dispatcher.pipe(withLatestFrom(this._store, (t, s) => [t, s]));
+  }
+
+  importState(state: S) {
+    this._store.next(state);
+    dispatch(`@importState(${this.stateName})`);
+  }
+
+  remoteState<State>(stateName: string): Promise<State> {
+    return new Promise<State>((resolve) => {
+      dispatcher.dispatch(new RemoteStateAction(stateName, state => {
+        resolve(state);
+      }))
+    });
+  }
+
+  remoteController<C>(stateName: string): Promise<C> {
+    return new Promise<C>((resolve) => {
+      dispatcher.dispatch(new RemoteControllerAction(stateName, controller => {
+        resolve(controller);
+      }))
+    });
+  }
+
+  registerEffect( ...streams: Observable<Action>[]): void {
+    this._effSub?.unsubscribe();
+    this._effSub = merge(...streams)
+        .subscribe((action: Action) => dispatch(action));
+  }
+
+  dispose(): void {
+    this._sub.unsubscribe();
+    this._effSub?.unsubscribe();
+    this._store.complete();
+  }
+
+}

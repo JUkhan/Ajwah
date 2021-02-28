@@ -1,13 +1,13 @@
 
 
-import {ajwahTest} from 'ajwah-test';
+import {ajwahTest} from '../dist/esm/index';
 
 import {StateController} from 'ajwah-store'
 
 
 export class CounterState extends StateController{
     constructor(){
-        super('counter', 2)
+        super({initialState:2})
     }
     increment(){
         this.update(state=>state+1)
@@ -25,9 +25,7 @@ describe('counter test', ()=>{
     beforeEach(()=>{
       cs=new CounterState();
     })
-    afterEach(()=>{
-      cs.dispose();
-    }) 
+
 
     it('initial state', async()=> {
         await ajwahTest({

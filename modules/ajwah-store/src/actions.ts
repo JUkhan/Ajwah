@@ -1,12 +1,13 @@
 import { BehaviorSubject, Observable } from "rxjs";
 import { filter } from "rxjs/operators";
 import { Action } from "./action";
+import {dispatcher} from './dispatcher';
 
-export class Actions {
+class Actions {
   constructor(private _dispatcher: BehaviorSubject<Action>) { }
 
   whereType(actionType: string): Observable<Action> {
-    return this._dispatcher.pipe(filter((action) => action.type == actionType));
+    return this._dispatcher.pipe(filter((action) => action.type === actionType));
   }
 
   whereTypes(...actionTypes: string[]): Observable<Action> {
@@ -18,3 +19,5 @@ export class Actions {
     return this._dispatcher.pipe(filter(predicate));
   }
 }
+
+export const actions$ = new Actions(dispatcher);

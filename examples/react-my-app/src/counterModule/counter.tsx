@@ -1,7 +1,8 @@
 import React from 'react';
-import { useStream, Get } from './utils';
+import { useStream,} from '../utils';
 import { CounterController } from './counterController';
-import Loading from './loading'
+import Loading from './loading';
+import {Get} from 'ajwah-store';
 
 const controller = Get(CounterController);
 
