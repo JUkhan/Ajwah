@@ -32,8 +32,9 @@ const todoItem: React.FC<Props> = ({ controller, todo }) => {
                     <Field
                         name="description"
                         observer={observer}
-                        onChange={({ elm, value }) => console.log(value, elm)}
+                        onChange={({ elm, value }) => console.log(value)}
                         autoFocus
+                        debounce
                         validators={[required('Task should not be empty')]}
                         render={({ value, setValue, setRef, flag, setFlag }) =>
 

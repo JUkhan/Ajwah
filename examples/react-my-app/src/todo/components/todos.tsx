@@ -7,6 +7,8 @@ import Errors from "./error";
 import { TodoStateController } from "../services/todoStateController";
 import { RxState, StreamBuilder } from 'ajwah-reactive-form';
 import { connectableObservableDescriptor } from "rxjs/internal/observable/ConnectableObservable";
+import { merge, combineLatest } from "rxjs";
+import { withLatestFrom } from "rxjs/operators";
 
 
 export default () => {
@@ -19,7 +21,11 @@ export default () => {
         return <div className="bg-white rounded shadow p-6 m-4">
           <Loading controller={controller} />
           <AddTodo controller={controller} />
-          <Toolbar controller={controller} />
+
+          <StreamBuilder
+            stream={combineLatest([controller.activeItem$, controller.searchCategory$], (activeItem, sc) => ({ activeItem, sc }))}
+            render={data => <Toolbar {...data} />} />
+
           <StreamBuilder
             initialData={controller.state.todos}
             filter={(data) => data.length > 0}
@@ -31,6 +37,7 @@ export default () => {
               ))
             }} />
           <Errors controller={controller} />
+
         </div>
       }} />
   );

@@ -9,15 +9,15 @@
   },
   "devDependencies": {
     "@types/react": "^16.9.34",
+    "ajwah-store": "^3.0.0",
     "react": "^16.8.4",
     "rxjs": "^6.4.0",
-    "ajwah-store": "^3.0.0",
     "typescript": "^3.8.3"
   },
   "peerDependencies": {
-    "rxjs": ">=6.0.0-beta.0",
+    "ajwah-store": ">=3.0.0",
     "react": ">=16.8.3",
-    "ajwah-store": ">=3.0.0"
+    "rxjs": ">=6.0.0-beta.0"
   },
   "repository": {
     "type": "git",

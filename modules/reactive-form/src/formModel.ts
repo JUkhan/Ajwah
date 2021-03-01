@@ -1,4 +1,4 @@
-import { StateObserver } from "./stateObserver";
+import { FormStateController } from "./formStateController";
 import { Validator, FiledChange } from "./validators";
 
 export interface ObserverState {
@@ -7,7 +7,7 @@ export interface ObserverState {
 }
 
 export interface SubmitProps {
-  observer: StateObserver;
+  observer: FormStateController;
   render(valid: boolean, formData?: any): any;
 }
 export interface SubmitState {
@@ -29,7 +29,7 @@ type ValidatorsBuilder = (state: any) => Validator[];
 
 export interface FieldProps {
   name: string;
-  observer: StateObserver;
+  observer: FormStateController;
   render: (args: FieldRender) => any;
   validators?: Validator[] | ValidatorsBuilder;
   debounce?: boolean | number;
@@ -47,11 +47,11 @@ export interface FieldState {
 }
 type FormRender = {
   handleSubmit: (e: any) => void;
-  observer: StateObserver;
+  observer: FormStateController;
 };
 export type FormProps = {
   initialValues?: any;
-  onSubmit?: (values: any, observer?: StateObserver) => void;
+  onSubmit?: (values: any, observer?: FormStateController) => void;
   render: (args: FormRender) => any;
   consumeErrors?: (errors: any) => void;
   consumeState?: (errors: any) => void;

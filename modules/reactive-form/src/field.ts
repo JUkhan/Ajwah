@@ -103,11 +103,7 @@ export class Field extends PureComponent<FieldProps, FieldState> {
       this.fieldSideEffect(this.state.value);
     }
   }
-  // componentDidUpdate(prevProps:FieldProps, prevState) {
-  // if (prevProps. !== this.props.foo) {
-  // ... do something
-  //  }
-  //   }
+  //componentDidUpdate(prevProps:FieldProps, prevState) {}
 
   fieldSideEffect(value: any) {
     this.props.onChange?.call(null, {

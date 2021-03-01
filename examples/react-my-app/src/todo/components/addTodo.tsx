@@ -8,8 +8,7 @@ const addItem: FC<Props> = ({ controller }) => {
   function submit(form: any, observer?: StateObserver) {
     dispatch('addTodo', { completed: false, ...form });
     controller.added$.pipe(take(1)).subscribe(res => {
-      observer?.reset();
-      console.log('reset------')
+      observer?.reset()
     })
   }
 
@@ -21,7 +20,6 @@ const addItem: FC<Props> = ({ controller }) => {
           <Field name="description"
             onChange={(arg) => console.log(arg)}
             autoFocus
-
             observer={observer}
             render={({ value, setValue, setRef }) =>
               <input
