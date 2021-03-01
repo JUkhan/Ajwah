@@ -57,7 +57,7 @@ export class Field extends PureComponent<FieldProps, FieldState> {
       })
     );
     this.subs.add(
-      this.props.observer.action$.whereType(CHECK_ERROR).subscribe((res) => {
+      this.props.observer.action$.whereType(CHECK_ERROR).subscribe(() => {
         this.validate();
         this.state.flag || this.setFlag(true);
       })
@@ -93,7 +93,7 @@ export class Field extends PureComponent<FieldProps, FieldState> {
         })
     );
     this.subs.add(
-      this.props.observer.action$.whereType(RESET).subscribe((res) => {
+      this.props.observer.action$.whereType(RESET).subscribe(() => {
         this.focus();
         this.fieldSideEffect("");
       })

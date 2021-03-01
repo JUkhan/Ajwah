@@ -60,9 +60,7 @@ export class FormStateController extends BehaviorSubject<ObserverState> {
     return this.pipe(
       map((state) => state.errors),
       map((errors) => {
-        return (
-          Object.entries(errors).filter(([key, value]) => value).length > 0
-        );
+        return Object.entries(errors).filter(([_, value]) => value).length > 0;
       })
     );
   }

@@ -1,16 +1,12 @@
 import { BehaviorSubject, Observable, Subscription, merge } from "rxjs";
-import {
-  map,
-  distinctUntilChanged,
-  withLatestFrom
-} from "rxjs/operators";
+import { map, distinctUntilChanged, withLatestFrom } from "rxjs/operators";
 
 import { Action } from "./action";
-import { dispatch } from './dispatch';
-import {dispatcher} from './dispatcher';
+import { dispatch } from "./dispatch";
+import { dispatcher } from "./dispatcher";
 
-class RemoteStateAction implements Action<(state: any) => void>{
-  constructor(public type: string, public payload: (state: any) => void) { }
+class RemoteStateAction implements Action<(state: any) => void> {
+  constructor(public type: string, public payload: (state: any) => void) {}
 }
 
 export abstract class StateController<S> {
@@ -19,11 +15,14 @@ export abstract class StateController<S> {
   private _effSub?: Subscription;
   constructor(private stateName: string, initialState: S) {
     this._store = new BehaviorSubject<S>(initialState);
-    const that=this as any;
-    this._sub = dispatcher.subscribe(action => {
+    const that = this as any;
+    this._sub = dispatcher.subscribe((action) => {
       this.onAction(this.state, action);
       that[action.type]?.call(this, this.state, action);
-      if (action instanceof RemoteStateAction && action.type === this.stateName) {
+      if (
+        action instanceof RemoteStateAction &&
+        action.type === this.stateName
+      ) {
         action.payload(this.state);
       }
     });
@@ -33,17 +32,19 @@ export abstract class StateController<S> {
       this.onInit();
     }, 0);
   }
-  onAction(state: S, action: Action) { }
-  onInit() { }
+  onAction(state: S, action: Action) {
+    //console.log(state, action);
+  }
+  onInit() {}
 
-  select<T = any>(mapFn: ((state: S) => any)): Observable<T> {
+  select<T = any>(mapFn: (state: S) => any): Observable<T> {
     let mapped$;
     if (typeof mapFn === "function") {
       mapped$ = this._store.pipe(map((source: any) => mapFn(source)));
     } else {
       throw new TypeError(
         `Unexpected type '${typeof mapFn}' in select operator,` +
-        ` expected 'string' or 'function'`
+          ` expected 'string' or 'function'`
       );
     }
     return mapped$.pipe(distinctUntilChanged());
@@ -52,7 +53,7 @@ export abstract class StateController<S> {
   get stream$(): Observable<S> {
     return this._store.pipe(distinctUntilChanged());
   }
-  
+
   get state() {
     return this._store.value;
   }
@@ -62,7 +63,8 @@ export abstract class StateController<S> {
    *
    */
   emit(state: any) {
-    const ps = typeof state === 'object' ? Object.assign({}, this.state, state) : state;
+    const ps =
+      typeof state === "object" ? Object.assign({}, this.state, state) : state;
     this._store.next(ps);
   }
   exportState(): Observable<any[]> {
@@ -76,16 +78,19 @@ export abstract class StateController<S> {
 
   remoteState<State>(stateName: string): Promise<State> {
     return new Promise<State>((resolve) => {
-      dispatcher.dispatch(new RemoteStateAction(stateName, state => {
-        resolve(state);
-      }))
+      dispatcher.dispatch(
+        new RemoteStateAction(stateName, (state) => {
+          resolve(state);
+        })
+      );
     });
   }
 
-  registerEffect( ...streams: Observable<Action>[]): void {
+  registerEffect(...streams: Observable<Action>[]): void {
     this._effSub?.unsubscribe();
-    this._effSub = merge(...streams)
-        .subscribe((action: Action) => dispatch(action));
+    this._effSub = merge(...streams).subscribe((action: Action) =>
+      dispatch(action)
+    );
   }
 
   dispose(): void {
@@ -93,5 +98,4 @@ export abstract class StateController<S> {
     this._effSub?.unsubscribe();
     this._store.complete();
   }
-
 }

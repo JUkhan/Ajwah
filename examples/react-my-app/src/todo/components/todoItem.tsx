@@ -1,5 +1,5 @@
 import React from 'react';
-import { RxForm, Field, StateObserver, dispatch, required } from 'ajwah-reactive-form';
+import { RxForm, Field, FormStateController, dispatch, required } from 'ajwah-reactive-form';
 import { Todo } from '../models/todo';
 import { TodoStateController } from "../services/todoStateController";
 import { delay, take } from 'rxjs/operators';
@@ -13,7 +13,7 @@ export interface Props {
 
 const todoItem: React.FC<Props> = ({ controller, todo }) => {
     console.log('todoItem:')
-    function submit(form: any, observer?: StateObserver) {
+    function submit(form: any, observer?: FormStateController) {
         dispatch('updateTodo', { ...form });
         controller.updated$.pipe(take(1)).subscribe(res => {
             observer?.notify('description', { flag: false })

@@ -2,7 +2,7 @@ import React, { FC, useEffect, useState } from "react";
 import { pluck } from "rxjs/operators";
 
 import {
-    StateObserver,
+    FormStateController,
     RxForm,
     Field,
     required
@@ -14,10 +14,10 @@ export interface Message {
 }
 export interface Props {
     userName: string,
-    controller: StateObserver
+    controller: FormStateController
 }
-export const PubSub: FC<Props> = ({ userName , controller }) => {
-    
+export const PubSub: FC<Props> = ({ userName, controller }) => {
+
     const [messages, setMessage] = useState<Message[]>([])
     useEffect(() => {
         const sub = controller.action$.whereType('message').pipe(pluck('payload'))
@@ -25,13 +25,13 @@ export const PubSub: FC<Props> = ({ userName , controller }) => {
                 setMessage(arr => ([msg, ...arr]))
             });
         return () => sub.unsubscribe();
-    },[])
+    }, [])
 
-    function sendMessage(state: Message, observer?:StateObserver) {
-       controller.dispatch('message', {name:userName, message:state.message});
-       observer?.reset();
+    function sendMessage(state: Message, observer?: FormStateController) {
+        controller.dispatch('message', { name: userName, message: state.message });
+        observer?.reset();
     }
-    
+
     return <div className="msn">
         <div className="content">
             {messages.map((msg, index) => <div key={index} className="message">{`${msg.name}: ${msg.message}`}</div>)}
