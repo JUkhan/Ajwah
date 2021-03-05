@@ -18,8 +18,9 @@ export abstract class StateController<S> {
     const that = this as any;
     this._sub = dispatcher.subscribe((action) => {
       this.onAction(this.state, action);
-      that[action.type]?.call(this, this.state, action);
-      if (
+      if (typeof that[action.type] === "function")
+        that[action.type](this.state, action);
+      else if (
         action instanceof RemoteStateAction &&
         action.type === this.stateName
       ) {
@@ -32,9 +33,7 @@ export abstract class StateController<S> {
       this.onInit();
     }, 0);
   }
-  onAction(state: S, action: Action) {
-    //console.log(state, action);
-  }
+  onAction(state: S, action: Action) {}
   onInit() {}
 
   select<T = any>(mapFn: (state: S) => any): Observable<T> {
@@ -76,6 +75,12 @@ export abstract class StateController<S> {
     dispatch(`@importState(${this.stateName})`);
   }
 
+  registerEffect(...streams: Observable<Action>[]): void {
+    this._effSub?.unsubscribe();
+    this._effSub = merge(...streams).subscribe((action: Action) =>
+      dispatch(action)
+    );
+  }
   remoteState<State>(stateName: string): Promise<State> {
     return new Promise<State>((resolve) => {
       dispatcher.dispatch(
@@ -85,14 +90,6 @@ export abstract class StateController<S> {
       );
     });
   }
-
-  registerEffect(...streams: Observable<Action>[]): void {
-    this._effSub?.unsubscribe();
-    this._effSub = merge(...streams).subscribe((action: Action) =>
-      dispatch(action)
-    );
-  }
-
   dispose(): void {
     this._sub.unsubscribe();
     this._effSub?.unsubscribe();

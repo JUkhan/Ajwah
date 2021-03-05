@@ -1,0 +1,10 @@
+
+body {
+  margin: 0; 
+  /* background-color: #001529; */
+}
+
+.active{
+  background-color: var(--surface-c);
+ 
+}

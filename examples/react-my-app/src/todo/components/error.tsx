@@ -1,15 +1,13 @@
-import React, { FC } from 'react';
+import Reacts from 'react';
 import { TodoStateController } from "../services/todoStateController";
-import { StreamBuilder } from 'ajwah-reactive-form';
+import { StreamBuilder, Get } from 'ajwah-reactive-form';
 
-export interface Props {
-    controller: TodoStateController
-}
-const error: FC<Props> = ({ controller }) =>
+
+const errors = () =>
     <StreamBuilder
         initialData=""
-        stream={controller.error$}
+        stream={Get(TodoStateController).error$}
         render={(errorMessage) => <div className="errors">{errorMessage}</div>} />
 
 
-export default error;
+export default errors;

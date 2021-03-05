@@ -1,6 +1,6 @@
 {
   "name": "ajwah-reactive-form",
-  "version": "0.4.7",
+  "version": "0.4.9",
   "description": "ajwah-reactive-form is very small, easy and effective for React and React Native",
   "main": "dist/index.js",
   "module": "dist/index.esm.js",
@@ -32,26 +32,7 @@
     "build:modern": "rollup -c ./scripts/rollup/rollup.config.js",
     "build:esm": "rollup -c ./scripts/rollup/rollup.esm.config.js",
     "build:ie11": "rollup -c ./scripts/rollup/rollup.ie11.config.js",
-    "cp:dts": "copyfiles -f ./src/**/*.d.ts dist && rimraf dist/**/*.test.d.ts",
-    "lint": "eslint '**/*.{js,ts,tsx}'",
-    "lint:fix": "npm run lint -- --fix",
-    "lint:types": "tsc --noEmit",
-    "check:package": "package-check",
-    "coverage": "jest --coverage --coverageReporters=text-lcov | coveralls",
-    "test": "jest --config ./scripts/jest/jest.config.js",
-    "test:coverage": "npm run test -- --coverage",
-    "test:watch": "npm run test -- --onlyChanged --watch",
-    "test:web": "TEST_ENV=web npm run test",
-    "test:server": "TEST_ENV=server npm run test",
-    "test:native": "TEST_ENV=native npm run test",
-    "cypress": "cypress run",
-    "cypress:open": "cypress open",
-    "cypress:parallel": "cypress-parallel -s cypress -t 4 -d -a",
-    "prepublishOnly": "npm run lint && npm run lint:types && npm test && npm run build",
-    "bundlesize": "npm run build:modern && bundlesize",
-    "start:app": "npm run build:esm && yarn link && yarn --cwd node_modules/react link && yarn --cwd ./app link react react-hook-form && yarn --cwd ./app && yarn --cwd ./app run start",
-    "changeset": "changeset",
-    "release": "changeset publish"
+    "cp:dts": "copyfiles -f ./src/**/*.d.ts dist && rimraf dist/**/*.test.d.ts"
   },
   "devDependencies": {
     "@babel/core": "^7.12.8",
@@ -67,7 +48,6 @@
     "@testing-library/react-hooks": "^3.3.0",
     "@types/jest": "^26.0.15",
     "@types/react": "^17.0.0",
-    "@types/react-dom": "^17.0.0",
     "@types/react-test-renderer": "^17.0.0",
     "@typescript-eslint/eslint-plugin": "^4.8.2",
     "@typescript-eslint/parser": "^4.8.2",
@@ -89,9 +69,6 @@
     "metro-react-native-babel-preset": "^0.63.0",
     "prettier": "^2.2.0",
     "react": "^17.0.1",
-    "react-dom": "^17.0.1",
-    "react-performance-testing": "^1.2.0",
-    "react-test-renderer": "^17.0.1",
     "rimraf": "^3.0.2",
     "rollup": "^2.33.3",
     "rollup-plugin-peer-deps-external": "^2.2.4",
@@ -102,7 +79,7 @@
     "typescript": "^4.1.2"
   },
   "peerDependencies": {
-    "react": ">=16.0.0",
+    "react": ">=16.8.0",
     "rxjs": ">=6.0.0"
   },
   "repository": {

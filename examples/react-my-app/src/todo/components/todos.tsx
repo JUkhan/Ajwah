@@ -3,42 +3,40 @@ import Loading from "./loading";
 import AddTodo from "./addTodo";
 import Toolbar from "./toolbar";
 import TodoItem from "./todoItem";
-import Errors from "./error";
+import ErrorMessage from "./error";
 import { TodoStateController } from "../services/todoStateController";
-import { RxState, StreamBuilder } from 'ajwah-reactive-form';
-import { connectableObservableDescriptor } from "rxjs/internal/observable/ConnectableObservable";
-import { merge, combineLatest } from "rxjs";
-import { withLatestFrom } from "rxjs/operators";
+import { Get, StreamBuilder } from 'ajwah-reactive-form';
+import { combineLatest } from "rxjs"
+
 
 
 export default () => {
 
   return (
-    <RxState
-      stateController={TodoStateController}
-      render={(controller) => {
-        console.log('RxState')
-        return <div className="bg-white rounded shadow p-6 m-4">
-          <Loading controller={controller} />
-          <AddTodo controller={controller} />
+    <div className="bg-white rounded shadow p-6 m-4">
+      <Loading />
+      <AddTodo />
 
-          <StreamBuilder
-            stream={combineLatest([controller.activeItem$, controller.searchCategory$], (activeItem, sc) => ({ activeItem, sc }))}
-            render={data => <Toolbar {...data} />} />
+      <StreamBuilder
 
-          <StreamBuilder
-            initialData={controller.state.todos}
-            filter={(data) => data.length > 0}
-            stream={controller.todos$}
-            render={(todos) => {
-              console.log('stream-builder', todos.length)
-              return todos.map(todo => (
-                <TodoItem controller={controller} todo={todo} key={todo.id} />
-              ))
-            }} />
-          <Errors controller={controller} />
+        initialData={{ activeItem: '', sc: 0 }}
+        stream={combineLatest(Get(TodoStateController).activeItem$, Get(TodoStateController).searchCategory$, (activeItem, sc) => ({ activeItem, sc }))}
+        render={data => <Toolbar {...data} />} />
 
-        </div>
-      }} />
+      <StreamBuilder
+
+        filter={(data) => data?.length > 0}
+        stream={Get(TodoStateController).todos$}
+        render={(todos) => {
+          console.log('stream-builder', todos.length)
+          return todos.map(todo => (
+            <TodoItem controller={Get(TodoStateController)} todo={todo} key={todo.id} />
+          ))
+        }} />
+
+      <ErrorMessage />
+
+    </div>
+
   );
 };

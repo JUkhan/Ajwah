@@ -1,17 +1,16 @@
-import { PureComponent } from "react";
+import * as React from "react";
 import { Subscription } from "rxjs";
 import { debounceTime, take } from "rxjs/operators";
 import { FormProps } from "./formModel";
 import { FormStateController } from "./formStateController";
 import { toMultiKeys } from "./utility";
 
-export class RxForm extends PureComponent<FormProps, any> {
+export class RxForm extends React.PureComponent<FormProps, any> {
   observer: FormStateController;
   subs?: Subscription;
 
   constructor(props: FormProps) {
     super(props);
-    this.state = {};
     this.handleSubmit = this.handleSubmit.bind(this);
     this.observer = new FormStateController(props.initialValues);
   }
@@ -58,8 +57,11 @@ export class RxForm extends PureComponent<FormProps, any> {
   validate() {
     this.observer.validate();
   }
-  setState(state: any) {
+  setFormData(state: any) {
     this.observer.setState({ fields: state, errors: {} });
+  }
+  get formData() {
+    return this.observer.state;
   }
   render() {
     if (this.props.initialValues) {

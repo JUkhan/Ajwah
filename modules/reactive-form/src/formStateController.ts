@@ -111,6 +111,7 @@ export class FormStateController extends BehaviorSubject<ObserverState> {
   dispatch<V extends Action = Action>(actionName: V): void;
   dispatch(actionName: string): void;
   dispatch(actionName: symbol): void;
+  dispatch(actionName: symbol, payload?: any): void;
   dispatch(actionName: string, payload?: any): void;
   dispatch(actionName: string | Action | symbol, payload?: any): void {
     if (typeof actionName === "object") {

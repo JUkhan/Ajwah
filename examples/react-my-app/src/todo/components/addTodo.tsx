@@ -1,13 +1,14 @@
 import React, { FC } from "react";
-import { RxForm, Field, dispatch, FormStateController } from "ajwah-reactive-form";
-import { Props } from '../models/todo';
-import { take } from "rxjs/operators";
+import { RxForm, Field, dispatch, FormStateController, Get } from "ajwah-reactive-form";
 
-const addItem: FC<Props> = ({ controller }) => {
+import { take } from "rxjs/operators";
+import { TodoStateController } from "../services/todoStateController";
+
+const addItem = () => {
 
   function submit(form: any, observer?: FormStateController) {
     dispatch('addTodo', { completed: false, ...form });
-    controller.added$.pipe(take(1)).subscribe(res => {
+    Get(TodoStateController).added$.pipe(take(1)).subscribe(res => {
       observer?.reset()
     })
   }

@@ -1,4 +1,4 @@
-import { PureComponent } from "react";
+import * as React from "react";
 import { Observable, Subscription } from "rxjs";
 
 export interface RxStateProps<S> {
@@ -11,7 +11,7 @@ export interface RxStateProps<S> {
 export interface StreamBuilderState<S> {
   snapshot: S;
 }
-export class StreamBuilder<S> extends PureComponent<
+export class StreamBuilder<S> extends React.PureComponent<
   RxStateProps<S>,
   StreamBuilderState<S>
 > {
@@ -29,7 +29,9 @@ export class StreamBuilder<S> extends PureComponent<
   }
 
   componentDidMount() {
-    this.subscription = this.props.stream?.subscribe((snapshot) => {
+    if (typeof this.props.stream.subscribe !== "function")
+      throw new Error("stream prop must be a type from Obserbablle");
+    this.subscription = this.props.stream.subscribe((snapshot) => {
       this.props.also?.call(null, snapshot);
       this.setState({ snapshot });
     });

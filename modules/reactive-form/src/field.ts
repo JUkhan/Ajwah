@@ -1,10 +1,10 @@
-import { PureComponent } from "react";
+import * as React from "react";
 import { Subscription } from "rxjs";
 import { debounceTime, distinctUntilChanged, tap } from "rxjs/operators";
 import { FieldProps, FieldState } from "./formModel";
 import { CHECK_ERROR, REFRESH, RESET } from "./utility";
 
-export class Field extends PureComponent<FieldProps, FieldState> {
+export class Field extends React.PureComponent<FieldProps, FieldState> {
   subs?: Subscription;
   errorCaught = false;
 
@@ -103,7 +103,13 @@ export class Field extends PureComponent<FieldProps, FieldState> {
       this.fieldSideEffect(this.state.value);
     }
   }
-  //componentDidUpdate(prevProps:FieldProps, prevState) {}
+  componentDidUpdate(prevProps: FieldProps, prevState: FieldState) {
+    if (prevProps.validators !== this.props.validators) {
+      this.validate();
+    } else if (prevProps.autoFocus !== this.props.autoFocus) {
+      this.focus();
+    }
+  }
 
   fieldSideEffect(value: any) {
     this.props.onChange?.call(null, {
@@ -158,6 +164,9 @@ export class Field extends PureComponent<FieldProps, FieldState> {
           emitError: callback,
           values: this.props.observer.__state,
         });
+      }
+      if (validators.length === 0) {
+        callback("");
       }
     }
     this.errorCaught = false;

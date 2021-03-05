@@ -1,8 +1,12 @@
 ## Ajwah Reactive Form
 
-You can also see [Ajwah-store](https://www.npmjs.com/package/ajwah-store) - A reactive state management library. Manage your application's states, effects, and actions easy way. Make apps more scalable with a unidirectional data-flow.
+[Form Examples](https://stackblitz.com/edit/react-reactive-form?file=index.tsx)
 
-[Demo](https://stackblitz.com/edit/react-reactive-form?file=index.tsx)
+**State Management Examples**
+
+[counterApp](https://stackblitz.com/edit/react-ts-reactive-form?file=index.tsx) |
+[todoApp](https://stackblitz.com/edit/react-ts-todo-arf?file=index.tsx) |
+[E-commerceApp](https://stackblitz.com/edit/react-ts-ecom?file=App.tsx)
 
 **Install**
 
@@ -649,7 +653,8 @@ export class RxForm {
   hasError(callback: (hasError: boolean, error?: any) => void): void;
   get isValid(): boolean;
   validate(): void;
-  setState(state: any): void;
+  setFormData(state: any): void;
+  get formData(): any;
 }
 export class FormStateController {
   get state(): any;

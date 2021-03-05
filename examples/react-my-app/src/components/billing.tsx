@@ -92,7 +92,7 @@ export const GroupingForm = () => (
                 </fieldset>
                 <Field
                     name="isBillingAsDelivery"
-                    onChange={({value}) => typeof value ==='boolean' && observer.validate() }
+                    //onChange={({ value }) => typeof value === 'boolean' && observer.validate()}
                     observer={observer}
                     render={({ value, setValue }) =>
                         <React.Fragment>
@@ -161,9 +161,11 @@ export const GroupingForm = () => (
                         observer={observer}
                         render={valid => <button disabled={!valid} type="submit">Submit</button>}
                     />
+                    <button onClick={() => observer.validate()}
+                    >validate</button>
                 </div>
             </form>
-            
+
         )}
     />
 );
