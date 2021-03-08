@@ -25,32 +25,24 @@ export const ProductDetails = () => {
   );
 
   const [cs, setColorSize] = useState({} as ColorSize);
+
   const [attributes] = usePullData<Attribute[]>(
     `attributes/inProduct/${product_id}`,
     [],
     product_id === 0
   );
-  const [[
-    { name, description, price, discounted_price, image, image_2 }
-  ]] = usePullData<ProductDetail[]>(
+  const mobileActive = useMobileActive();
+  const [data] = usePullData<ProductDetail[]>(
     `products/${product_id}/details`,
-    [
-      {
-        name: "",
-        description: "",
-        price: "",
-        discounted_price: "",
-        image: "",
-        image_2: ""
-      } as ProductDetail
-    ],
+    [],
     product_id === 0
   );
 
+  if (data.length === 0) return <h3>loading...</h3>;
+
+  const { name, description, price, discounted_price, image, image_2 } = data[0];
   const colors = attributes.filter(item => item.attribute_name === "Color");
   const sizes = attributes.filter(item => item.attribute_name === "Size");
-
-  const mobileActive = useMobileActive();
 
   function addToCart() {
     dispatch(at.AddToCart, { productId: product_id, ...cs });

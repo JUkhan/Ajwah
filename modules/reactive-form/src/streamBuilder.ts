@@ -17,14 +17,13 @@ export class StreamBuilder<S> extends React.PureComponent<
 > {
   subscription?: Subscription;
 
-  constructor(props: RxStateProps<any>) {
+  constructor(props: RxStateProps<S>) {
     super(props);
     this.state = {
-      snapshot: <S>(
-        (typeof this.props.initialData === "undefined"
-          ? null
-          : this.props.initialData)
-      ),
+      snapshot:
+        typeof this.props.initialData === "undefined"
+          ? (null as any)
+          : this.props.initialData,
     };
   }
 
@@ -47,6 +46,7 @@ export class StreamBuilder<S> extends React.PureComponent<
         ? this.props.render(this.state.snapshot)
         : null;
     }
+    if (this.state.snapshot === null) return null;
     return this.props.render(this.state.snapshot);
   }
 }

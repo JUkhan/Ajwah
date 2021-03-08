@@ -4,7 +4,7 @@ import { TodoStateController } from "../services/todoStateController";
 
 
 const loading = () => <StreamBuilder
-  initialData={0}
+  //initialData={0}
   stream={Get(TodoStateController).rotate$}
   render={(rotate) =>
     <div style={{ position: "relative" }}>

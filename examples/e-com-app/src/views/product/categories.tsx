@@ -1,19 +1,16 @@
 import React from 'react';
-import { Get, dispatch } from 'ajwah-reactive-form';
+import { Get, dispatch, useStream } from 'ajwah-reactive-form';
 import { Menubar } from 'primereact/menubar';
 import { ListBox } from 'primereact/listbox';
 import { CategoryController } from '../../controllers';
-import { useMobileActive, useController } from '../hooks';
+import { useMobileActive } from '../hooks';
 import { actionType as at } from '../../models';
 import { classNames } from '../../utils';
 
 export function Categories() {
-    const controller = Get(CategoryController);
-    useController(controller)
 
     const mobileAcive = useMobileActive();
-    const categories = controller.categories;
-    const { selectedCategory } = controller.state;
+    const [{ selectedCategory, categories }] = useStream(CategoryController, con => con.menuData$, con => con.state)
 
     let items: any[] = mobileAcive ? categories.map(cat => {
         return {

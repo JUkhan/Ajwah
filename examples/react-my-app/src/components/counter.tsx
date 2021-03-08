@@ -10,10 +10,8 @@ export const NewCounter = () => {
         <button onClick={e => dispatch('decrese')}>Decrese</button>
         <StreamBuilder
             stream={Get(CounterStateController).stream$}
-            render={(data: any) => {
-                console.log(data);
-                return <b>{data?.loading ? 'loading...' : data?.count}</b>
-            }} />
+            render={data => <b>{data.loading ? 'loading...' : data.count}</b>
+            } />
     </p>
 }
 

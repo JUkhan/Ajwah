@@ -19,13 +19,11 @@ export default () => {
 
       <StreamBuilder
 
-        initialData={{ activeItem: '', sc: 0 }}
+        //initialData={{ activeItem: '', sc: 0 }}
         stream={combineLatest(Get(TodoStateController).activeItem$, Get(TodoStateController).searchCategory$, (activeItem, sc) => ({ activeItem, sc }))}
         render={data => <Toolbar {...data} />} />
 
       <StreamBuilder
-
-        filter={(data) => data?.length > 0}
         stream={Get(TodoStateController).todos$}
         render={(todos) => {
           console.log('stream-builder', todos.length)

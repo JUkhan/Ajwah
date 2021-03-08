@@ -67,7 +67,7 @@ export class TodoStateController extends StateController<TodoState> {
     );
   }
 
-  get error$() {
+  get error$(): Observable<string> {
     const error$ = action$.whereType(TodoActions.TODOS_ERROR);
     return merge(
       error$.pipe(pluck("payload")),

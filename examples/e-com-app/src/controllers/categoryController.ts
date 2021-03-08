@@ -1,3 +1,4 @@
+import { Observable } from "rxjs";
 import { StateController, Action, action$ } from "ajwah-reactive-form";
 import { Category, CategoryState, actionType as at } from "../models";
 import { get } from "../api";
@@ -30,5 +31,14 @@ export class CategoryController extends StateController<CategoryState> {
     return depertmentId
       ? categories.filter((c) => c.department_id === depertmentId)
       : categories;
+  }
+  get menuData$(): Observable<CategoryState> {
+    return this.select(
+      (state) =>
+        ({
+          selectedCategory: state.selectedCategory,
+          categories: this.categories,
+        } as CategoryState)
+    );
   }
 }
