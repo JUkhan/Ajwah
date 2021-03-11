@@ -105,7 +105,9 @@ export class Field extends React.PureComponent<FieldProps, FieldState> {
   }
   componentDidUpdate(prevProps: FieldProps, prevState: FieldState) {
     if (prevProps.validators !== this.props.validators) {
-      this.validate();
+      setTimeout(() => {
+        this.validate();
+      }, 0);
     } else if (prevProps.autoFocus !== this.props.autoFocus) {
       this.focus();
     }

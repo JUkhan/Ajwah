@@ -1,6 +1,6 @@
 {
   "name": "ajwah-reactive-form",
-  "version": "0.4.9",
+  "version": "0.4.10",
   "description": "ajwah-reactive-form is very small, easy and effective for React and React Native",
   "main": "dist/index.js",
   "module": "dist/index.esm.js",

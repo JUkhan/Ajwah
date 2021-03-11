@@ -3,9 +3,9 @@ import './App.css';
 import Cascading from './components/cascading';
 import Counter from './counterModule/counter';
 import { LRContainer } from './components/container';
-import {GroupingForm} from './components/billing';
+import { GroupingForm } from './components/billing';
 import { Msn } from './components/msn';
-import {NewCounter} from './components/counter';
+import { NewCounter } from './components/counter';
 import Todos from './todo/components/todos'
 
 //import { RxForm, Field, Group, required, min, max, minLength, maxLength } from 'ajwah-reactive-form';
@@ -13,12 +13,12 @@ function App() {
   return (
     <div className="app">
       <Counter />
-      <NewCounter/>
+      <NewCounter />
       <Cascading />
       <LRContainer />
-      <GroupingForm/>
-      <Msn/>
-      <Todos/>
+      <GroupingForm />
+      <Msn />
+      {/* <Todos/> */}
     </div>
   );
 }
