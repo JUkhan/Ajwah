@@ -13,13 +13,15 @@ export abstract class StateController<S> {
   private _store: BehaviorSubject<S>;
   private _sub: Subscription;
   private _effSub?: Subscription;
-  constructor(private stateName: string, initialState: S) {
+
+  constructor(public stateName: string, initialState: S) {
     this._store = new BehaviorSubject<S>(initialState);
     const that = this as any;
     this._sub = dispatcher.subscribe((action) => {
       this.onAction(this.state, action);
-      that[action.type]?.call(this, this.state, action);
-      if (
+      if (typeof that[action.type] === "function")
+        that[action.type](this.state, action);
+      else if (
         action instanceof RemoteStateAction &&
         action.type === this.stateName
       ) {

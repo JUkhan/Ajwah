@@ -60,9 +60,4 @@ export class ProductController extends StateController<ProductStateState> {
       )
     );
   }
-
-  // async changeDepartment(){
-  //     const deptCtrl = await this.remoteController<DepartmentController>('department')
-  //     deptCtrl.selectDepartment()
-  // }
 }
