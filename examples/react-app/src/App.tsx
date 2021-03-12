@@ -1,7 +1,7 @@
 import React from 'react';
 import './App.css';
 import Cascading from './components/cascading';
-import Counter from './counterModule/counter';
+
 import { LRContainer } from './components/container';
 import { GroupingForm } from './components/billing';
 import { Msn } from './components/msn';
@@ -12,13 +12,13 @@ import Todos from './todo/components/todos'
 function App() {
   return (
     <div className="app">
-      <Counter />
+
       <NewCounter />
       <Cascading />
       <LRContainer />
       <GroupingForm />
       <Msn />
-      {/* <Todos/> */}
+      <Todos />
     </div>
   );
 }

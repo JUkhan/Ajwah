@@ -16,7 +16,7 @@ export class CounterStateController extends StateController<CounterState> {
   decrese(state: CounterState, action: Action) {
     this.emit({ count: state.count - 1 });
   }
-  async asyncIncreseX(state: CounterState, action: Action) {
+  async asyncIncresex(state: CounterState, action: Action) {
     this.emit({ loading: true });
     await new Promise((resolve) => setTimeout(resolve, 1000));
     this.emit({ count: this.state.count + 1, loading: false });

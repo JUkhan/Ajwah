@@ -13,7 +13,8 @@ export abstract class StateController<S> {
   private _store: BehaviorSubject<S>;
   private _sub: Subscription;
   private _effSub?: Subscription;
-  constructor(private stateName: string, initialState: S) {
+
+  constructor(public stateName: string, initialState: S) {
     this._store = new BehaviorSubject<S>(initialState);
     const that = this as any;
     this._sub = dispatcher.subscribe((action) => {

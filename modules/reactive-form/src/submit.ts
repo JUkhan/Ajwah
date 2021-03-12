@@ -14,7 +14,7 @@ export class Submit extends PureComponent<SubmitProps, SubmitState> {
       throw new Error("observer prop is not defined");
     }
     this.subs = this.props.observer.hasError$
-      .pipe(debounceTime(450))
+      .pipe(debounceTime(10))
       .subscribe(() => {
         this.setState({
           valid: this.props.observer.isValid,

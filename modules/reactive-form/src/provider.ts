@@ -1,5 +1,3 @@
-import * as React from "react";
-import { Observable } from "rxjs";
 import { StateController } from "./stateController";
 
 const _container: { [key: string]: any } = {};
@@ -7,36 +5,27 @@ const _container: { [key: string]: any } = {};
 export function Get<T extends StateController<any>>(
   controllerType: new () => T
 ): T {
-  if (!_container[controllerType.name]) {
-    _container[controllerType.name] = new controllerType();
+  const fn = controllerType as any;
+  if (!fn.key) {
+    const obj = new controllerType();
+    fn.key = obj.stateName;
+    _container[fn.key] = obj;
+    return obj;
   }
-  return _container[controllerType.name];
+
+  if (!_container[fn.key]) {
+    _container[fn.key] = new controllerType();
+  }
+  return _container[fn.key];
 }
 
 export function ClearState<T extends StateController<any>>(
   controllerType: new () => T
 ): boolean {
-  if (_container[controllerType.name]) {
-    delete _container[controllerType.name];
+  const fn = controllerType as any;
+  if (_container[fn.key]) {
+    delete _container[fn.key];
     return true;
   }
   return false;
-}
-
-export function useStream<S, T extends StateController<any>>(
-  controllerType: new () => T,
-  stream: (controller: T) => Observable<S>,
-  initialState: (controller: T) => S
-) {
-  const state = React.useState(initialState(Get(controllerType)));
-  React.useEffect(() => {
-    const sub = stream(Get(controllerType)).subscribe((res) => {
-      state[1](res);
-    });
-    return () => {
-      sub?.unsubscribe();
-    };
-  }, [controllerType]);
-
-  return state;
 }

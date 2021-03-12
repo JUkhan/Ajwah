@@ -17,6 +17,7 @@ export { FormStateController } from "./formStateController";
 export { Action } from "./action";
 export { dispatch } from "./dispatch";
 export { action$ } from "./actions";
-export { Get, ClearState, useStream } from "./provider";
+export { Get, ClearState } from "./provider";
+export { useStream } from "./useStream";
 export { StateController } from "./stateController";
 export { StreamBuilder } from "./streamBuilder";

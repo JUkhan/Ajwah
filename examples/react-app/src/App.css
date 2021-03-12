@@ -1,10 +1,10 @@
 .app {
   text-align: center;
 }
-.error{
-  color:#ff0000
+.error {
+  color: #ff0000;
 }
-form{
+form {
   padding: 12px;
   border: solid 1px #eeeeee;
   display: inline-block;
@@ -24,7 +24,7 @@ input {
   margin: 5px;
 }
 .button {
-  background-color: #4CAF50; /* Green */
+  background-color: #4caf50; /* Green */
   border: none;
   color: white;
   padding: 15px 32px;
@@ -33,14 +33,14 @@ input {
   display: inline-block;
   font-size: 16px;
 }
-.hasError{
+.hasError {
   border: solid 1px #ff0000;
 }
 .active {
   color: rgb(154, 205, 50) !important;
 }
 
-.errors{
-   text-align: center;
+.errors {
+  text-align: center;
   color: brown;
 }

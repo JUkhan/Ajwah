@@ -1,11 +1,12 @@
-import * as React from "react";
+import { PureComponent } from "react";
 import { Subscription } from "rxjs";
 import { debounceTime, take } from "rxjs/operators";
 import { FormProps } from "./formModel";
 import { FormStateController } from "./formStateController";
 import { toMultiKeys } from "./utility";
 
-export class RxForm extends React.PureComponent<FormProps, any> {
+export class RxForm extends PureComponent<FormProps, any> {
+  static key = "RxForm";
   observer: FormStateController;
   subs?: Subscription;
 

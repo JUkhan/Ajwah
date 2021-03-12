@@ -1,13 +1,13 @@
-import * as React from "react";
+import { PureComponent } from "react";
 import { Subscription } from "rxjs";
 import { debounceTime, distinctUntilChanged, tap } from "rxjs/operators";
 import { FieldProps, FieldState } from "./formModel";
 import { CHECK_ERROR, REFRESH, RESET } from "./utility";
 
-export class Field extends React.PureComponent<FieldProps, FieldState> {
+export class Field extends PureComponent<FieldProps, FieldState> {
   subs?: Subscription;
   errorCaught = false;
-
+  static key = "Field";
   constructor(props: FieldProps) {
     super(props);
     const val = this.props.observer.__state[this.props.name];
@@ -104,7 +104,11 @@ export class Field extends React.PureComponent<FieldProps, FieldState> {
     }
   }
   componentDidUpdate(prevProps: FieldProps, prevState: FieldState) {
-    if (prevProps.validators !== this.props.validators) {
+    if (
+      this.props.validators &&
+      prevProps.validators &&
+      prevProps.validators !== this.props.validators
+    ) {
       setTimeout(() => {
         this.validate();
       }, 0);

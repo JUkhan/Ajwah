@@ -11,7 +11,7 @@
     "@types/react": "^17.0.2",
     "@types/react-dom": "^17.0.1",
     "@types/react-router-dom": "5.1.7",
-    "ajwah-reactive-form": "^0.4.8-dev-5",
+    "ajwah-reactive-form": "^0.4.13",
     "primeflex": "2.0.0",
     "primeicons": "4.1.0",
     "primereact": "6.0.2",
