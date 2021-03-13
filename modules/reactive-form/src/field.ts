@@ -57,10 +57,16 @@ export class Field extends PureComponent<FieldProps, FieldState> {
       })
     );
     this.subs.add(
-      this.props.observer.action$.whereType(CHECK_ERROR).subscribe(() => {
-        this.validate();
-        this.state.flag || this.setFlag(true);
-      })
+      this.props.observer.action$
+        .where(
+          (action) =>
+            action.type === CHECK_ERROR &&
+            (action.payload ? action.payload === this.props.name : true)
+        )
+        .subscribe(() => {
+          this.validate();
+          this.state.flag || this.setFlag(true);
+        })
     );
 
     const debounce =

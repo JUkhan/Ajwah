@@ -104,8 +104,8 @@ export class FormStateController extends BehaviorSubject<ObserverState> {
     this.dispatch({ type: AUTO_FOCUS });
   }
 
-  validate() {
-    this.dispatch(CHECK_ERROR);
+  validate(fieldName?: string) {
+    this.dispatch(CHECK_ERROR, fieldName);
   }
 
   dispatch<V extends Action = Action>(actionName: V): void;

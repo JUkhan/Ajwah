@@ -8,7 +8,7 @@ import {
   Validator
 } from "ajwah-reactive-form";
 
-function submitForm(data:any) {
+function submitForm(data: any) {
   console.log(data);
 }
 
@@ -18,7 +18,7 @@ export default () => (
     render={({ observer, handleSubmit }) => (
       <form onSubmit={handleSubmit}>
         <Field
-          name="email" 
+          name="email"
           autoFocus
           observer={observer}
           validators={[
@@ -41,6 +41,7 @@ export default () => (
         <Field
           name="password"
           observer={observer}
+          onChange={() => observer.state.cpassword && observer.validate('cpassword')}
           validators={[
             required("Please input your password"),
             pattern(
@@ -56,7 +57,7 @@ export default () => (
                 onChange={e => setValue(e.target.value)}
               />
               <div className="error">{error}</div>
-              
+
             </div>
           )}
         />
