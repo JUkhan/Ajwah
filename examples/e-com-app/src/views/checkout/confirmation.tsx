@@ -7,16 +7,16 @@ import { CartController, UserController } from '../../controllers';
 import { CartItem } from '../../models';
 
 export function Confirmation() {
-    const [items] = useStream(
+    const [{ data: items }] = useStream(
         CartController,
         con => con.select<CartItem[]>(state => state.items),
         con => con.state.items
     )
-    const [user] = useStream(UserController, con => con.stream$, con => con.state)
+    const [{ data: user }] = useStream(UserController, con => con.stream$, con => con.state)
 
-    const subtotal = items.reduce((sum, { price, quantity }) => sum + (+price * quantity), 0)
-    const shipping = user.billingDetails?.deliveryOption === '1' ? 0 : 15;
-    const delivery = user.billingDetails?.isBiAsDelivery ? user.billingDetails.billingAddress : user.billingDetails?.deliveryAddress;
+    const subtotal = items?.reduce((sum, { price, quantity }) => sum + (+price * quantity), 0) ?? 0;
+    const shipping = user?.billingDetails?.deliveryOption === '1' ? 0 : 15;
+    const delivery = user?.billingDetails?.isBiAsDelivery ? user.billingDetails.billingAddress : user?.billingDetails?.deliveryAddress;
 
     const footer = <div className="p-grid">
         <div className="p-col-4">
@@ -46,7 +46,7 @@ export function Confirmation() {
             <h4>Address</h4>
             <span>{delivery?.address} - {delivery?.state} - {delivery?.city}</span>
             <h4>Delivery Options</h4>
-            <span className="p-text-italic">{user.billingDetails?.deliveryOption === '1' ? <span><b>Standard shipping: </b>(free, 2-3 business days)</span> : <span><b>Express shipping: </b>($15, 1-2 business days)</span>}</span>
+            <span className="p-text-italic">{user?.billingDetails?.deliveryOption === '1' ? <span><b>Standard shipping: </b>(free, 2-3 business days)</span> : <span><b>Express shipping: </b>($15, 1-2 business days)</span>}</span>
         </div>
     </div>)
 }

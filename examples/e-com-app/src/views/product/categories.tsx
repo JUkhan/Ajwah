@@ -10,9 +10,9 @@ import { classNames } from '../../utils';
 export function Categories() {
 
     const mobileAcive = useMobileActive();
-    const [{ selectedCategory, categories }] = useStream(CategoryController, con => con.menuData$, con => con.state)
+    const [{ data }] = useStream(CategoryController, con => con.menuData$, con => con.state)
 
-    let items: any[] = mobileAcive ? categories.map(cat => {
+    let items = mobileAcive ? data?.categories.map(cat => {
         return {
             label: cat.name, category_id: cat.category_id,
             command: (e: any) => {
@@ -20,13 +20,13 @@ export function Categories() {
             },
             template: (item: any, options: any) => {
                 return (
-                    <a className={classNames(options.className, { 'active': item.category_id === selectedCategory?.category_id })} target={item.target} onClick={options.onClick}>
+                    <a className={classNames(options.className, { 'active': item.category_id === data?.selectedCategory?.category_id })} target={item.target} onClick={options.onClick}>
                         <span className={options.labelClassName}>{item.label}</span>
                     </a>
                 )
             },
         }
-    }) : categories.map(cat => ({ label: cat.name, category_id: cat.category_id }));
+    }) : data?.categories.map(cat => ({ label: cat.name, category_id: cat.category_id }));
 
     function selectItem(item: any) {
         if (item.value) {
@@ -39,7 +39,7 @@ export function Categories() {
             :
             <>
                 <h3>Categories</h3>
-                <ListBox value={selectedCategory} options={items} onChange={selectItem} optionLabel="label" />
+                <ListBox value={data?.selectedCategory} options={items} onChange={selectItem} optionLabel="label" />
             </>
     )
 }

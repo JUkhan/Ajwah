@@ -10,7 +10,7 @@ import { actionType as at } from "../../models";
 
 export function Delivery() {
 
-  const [billingDetails] = useStream(
+  const [{ data: billingDetails }] = useStream(
     UserController,
     con => con.select(state => state.billingDetails),
     conn => conn.state.billingDetails

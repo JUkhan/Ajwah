@@ -14,10 +14,11 @@ function App() {
     <div className="app">
 
       <NewCounter />
-      <Cascading />
+      {/* <Cascading />
       <LRContainer />
       <GroupingForm />
       <Msn />
+      <Todos /> */}
       <Todos />
     </div>
   );

@@ -65,9 +65,6 @@ export class RxForm extends PureComponent<FormProps, any> {
     return this.observer.state;
   }
   render() {
-    if (this.props.initialValues) {
-      this.setState(this.props.initialValues);
-    }
     return this.props.render({
       handleSubmit: this.handleSubmit,
       observer: this.observer,

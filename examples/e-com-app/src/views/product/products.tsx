@@ -9,8 +9,9 @@ import { ProductDialog } from './productDialog';
 
 export function Products() {
 
-  const [productState] = useStream(ProductController, con => con.stream$, con => con.state);
+  const [{ data: productState }] = useStream(ProductController, con => con.stream$, con => con.state);
 
+  console.log(productState);
   const itemTemplate = (product: Product) => {
     if (product === null) return <div />;
     return <ProductCom product={product} />;

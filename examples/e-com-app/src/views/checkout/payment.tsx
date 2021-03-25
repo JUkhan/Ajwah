@@ -6,10 +6,10 @@ import { useHistory } from 'react-router-dom';
 import { CartController, UserController } from '../../controllers';
 
 export function Payment() {
-    const [carttState] = useStream(CartController, con => con.stream$, con => con.state)
-    const [userState] = useStream(UserController, con => con.stream$, con => con.state)
+    const [{ data: carttState }] = useStream(CartController, con => con.stream$, con => con.state)
+    const [{ data: userState }] = useStream(UserController, con => con.stream$, con => con.state)
 
-    const subtotal = carttState.items.reduce((sum, { price, quantity }) => sum + (+price * quantity), 0);
+    const subtotal = carttState?.items.reduce((sum, { price, quantity }) => sum + (+price * quantity), 0) ?? 0;
     const history = useHistory();
     const key = process.env.REACT_APP_KEY as string;
 
@@ -22,7 +22,7 @@ export function Payment() {
         <StripeCheckout
             name="Stripe Payment"
             amount={subtotal * 100}
-            email={userState.customer?.email}
+            email={userState?.customer?.email}
             token={tokenCallback}
 
             stripeKey={key} >

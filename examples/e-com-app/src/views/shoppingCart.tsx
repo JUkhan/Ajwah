@@ -11,8 +11,8 @@ import { actionType as at } from '../models';
 export function ShoppingCart() {
 
     const history = useHistory();
-    const [cartState] = useStream(CartController, con => con.stream$, con => con.state)
-    const [userState] = useStream(UserController, con => con.stream$, con => con.state)
+    const [{ data: cartState }] = useStream(CartController, con => con.stream$, con => con.state)
+    const [{ data: userState }] = useStream(UserController, con => con.stream$, con => con.state)
     const [isEnable, enableCheckout] = useState(false);
 
     useEffect(() => {

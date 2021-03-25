@@ -21,13 +21,16 @@ export default () => {
 
         //initialData={{ activeItem: '', sc: 0 }}
         stream={combineLatest(Get(TodoStateController).activeItem$, Get(TodoStateController).searchCategory$, (activeItem, sc) => ({ activeItem, sc }))}
-        render={data => <Toolbar {...data} />} />
+        render={({ data }) => <Toolbar {...data} />} />
 
       <StreamBuilder
+        //filter={data => data && data.length > 0}
+        initialData={[]}
         stream={Get(TodoStateController).todos$}
-        render={(todos) => {
-          console.log('stream-builder', todos.length)
-          return todos.map(todo => (
+        render={({ data }) => {
+
+          return data.map(todo => (
+            //<div key={todo.id}>{todo.description}</div>
             <TodoItem controller={Get(TodoStateController)} todo={todo} key={todo.id} />
           ))
         }} />

@@ -11,8 +11,9 @@ import { LoginRegisterDialog } from './loginRegisterDialog';
 
 
 export const SearchProduct = memo(() => {
-    const [itemCount] = useStream(CartController, con => con.cartItemCount$, () => '')
-    const [userState] = useStream(UserController, con => con.stream$, con => con.state)
+    const [{ data }] = useStream(CartController, con => con.cartItemCount$, () => '')
+    const [{ data: userState }] = useStream(UserController, con => con.stream$, con => con.state)
+    const itemCount = data;
     const history = useHistory();
 
 

@@ -9,7 +9,7 @@ const Errors = () => {
     return <StreamBuilder
         //initialData=""
         stream={Get(TodoStateController).error$}
-        render={(errorMessage) => <div className="errors">{errorMessage}</div>} />
+        render={({ data }) => <div className="errors">{data}</div>} />
 
 }
 export default Errors;
