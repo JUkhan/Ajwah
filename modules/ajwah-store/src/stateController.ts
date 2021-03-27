@@ -85,14 +85,12 @@ export abstract class StateController<S> {
       );
     });
   }
-
-  registerEffect(...streams: Observable<Action>[]): void {
+  registerEffect( ...streams: Observable<Action>[]): void {
     this._effSub?.unsubscribe();
-    this._effSub = merge(...streams).subscribe((action: Action) =>
-      dispatch(action)
-    );
+    this._effSub = merge(...streams)
+        .subscribe((action: Action) => dispatch(action));
   }
-
+  
   dispose(): void {
     this._sub.unsubscribe();
     this._effSub?.unsubscribe();
