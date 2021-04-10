@@ -8,9 +8,13 @@ import { Msn } from './components/msn';
 import { NewCounter } from './components/counter';
 import Todos from './todo/components/todos'
 
+
 //import { RxForm, Field, Group, required, min, max, minLength, maxLength } from 'ajwah-reactive-form';
 function App() {
   return (
+
+
+
     <div className="app">
 
       <NewCounter />
@@ -21,6 +25,7 @@ function App() {
       <Todos /> */}
       <Todos />
     </div>
+
   );
 }
 
