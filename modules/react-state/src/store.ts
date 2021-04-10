@@ -46,8 +46,10 @@ export class MonoStore<S = any> {
 
     dispatch({ type: `registerState(${stateName})` });
     const emitState = (state: M) => {
-      this._store.value[stateName] = state;
-      this._store.next(Object.assign({}, this._store.value));
+      if (this._store.value[stateName] !== state) {
+        this._store.value[stateName] = state;
+        this._store.next(Object.assign({}, this._store.value));
+      }
     };
 
     this._stateSubscriptions.set(
