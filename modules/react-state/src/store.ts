@@ -20,6 +20,7 @@ export function dispatch(actionName: string, payload?: any): void;
 export function dispatch(actionName: string | Action, payload?: any): void {
   if (typeof actionName === "object") {
     dispatcher.next(actionName);
+    return;
   }
   dispatcher.next({ type: actionName, payload });
 }
