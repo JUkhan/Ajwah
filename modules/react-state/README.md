@@ -7,7 +7,7 @@
 ```tsx
 import { RegisterState } from "react-mono-state";
 
-export const counterState: RegisterState = {
+export const counterState: RegisterState<CounterState> = {
   stateName: "counter",
   initialState: { loading: false, count: 0 },
   async mapActionToState(state, action, emit) {
@@ -21,7 +21,7 @@ export const counterState: RegisterState = {
       case "asyncInc":
         emit({ loading: true, count: state.count });
         await delay(1000);
-        emit({ loading: false, count: state.count + 1 });
+        emit((cstate) => ({ loading: false, count: cstate.count + 1 }));
         break;
     }
   },
@@ -38,13 +38,13 @@ function delay(ms: number) {
 import { useStore, dispatch } from "react-mono-state";
 
 export default () => {
-  const counter = useStore((s) => s.counter);
+  const { count, loading } = useStore<AppState, CounterState>((s) => s.counter);
   return (
     <div>
       <button onClick={(e) => dispatch("inc")}>+</button>
       <button onClick={(e) => dispatch("asyncInc")}>Async(+)</button>
       <button onClick={(e) => dispatch("dec")}>-</button>
-      <span>{counter.loading ? "loading..." : counter.count}</span>
+      <span>{loading ? "loading..." : count}</span>
     </div>
   );
 };

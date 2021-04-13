@@ -1,6 +1,6 @@
 {
   "name": "react-mono-state",
-  "version": "0.1.4",
+  "version": "0.1.5",
   "description": "react state",
   "main": "dist/index.js",
   "module": "dist/index.esm.js",

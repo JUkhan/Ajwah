@@ -1,14 +1,16 @@
 import { BehaviorSubject, Subscription } from "rxjs";
 
 import { Action } from "./action";
+export type EmitCallback<M> = (state: M) => M;
 
-export interface RegisterState<M = any> {
+export interface RegisterState<M = any, S = any> {
   stateName: string;
   initialState: M;
   mapActionToState: (
     state: M,
     action: Action,
-    emit: (state: M) => void
+    emit: (state: M | EmitCallback<M>) => M,
+    select: () => S
   ) => void;
 }
 
@@ -46,17 +48,27 @@ export class MonoStore<S = any> {
     this._store.value[stateName] = initialState;
 
     dispatch({ type: `registerState(${stateName})` });
-    const emitState = (state: M) => {
+
+    const emitState = (state: any) => {
+      if (typeof state === "function") {
+        state = state(this._store.value[stateName]) as any;
+      }
       if (this._store.value[stateName] !== state) {
         this._store.value[stateName] = state;
         this._store.next(Object.assign({}, this._store.value));
       }
+      return state;
     };
 
     this._stateSubscriptions.set(
       stateName,
       dispatcher.subscribe((action) => {
-        mapActionToState(this._store.value[stateName], action, emitState);
+        mapActionToState(
+          this._store.value[stateName],
+          action,
+          emitState,
+          () => this._store.value
+        );
       })
     );
   }
@@ -71,6 +83,7 @@ export class MonoStore<S = any> {
     this._stateSubscriptions.forEach((value, key) => {
       value.unsubscribe();
     });
+    this._stateSubscriptions.clear();
     this._store.unsubscribe();
   }
 }
