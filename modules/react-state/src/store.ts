@@ -1,7 +1,8 @@
-import { BehaviorSubject, Subscription } from "rxjs";
+import { BehaviorSubject, Observable, Subscription } from "rxjs";
+import { distinctUntilChanged, map } from "rxjs/operators";
 
 import { Action } from "./action";
-export type EmitCallback<M> = (state: M) => M;
+import { Actions } from "./actions";
 
 export interface RegisterState<M = any, S = any> {
   stateName: string;
@@ -9,34 +10,25 @@ export interface RegisterState<M = any, S = any> {
   mapActionToState: (
     state: M,
     action: Action,
-    emit: (state: M | EmitCallback<M>) => M,
+    emit: (state: M | ((state: M) => M)) => M,
     select: () => S
   ) => void;
 }
 
-const dispatcher = new BehaviorSubject<Action>({ type: "@INIT" });
-
-export function dispatch<V extends Action = Action>(actionName: V): void;
-export function dispatch(actionName: string): void;
-export function dispatch(actionName: string, payload?: any): void;
-export function dispatch(actionName: string | Action, payload?: any): void {
-  if (typeof actionName === "object") {
-    dispatcher.next(actionName);
-    return;
-  }
-  dispatcher.next({ type: actionName, payload });
-}
 export class MonoStore<S = any> {
-  private _store: BehaviorSubject<any>;
+  public _store: BehaviorSubject<any>;
   private _stateSubscriptions: Map<String, Subscription>;
-
+  public _dispatcher = new BehaviorSubject<Action>({ type: "@INIT" });
   constructor(states: RegisterState[]) {
     this._store = new BehaviorSubject<any>({});
     this._stateSubscriptions = new Map<String, Subscription>();
     states.forEach((s) => {
       this.registerState(s);
     });
+    this.dispatch = this.dispatch.bind(this);
   }
+  public action$ = new Actions(this._dispatcher);
+
   registerState<M>({
     stateName,
     initialState,
@@ -47,7 +39,7 @@ export class MonoStore<S = any> {
     }
     this._store.value[stateName] = initialState;
 
-    dispatch({ type: `registerState(${stateName})` });
+    this.dispatch({ type: `registerState(${stateName})` });
 
     const emitState = (state: any) => {
       if (typeof state === "function") {
@@ -55,14 +47,14 @@ export class MonoStore<S = any> {
       }
       if (this._store.value[stateName] !== state) {
         this._store.value[stateName] = state;
-        this._store.next(Object.assign({}, this._store.value));
+        this._store.next(this._store.value);
       }
       return state;
     };
 
     this._stateSubscriptions.set(
       stateName,
-      dispatcher.subscribe((action) => {
+      this._dispatcher.subscribe((action) => {
         mapActionToState(
           this._store.value[stateName],
           action,
@@ -72,12 +64,39 @@ export class MonoStore<S = any> {
       })
     );
   }
-
-  get value(): any {
+  unregisterState(stateName: string) {
+    if (this._store.value[stateName]) {
+      this._stateSubscriptions.delete(stateName);
+      delete this._store.value[stateName];
+      setTimeout(() => {
+        this.dispatch(`@unregisterState(${stateName})`);
+      }, 0);
+    }
+  }
+  dispatch<V extends Action = Action>(actionName: V): void;
+  dispatch(actionName: string): void;
+  dispatch(actionName: string, payload?: any): void;
+  dispatch(actionName: string | Action, payload?: any): void {
+    if (typeof actionName === "object") {
+      this._dispatcher.next(actionName);
+      return;
+    }
+    this._dispatcher.next({ type: actionName, payload });
+  }
+  getState(): S {
     return this._store.value;
   }
-  select() {
-    return this._store;
+  select<T = any>(mapFn: (state: S) => any): Observable<T> {
+    let mapped$;
+    if (typeof mapFn === "function") {
+      mapped$ = this._store.pipe(map((source: any) => mapFn(source)));
+    } else {
+      throw new TypeError(
+        `Unexpected type '${typeof mapFn}' in select operator,` +
+          ` expected 'function'`
+      );
+    }
+    return mapped$.pipe(distinctUntilChanged());
   }
   dispose(): void {
     this._stateSubscriptions.forEach((value, key) => {
@@ -87,6 +106,7 @@ export class MonoStore<S = any> {
     this._store.unsubscribe();
   }
 }
+
 export function createStore(states: RegisterState[]) {
   return new MonoStore(states);
 }
