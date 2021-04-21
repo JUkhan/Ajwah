@@ -35,10 +35,13 @@ function delay(ms: number) {
 ### counterComponent
 
 ```tsx
-import { useStore, dispatch } from "react-mono-state";
+import { useSelector, useDispatch } from "react-mono-state";
 
 export default () => {
-  const { count, loading } = useStore<AppState, CounterState>((s) => s.counter);
+  const dispatch = useDispatch();
+  const { count, loading } = useSelector<AppState, CounterState>(
+    (state) => state.counter
+  );
   return (
     <div>
       <button onClick={(e) => dispatch("inc")}>+</button>

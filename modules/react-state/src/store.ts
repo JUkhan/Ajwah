@@ -11,7 +11,8 @@ export interface RegisterState<M = any, S = any> {
     state: M,
     action: Action,
     emit: (state: M | ((state: M) => M)) => M,
-    select: () => S
+    select: () => S,
+    dispatch: (actionName: string | Action, payload?: any) => void
   ) => void;
 }
 
@@ -59,17 +60,21 @@ export class MonoStore<S = any> {
           this._store.value[stateName],
           action,
           emitState,
-          () => this._store.value
+          () => this._store.value,
+          this.dispatch
         );
       })
     );
   }
   unregisterState(stateName: string) {
     if (this._store.value[stateName]) {
+      this._stateSubscriptions.get(stateName)?.unsubscribe();
       this._stateSubscriptions.delete(stateName);
-      delete this._store.value[stateName];
+      const state: any = this.getState();
+      delete state[stateName];
       setTimeout(() => {
         this.dispatch(`@unregisterState(${stateName})`);
+        this._store.next(state);
       }, 0);
     }
   }
@@ -98,12 +103,12 @@ export class MonoStore<S = any> {
     }
     return mapped$.pipe(distinctUntilChanged());
   }
-  dispose(): void {
+  clear(): void {
     this._stateSubscriptions.forEach((value, key) => {
       value.unsubscribe();
     });
     this._stateSubscriptions.clear();
-    this._store.unsubscribe();
+    this._store.next({});
   }
 }
 

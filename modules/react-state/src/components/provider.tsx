@@ -8,15 +8,11 @@ interface StoreProps {
 }
 
 export const Provider: React.FC<StoreProps> = ({ store, context, children }) => {
-    const storeValue = React.useMemo(() => {
-        return store;
-    }, [store]);
     useIsomorphicLayoutEffect(() => {
-
         return () => {
-            storeValue?.dispose();
+            store?.clear();
         }
-    }, [storeValue]);
+    }, [store]);
     const Context = context || ReactMonoContext
-    return <Context.Provider value={storeValue}>{children}</Context.Provider>;
+    return <Context.Provider value={store}>{children}</Context.Provider>;
 }

@@ -23,7 +23,7 @@ export function useActionHandler<R = any, S = any>(
         res[1]({ loading: false, error: null, data: action });
       },
       (error) => {
-        res[1]({ loading: false, error, data: null as any });
+        res[1]({ loading: false, error, data: res[0].data });
       }
     );
     return () => sub?.unsubscribe();
