@@ -26,7 +26,6 @@ export class MonoStore<S = any> {
     states.forEach((s) => {
       this.registerState(s);
     });
-    this.dispatch = this.dispatch.bind(this);
   }
   public action$ = new Actions(this._dispatcher);
 
@@ -39,8 +38,8 @@ export class MonoStore<S = any> {
       return;
     }
     this._store.value[stateName] = initialState;
-
     this.dispatch({ type: `registerState(${stateName})` });
+    this._store.next(this._store.value);
 
     const emitState = (state: any) => {
       if (typeof state === "function") {
@@ -73,21 +72,19 @@ export class MonoStore<S = any> {
       const state: any = this.getState();
       delete state[stateName];
       setTimeout(() => {
-        this.dispatch(`@unregisterState(${stateName})`);
+        this.dispatch(`unregisterState(${stateName})`);
         this._store.next(state);
       }, 0);
     }
   }
-  dispatch<V extends Action = Action>(actionName: V): void;
-  dispatch(actionName: string): void;
-  dispatch(actionName: string, payload?: any): void;
-  dispatch(actionName: string | Action, payload?: any): void {
+
+  dispatch = (actionName: string | Action, payload?: any) => {
     if (typeof actionName === "object") {
       this._dispatcher.next(actionName);
       return;
     }
     this._dispatcher.next({ type: actionName, payload });
-  }
+  };
   getState(): S {
     return this._store.value;
   }

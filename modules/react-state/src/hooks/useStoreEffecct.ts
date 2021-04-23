@@ -1,7 +1,7 @@
+import { Observable } from "rxjs";
 import { useStore } from "./useStore";
 import { useIsomorphicLayoutEffect } from "../utils/useIsomorphicLayoutEffect";
 import { Actions } from "../actions";
-import { Observable } from "rxjs";
 import { Action } from "../action";
 
 export function useStoreEffect(

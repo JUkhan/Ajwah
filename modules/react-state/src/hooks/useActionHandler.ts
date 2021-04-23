@@ -1,9 +1,9 @@
 import React from "react";
 import { Observable } from "rxjs";
-import { MonoStore } from "./../store";
+import { MonoStore } from "../store";
 import { useIsomorphicLayoutEffect } from "../utils/useIsomorphicLayoutEffect";
-import { Actions } from "../actions";
 import { useStore } from "./useStore";
+import { Actions } from "../actions";
 
 interface Response<D> {
   loading: boolean;
@@ -12,7 +12,7 @@ interface Response<D> {
 }
 
 export function useActionHandler<R = any, S = any>(
-  stream$: (action$: Actions, store: MonoStore<S>) => Observable<any>
+  stream$: (action$: Actions, store: MonoStore<S>) => Observable<R>
 ) {
   const store = useStore();
   const res = React.useState<Response<R>>({ loading: true });
@@ -31,3 +31,5 @@ export function useActionHandler<R = any, S = any>(
 
   return res;
 }
+
+export const useStream = useActionHandler;
