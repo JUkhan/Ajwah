@@ -1,7 +1,7 @@
 {
   "name": "ajwah-reactive-form",
-  "version": "0.4.15",
-  "description": "ajwah-reactive-form is very small, easy and effective for React and React Native",
+  "version": "0.5.0",
+  "description": "Reactive form lib for React and React Native",
   "main": "dist/index.js",
   "module": "dist/index.esm.js",
   "umd:main": "dist/index.umd.production.min.js",
@@ -19,10 +19,6 @@
     ".": {
       "import": "./dist/index.esm.js",
       "require": "./dist/index.js"
-    },
-    "./dist/index.ie11": {
-      "import": "./dist/index.ie11.js",
-      "require": "./dist/index.ie11.js"
     }
   },
   "scripts": {

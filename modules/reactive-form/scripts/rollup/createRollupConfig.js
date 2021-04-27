@@ -40,7 +40,8 @@ export function createRollupConfig(options, callback) {
       format: options.format,
       name: umdName,
       sourcemap: true,
-      globals: { react: 'React' },
+      globals: { react: 'React',  "rxjs/operators": "filter",
+      rxjs: "BehaviorSubject", },
       exports: 'named',
     },
     plugins: [

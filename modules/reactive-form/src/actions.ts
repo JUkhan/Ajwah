@@ -1,7 +1,6 @@
 import { BehaviorSubject } from "rxjs";
 import { filter } from "rxjs/operators";
 import { Action } from "./action";
-import { dispatcher } from "./dispatcher";
 
 export class Actions {
   constructor(private _dispatcher: BehaviorSubject<Action>) {}
@@ -21,5 +20,3 @@ export class Actions {
     return this._dispatcher.pipe(filter(predicate));
   }
 }
-
-export const action$ = new Actions(dispatcher);

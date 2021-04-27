@@ -2,11 +2,9 @@
 
 [Form Examples](https://stackblitz.com/edit/react-reactive-form?file=index.tsx)
 
-**State Management Examples**
+**For State Management**
 
-[counterApp](https://stackblitz.com/edit/react-ts-reactive-form?file=index.tsx) |
-[todoApp](https://stackblitz.com/edit/react-ts-todo-arf?file=index.tsx) |
-[E-commerceApp](https://stackblitz.com/edit/react-ts-ecom?file=App.tsx)
+[react-mono-state](https://www.npmjs.com/package/react-mono-state)
 
 **Install**
 
