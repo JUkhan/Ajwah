@@ -1,24 +1,30 @@
 {
   "compilerOptions": {
-    "incremental": true,
-    "removeComments": true,
-    "preserveConstEnums": true,
     "sourceMap": true,
-    "strict": true,
-    "noImplicitReturns": true,
+    "module": "es2015",
+    "target": "es2017",
     "moduleResolution": "node",
-    "stripInternal": false,
+    "outDir": "./dist",
+    "skipLibCheck": true,
+    "declaration": true,
     "noEmit": true,
-    "lib": [
-      "esnext"
-    ],
-    "target": "esnext",
-    "baseUrl": ".",
-    "paths": {
-      "ajwah-store": ["./src/index"]
-    }
+    "allowSyntheticDefaultImports": true,
+    "lib": ["esnext"],
+    "strict": true,
+    "noUnusedLocals": true,
+    "noUnusedParameters": false,
+    "noImplicitReturns": true,
+    "noFallthroughCasesInSwitch": true,
+    
   },
-  "bazelOptions": {
-    "suppressTsconfigOverrideWarnings": true
-  }
+  "include": ["src"],
+  "exclude": [
+    "node_modules",
+    "app",
+    "examples",
+    "cypress",
+    "src/*.test.ts",
+    "src/*.test.tsx",
+    "src/__mocks__"
+  ]
 }
