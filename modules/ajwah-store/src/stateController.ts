@@ -1,35 +1,24 @@
 import { BehaviorSubject, Observable, Subscription, merge } from "rxjs";
-import { map, distinctUntilChanged, withLatestFrom } from "rxjs/operators";
+import { map, distinctUntilChanged } from "rxjs/operators";
 
 import { Action } from "./action";
-import { dispatch } from "./dispatch";
-import { dispatcher } from "./dispatcher";
+import { Actions } from "./actions";
 
-class RemoteStateAction implements Action<(state: any) => void> {
-  constructor(public type: string, public payload: (state: any) => void) {}
-}
+const _dispatcher = new BehaviorSubject<Action>({ type: "@INIT" });
+const _action$ = new Actions(_dispatcher);
 
 export abstract class StateController<S> {
   private _store: BehaviorSubject<S>;
   private _sub: Subscription;
   private _effSub?: Subscription;
 
-  constructor(public stateName: string, initialState: S) {
+  constructor(initialState: S) {
     this._store = new BehaviorSubject<S>(initialState);
-    const that = this as any;
-    this._sub = dispatcher.subscribe((action) => {
+
+    this._sub = _dispatcher.subscribe((action) => {
       this.onAction(this.state, action);
-      if (typeof that[action.type] === "function")
-        that[action.type](this.state, action);
-      else if (
-        action instanceof RemoteStateAction &&
-        action.type === this.stateName
-      ) {
-        action.payload(this.state);
-      }
     });
 
-    dispatch(`@newBornState(${this.stateName})`);
     setTimeout(() => {
       this.onInit();
     }, 0);
@@ -54,46 +43,50 @@ export abstract class StateController<S> {
     return this._store.pipe(distinctUntilChanged());
   }
 
+  get action$(): Actions {
+    return _action$;
+  }
+
   get state() {
     return this._store.value;
   }
+
+  dispatch(actionName: string | Action | symbol, payload?: any): void {
+    if (typeof actionName === "object") {
+      _dispatcher.next(actionName);
+      return;
+    }
+    _dispatcher.next({ type: actionName, payload });
+  }
   /**
-   * This fuction merge the input state with the current store state
-   * @param state You can pass partial state.
+   * This fuction merge the input state param with the current store state
+   * @param state You might pass partial state.
    *
    */
   emit(state: any) {
-    const ps =
-      typeof state === "object" ? Object.assign({}, this.state, state) : state;
-    this._store.next(ps);
-  }
-  exportState(): Observable<any[]> {
-    return dispatcher.pipe(withLatestFrom(this._store, (t, s) => [t, s]));
+    if (isPlainObj(state)) {
+      this._store.next(Object.assign({}, this.state, state));
+      return;
+    }
+    this._store.next(state);
   }
 
   importState(state: S) {
     this._store.next(state);
-    dispatch(`@importState(${this.stateName})`);
   }
 
-  remoteState<State>(stateName: string): Promise<State> {
-    return new Promise<State>((resolve) => {
-      dispatcher.dispatch(
-        new RemoteStateAction(stateName, (state) => {
-          resolve(state);
-        })
-      );
-    });
-  }
-  registerEffect( ...streams: Observable<Action>[]): void {
+  registerEffects(...streams: Observable<Action>[]): void {
     this._effSub?.unsubscribe();
-    this._effSub = merge(...streams)
-        .subscribe((action: Action) => dispatch(action));
+    this._effSub = merge(...streams).subscribe((action: Action) =>
+      this.dispatch(action)
+    );
   }
-  
+
   dispose(): void {
     this._sub.unsubscribe();
     this._effSub?.unsubscribe();
-    this._store.complete();
   }
+}
+function isPlainObj(o: any) {
+  return !!o && typeof o == "object" && o.constructor == Object;
 }
