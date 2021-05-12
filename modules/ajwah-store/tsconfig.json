@@ -17,7 +17,7 @@
     "noFallthroughCasesInSwitch": true,
     "jsx": "react"
   },
-  "include": ["src"],
+  "include": ["src", "__test__"],
   "exclude": [
     "node_modules",
     "app",
@@ -26,6 +26,6 @@
     "src/*.test.ts",
     "src/*.test.tsx",
     "src/__mocks__",
-    "src/__test__"
+    "__test__"
   ]
 }

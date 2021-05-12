@@ -1,6 +1,6 @@
 {
   "name": "ajwah-store",
-  "version": "5.4.3",
+  "version": "5.4.4",
   "description": "A reactive state management library. Manage your application's states, effects, and actions easy way. Make apps more scalable with a unidirectional data-flow.",
   "main": "dist/index.js",
   "module": "dist/index.esm.js",
