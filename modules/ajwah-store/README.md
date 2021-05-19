@@ -1,126 +1,75 @@
 ## Ajwah Store
 
-A reactive state management library. Manage your application's states, effects, and actions easy way. Make apps more scalable with a unidirectional data-flow.
+Reactive state management library. Manage your application's states, effects, and actions easy way. Make apps more scalable with a unidirectional data-flow.
 
 `counter` : [Angular Demo](https://stackblitz.com/edit/angular-ajwah-counter?file=src%2Fapp%2Fapp.component.ts) | [React Demo](https://stackblitz.com/edit/react-ajwah-counter?file=index.tsx) | [Vue Demo](https://stackblitz.com/edit/vue-ajwah-counter?file=src%2FApp.vue)
 
 `todos` : [Angular Demo](https://stackblitz.com/edit/angular-ajwah-test?file=src%2Fapp%2Fapp.component.ts) | [React Demo](https://stackblitz.com/edit/react-ts-cb9zfa?file=index.tsx) | [Vue Demo](https://stackblitz.com/edit/vue-ajwah-store?file=src%2FApp.vue)
 
-### Installation
-
-```sh
-npm i ajwah-store
-```
-
-### Counter State Controller
+### Counter State
 
 ```ts
-import { StateController } from "ajwah-store";
+import { StateController, Get } from "ajwah-store";
 
-interface CounterState {
-  count: number;
-  loading?: boolean;
-}
-
-export class CounterController extends StateController<CounterState> {
+export class CounterState extends StateController<number> {
   constructor() {
-    super({ count: 0, loading: false });
+    super(0);
   }
-
-  increment() {
-    this.emit({ count: this.state.count + 1 });
+  inc() {
+    this.emit(this.state + 1);
   }
-
-  decrement() {
-    this.emit({ count: this.state.count - 1 });
+  dec() {
+    this.emit(this.state - 1);
   }
-
   async asyncInc() {
-    this.emit({ loading: true });
-    await this.delay(10);
-    this.emit({ count: this.state.count + 1, loading: false });
+    this.dispatch("asyncInc");
+    await new Promise((resolve) => setTimeout(resolve, 10));
+    this.inc();
   }
-
-  delay(ms: number) {
-    return new Promise((resolve) => setTimeout(resolve, ms));
+  get count$() {
+    return merge(
+      this.action$.whereType("asyncInc").pipe(mapTo("loading...")),
+      this.stream$.pipe(map((count) => `${count}`))
+    );
   }
 }
 
-const controller = new CounterController();
-controller.stream$.subscribe(console.log);
-controller.increment();
-controller.decrement();
-controller.asyncInc();
+const csCtrl = Get(CounterState);
+csCtrl.count$.subscribe(console.log);
+csCtrl.inc();
+csCtrl.dec();
+csCtrl.asyncInc();
 ```
 
 ### Testing
 
 ```ts
+import { Get } from "ajwah-store";
 import { ajwahTest } from "ajwah-test";
 import { CounterController } from "./counterController";
 
-describe("Controller: ", () => {
-  let controller: CounterController;
+describe("Counter state controller: ", () => {
+  let csCtrl: CounterState;
   beforeEach(() => {
-    controller = new CounterController();
+    csCtrl = Get(CounterState);
   });
   afterEach(() => {
-    controller.dispose();
+    RemoveController(CounterState);
   });
 
   it("initial state", async () => {
     await ajwahTest({
-      build: () => controller.stream$,
+      build: () => csCtrl.stream$,
       verify: (states) => {
-        expect(states[0]).toEqual({ count: 0, loading: false });
+        expect(states[0]).toEqual(0);
       },
     });
   });
   it("increment", async () => {
     await ajwahTest({
-      build: () => controller.stream$,
+      build: () => csCtrl.stream$,
       act: () => {
-        controller.increment();
-      },
-      skip: 1,
-      verify: (states) => {
-        expect(states[0]).toEqual({ count: 1, loading: false });
-      },
-    });
-  });
-
-  it("decrement", async () => {
-    await ajwahTest({
-      build: () => controller.stream$,
-      act: () => {
-        controller.decrement();
-      },
-      skip: 1,
-      verify: (states) => {
-        expect(states[0]).toEqual({ count: -1, loading: false });
-      },
-    });
-  });
-
-  it("async increment", async () => {
-    await ajwahTest({
-      build: () => controller.stream$,
-      act: () => {
-        controller.asyncInc();
-      },
-      skip: 1,
-      wait: 10,
-      verify: (states) => {
-        expect(states[0]).toEqual({ count: 0, loading: true });
-        expect(states[1]).toEqual({ count: 1, loading: false });
-      },
-    });
-  });
-  it("select", async () => {
-    await ajwahTest({
-      build: () => controller.select((state) => state.count),
-      act: () => {
-        controller.increment();
+        csCtrl.inc();
       },
       skip: 1,
       verify: (states) => {
@@ -128,66 +77,46 @@ describe("Controller: ", () => {
       },
     });
   });
-  it("import state", async () => {
+
+  it("decrement", async () => {
     await ajwahTest({
-      build: () => controller.stream$,
+      build: () => csCtrl.stream$,
       act: () => {
-        controller.importState({ count: 101, loading: false });
+        csCtrl.dec();
       },
       skip: 1,
       verify: (states) => {
-        expect(states[0]).toEqual({ count: 101, loading: false });
+        expect(states[0]).toEqual(-1);
       },
     });
   });
-  it("action hanler whereType", async () => {
-    await ajwahTest({
-      build: () => controller.action$.whereType("awesome"),
-      act: () => {
-        controller.dispatch("awesome");
-      },
 
+  it("async increment", async () => {
+    await ajwahTest({
+      build: () => csCtrl.stream$,
+      act: () => {
+        csCtrl.asyncInc();
+      },
+      skip: 1,
+      wait: 10,
       verify: (states) => {
-        expect(states[0]).toEqual({ type: "awesome" });
+        expect(states[0]).toEqual(1);
       },
     });
   });
-  it("action hanler whereTypes", async () => {
+
+  it("async increment", async () => {
     await ajwahTest({
-      build: () => controller.action$.whereTypes("awesomeX", "awesome"),
+      build: () => csCtrl.count$,
       act: () => {
-        controller.dispatch("awesome");
+        csCtrl.asyncInc();
       },
 
+      skip: 2,
+      wait: 10,
       verify: (states) => {
-        expect(states[0]).toEqual({ type: "awesome" });
-      },
-    });
-  });
-  it("action hanler where", async () => {
-    await ajwahTest({
-      build: () =>
-        controller.action$.where((action) => action.type === "awesome"),
-      act: () => {
-        controller.dispatch("awesome");
-      },
-
-      verify: (states) => {
-        expect(states[0]).toEqual({ type: "awesome" });
-      },
-    });
-  });
-  it("dispose", async () => {
-    await ajwahTest({
-      build: () => controller.stream$,
-      act: () => {
-        controller.dispose();
-        controller.dispatch("inc");
-      },
-
-      verify: (states) => {
-        expect(states.length).toBe(1);
-        expect(states[0]).toEqual({ count: 0, loading: false });
+        expect(states[0]).toEqual("loading...");
+        expect(states[1]).toEqual("1");
       },
     });
   });
