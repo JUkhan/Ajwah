@@ -40,6 +40,7 @@ export abstract class StateController<S> {
   private _store: BehaviorSubject<S>;
   private _sub: Subscription;
   private _effSub?: Subscription;
+  private _mapSub?: Subscription;
 
   constructor(initialState: S) {
     this._store = new BehaviorSubject<S>(initialState);
@@ -169,6 +170,20 @@ export abstract class StateController<S> {
     this._effSub = merge(...streams).subscribe((action: Action) =>
       this.dispatch(action)
     );
+  }
+  /**This function just like `registerEffects` but param `streams` return `Observable<State>` instead of `Observable<Action>`.
+   * ```ts
+   *this.mapActionToState(
+   *   this.action$.whereType("asyncInc").pipe(
+   *      delay(1000),
+   *      map((action) => this.state + 1)
+   *  )
+   * );
+   *```
+   */
+  mapActionToState(...streams: Observable<S>[]): void {
+    this._mapSub?.unsubscribe();
+    this._mapSub = merge(...streams).subscribe((res: S) => this.emit(res));
   }
 
   private remoteData<S extends StateController<any>>(

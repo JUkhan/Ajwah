@@ -27,6 +27,7 @@ function App() {
       <header className="App-header">
         <img src={logo} className="App-logo" alt="logo" />
         <button onClick={() => csCtrl.inc()}>+</button>
+        <button onClick={() => csCtrl.dispatch('asyncInc')}>Async+</button>
         <p>
           data: {data}
         </p>

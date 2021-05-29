@@ -23,17 +23,23 @@ export class CounterState extends StateController<number> {
   constructor() {
     super(0);
   }
+
+  onInit() {
+    this.mapActionToState(
+      this.action$.whereType("asyncInc").pipe(
+        delay(1000),
+        map((action) => this.state + 1)
+      )
+    );
+  }
+
   inc() {
     this.emit(this.state + 1);
   }
   dec() {
     this.emit(this.state - 1);
   }
-  async asyncInc() {
-    this.dispatch("asyncInc");
-    await new Promise((resolve) => setTimeout(resolve, 10));
-    this.inc();
-  }
+
   get count$() {
     return merge(
       this.action$.whereType("asyncInc").pipe(mapTo("loading...")),
@@ -46,7 +52,7 @@ const csCtrl = Get(CounterState);
 csCtrl.count$.subscribe(console.log);
 csCtrl.inc();
 csCtrl.dec();
-csCtrl.asyncInc();
+csCtrl.dispatch("asyncInc");
 ```
 
 ### Testing
@@ -106,7 +112,7 @@ describe("Counter state controller: ", () => {
         csCtrl.asyncInc();
       },
       skip: 1,
-      wait: 10,
+      wait: 1000,
       verify: (states) => {
         expect(states[0]).toEqual(1);
       },
@@ -117,11 +123,11 @@ describe("Counter state controller: ", () => {
     await ajwahTest({
       build: () => csCtrl.count$,
       act: () => {
-        csCtrl.asyncInc();
+        csCtrl.dispatch("asyncInc");
       },
 
       skip: 2,
-      wait: 10,
+      wait: 1000,
       verify: (states) => {
         expect(states[0]).toEqual("loading...");
         expect(states[1]).toEqual("1");
