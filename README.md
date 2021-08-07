@@ -7,7 +7,7 @@ Every `StateController` has the following features:
 - Dispatching actions
 - Filtering actions
 - Adding effects
-- Communications among Controllers
+- Communications among Controllers[`Although they are independents`]
 - RxJs full features
 
 `counter` : [Angular Demo](https://stackblitz.com/edit/angular-ajwah-counter?file=src%2Fapp%2Fapp.component.ts) | [React Demo](https://stackblitz.com/edit/react-ajwah-counter?file=index.tsx) | [Vue Demo](https://stackblitz.com/edit/vue-ajwah-counter?file=src%2FApp.vue)
